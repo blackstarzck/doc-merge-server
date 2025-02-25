@@ -1,24 +1,13 @@
-import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { DocumentsModule } from './documents/documents.module'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { DocumentModel } from './documents/entity/documents.entity'
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { DocumentsModule } from './documents/documents.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SheetModule } from './sheet/sheet.module';
+import { typeORMConfig } from './configs/typeorm.config';
 
 @Module({
-  imports: [
-    DocumentsModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'doc-merge',
-      entities: [DocumentModel],
-      synchronize: true,
-    }),
-  ],
+  imports: [DocumentsModule, SheetModule, TypeOrmModule.forRoot(typeORMConfig)],
   controllers: [AppController],
   providers: [AppService],
 })
