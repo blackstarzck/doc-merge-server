@@ -3,8 +3,8 @@ import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class ServiceDeliveryModel extends BaseModel {
-  @Column({ type: 'int', comment: '번호', nullable: true })
-  no: number;
+  @Column({ type: 'text', comment: '번호', nullable: true })
+  no: string;
 
   @Column({ type: 'date', comment: '날짜', nullable: true })
   date: Date;
@@ -36,22 +36,22 @@ export class ServiceDeliveryModel extends BaseModel {
   @Column({ type: 'text', comment: '마크장비', nullable: true })
   mark_equip: string;
 
-  @Column({ type: 'int', comment: '기초금액', nullable: true })
+  @Column({ type: 'float', comment: '기초금액', nullable: true })
   base_price: number;
 
-  @Column({ type: 'int', comment: '낙찰금액', nullable: true })
+  @Column({ type: 'float', comment: '낙찰금액', nullable: true })
   win_price: number;
 
   @Column({ type: 'float', comment: '낙찰율(%)', nullable: true })
   win_rate: number;
 
-  @Column({ type: 'int', comment: '매입원가', nullable: true })
+  @Column({ type: 'float', comment: '매입원가', nullable: true })
   purchase_cost: number;
 
-  @Column({ type: 'int', comment: '최종납품권수', nullable: true })
+  @Column({ type: 'float', comment: '최종납품권수', nullable: true })
   final_delivery_quantity: number;
 
-  @Column({ type: 'int', comment: '최종매출액', nullable: true })
+  @Column({ type: 'float', comment: '최종매출액', nullable: true })
   final_sales: number;
 
   @Column({ type: 'text', comment: '결제방식', nullable: true })
@@ -60,22 +60,22 @@ export class ServiceDeliveryModel extends BaseModel {
   @Column({ type: 'date', comment: '선입금일자', nullable: true })
   pre_payment_date: Date;
 
-  @Column({ type: 'int', comment: '선입금', nullable: true })
+  @Column({ type: 'float', comment: '선입금', nullable: true })
   pre_payment: number;
 
-  @Column({ type: 'int', comment: '예정잔금', nullable: true })
+  @Column({ type: 'float', comment: '예정잔금', nullable: true })
   expected_balance: number;
 
-  @Column({ type: 'int', comment: '최종 납품정가', nullable: true })
+  @Column({ type: 'float', comment: '최종 납품정가', nullable: true })
   final_delivery_price: number;
 
-  @Column({ type: 'int', comment: '최종 도서매출액', nullable: true })
+  @Column({ type: 'float', comment: '최종 도서매출액', nullable: true })
   final_bk_sales: number;
 
-  @Column({ type: 'int', comment: '수익금', nullable: true })
+  @Column({ type: 'float', comment: '수익금', nullable: true })
   revenue: number;
 
-  @Column({ type: 'int', comment: '순이익금', nullable: true })
+  @Column({ type: 'float', comment: '순이익금', nullable: true })
   net_revenue: number;
 
   @Column({ type: 'text', comment: '업체연락처', nullable: true })
@@ -96,3 +96,39 @@ export class ServiceDeliveryModel extends BaseModel {
   @Column({ type: 'text', comment: '사서담당자', nullable: true })
   lib_person: string;
 }
+
+//   "balance",
+//   "balance_date",
+//   "total_payment",
+//   "notes",
+//   "no",
+//   "date",
+//   "bid_org",
+//   "win_company",
+//   "parent_company",
+//   "org_name",
+//   "role_person",
+//   "bid_num",
+//   "contract_date",
+//   "delivery_date",
+//   "mark_equip",
+//   "base_price",
+//   "win_price",
+//   "win_rate",
+//   "purchase_cost",
+//   "final_delivery_quantity",
+//   "final_sales",
+//   "payment_method",
+//   "pre_payment_date",
+//   "pre_payment",
+//   "expected_balance",
+//   "final_delivery_price",
+//   "final_bk_sales",
+//   "revenue",
+//   "net_revenue",
+//   "company_contact",
+//   "company_person",
+//   "admin_contact",
+//   "admin_person",
+//   "lib_contact",
+//   "lib_person"
