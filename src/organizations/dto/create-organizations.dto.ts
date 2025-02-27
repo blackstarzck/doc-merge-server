@@ -1,9 +1,9 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { IsOptional, IsInt, IsString, IsNumber, IsDate } from 'class-validator';
-import { DocumentsModel } from '../entity/documents.entity';
+import { OrganizationsModel } from '../entity/organizations.entity';
 
 export class CreateDocumentDto extends PartialType(
-  OmitType(DocumentsModel, ['id'] as const),
+  OmitType(OrganizationsModel, ['id'] as const),
 ) {
   @IsOptional()
   @IsString()

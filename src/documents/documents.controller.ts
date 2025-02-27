@@ -1,25 +1,12 @@
+import { Controller, Get, Param } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
-import {
-  Controller,
-  Get,
-  Post,
-  UploadedFile,
-  UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
-  @Get()
-  getDocuments() {
-    return this.documentsService.getDocuments();
-  }
-
-  @Post()
-  @UseInterceptors(FileInterceptor('file'))
-  postDocuments(@UploadedFile() file: Express.Multer.File) {
-    return this.documentsService.processExcel(file);
+  @Get(':documentId')
+  getDocuments(@Param('documentId') id: string) {
+    return this.documentsService.getDocuments(id);
   }
 }

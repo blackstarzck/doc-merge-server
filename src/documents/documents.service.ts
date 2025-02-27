@@ -1,89 +1,57 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentsModel } from './entity/documents.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateDocumentDto } from './dto/create-document.dto';
-import * as XLSX from 'xlsx';
-import { mappedColumns } from '../common/columnMap';
-import { plainToInstance } from 'class-transformer';
+import { BookDeliveryService } from 'src/book-delivery/book-delivery.service';
+import { BookDisposalService } from 'src/book-disposal/book-disposal.service';
+import { CargoUseService } from 'src/cargo-use/cargo-use.service';
+import { OVERVIEW_TABLES } from 'src/constants.ts/constants';
+import { LogisticsJobService } from 'src/logistics-job/logistics-job.service';
+import { OrganizationsService } from 'src/organizations/organizations.service';
+import { ServiceDeliveryService } from 'src/service-delivery/service-delivery.service';
 
 @Injectable()
 export class DocumentsService {
   constructor(
-    @InjectRepository(DocumentsModel)
-    private readonly documentRepository: Repository<DocumentsModel>,
+    private readonly bookDeliveryService: BookDeliveryService,
+    private readonly bookDisposalService: BookDisposalService,
+    private readonly cargoUseService: CargoUseService,
+    private readonly logisticsJobService: LogisticsJobService,
+    private readonly organizationsService: OrganizationsService,
+    private readonly serviceDeliveryService: ServiceDeliveryService,
   ) {}
 
-  async getDocuments() {
-    const documents = await this.documentRepository.find();
-
-    console.log('documents: ', documents);
-
-    return documents;
-  }
-
-  async createDocument(dto: CreateDocumentDto) {
-    console.log('dt: ', dto);
-    const document = this.documentRepository.create(dto);
-
-    return await this.documentRepository.save(document);
-  }
-
-  async processExcel(file: Express.Multer.File) {
-    // 1️⃣ 파일 버퍼를 엑셀로 변환
-    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
-    const sheetName = workbook.SheetNames[0]; // 첫 번째 시트 선택
-    const worksheet = workbook.Sheets[sheetName];
-
-    console.log('sheetNames: ', workbook.SheetNames);
-
-    // 2️⃣ 엑셀 데이터를 JSON으로 변환 (타입 지정)
-    const jsonDataRaw: any[] = XLSX.utils.sheet_to_json<any>(worksheet, {
-      defval: '',
-    });
-
-    // 3️⃣ 컬럼명 및 데이터에서 공백과 줄바꿈 문자 제거
-    const jsonData = jsonDataRaw.map((row) =>
-      Object.keys(row).reduce(
-        (acc, key) => {
-          const cleanedKey = key.replace(/[\s\r\n\t]/g, ''); // 공백, 줄바꿈, 탭 제거
-
-          // 매핑 배열에서 key를 찾아서 대응하는 영문 key로 변경
-          const mappedColumn = mappedColumns.find(
-            (col) => col.name === cleanedKey,
-          );
-          const newKey = mappedColumn ? mappedColumn.key : cleanedKey; // 매핑된 key가 있으면 그걸 사용, 없으면 기존 key 사용
-
-          acc[newKey] = row[key];
-          return acc;
-        },
-        {} as Record<string, any>,
-      ),
+  async getDocuments(documentId) {
+    const overviewTable = OVERVIEW_TABLES.find(
+      (item) => item.name === documentId,
     );
+    let getData;
 
-    console.log('jsonData: ', jsonData);
+    console.log('received documentId: ', documentId);
 
-    const dtoInstances = jsonData.map((row) =>
-      plainToInstance(CreateDocumentDto, row),
-    );
+    if (overviewTable) {
+      const serviceMap = {
+        book_delivery: this.bookDeliveryService.getBookDelivery.bind(
+          this.bookDeliveryService,
+        ),
+        book_disposal: this.bookDisposalService.getBookDisposal.bind(
+          this.bookDisposalService,
+        ),
+        cargo_use: this.cargoUseService.getCargoUse.bind(this.cargoUseService),
+        logistics_job: this.logisticsJobService.getLogisticsJob.bind(
+          this.logisticsJobService,
+        ),
+        organizations: this.organizationsService.getOrganizations.bind(
+          this.organizationsService,
+        ),
+        service_delivery: this.serviceDeliveryService.getServiceDelivery.bind(
+          this.serviceDeliveryService,
+        ),
+      };
+      getData = serviceMap[documentId];
+    } else {
+      getData = this.organizationsService.getOrganizations.bind(
+        this.organizationsService,
+      );
+    }
 
-    console.log('dtoInstances: ', dtoInstances);
-
-    // 5️⃣ DTO → 엔티티 변환
-    const entityData = dtoInstances.map((dto) => {
-      return this.documentRepository.create({
-        ...dto,
-        sheet_data_num: 1,
-        sheet_name: '여송사회복지재단(위즈덤샐러)',
-      });
-    });
-
-    console.log('entityData: ', entityData);
-
-    // 6️⃣ 데이터베이스 저장 (존재하면 업데이트, 없으면 삽입)
-    const savedData = await this.documentRepository.save(entityData);
-    console.log('savedData: ', savedData);
-
-    return savedData;
+    return await getData();
   }
 }

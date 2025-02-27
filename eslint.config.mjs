@@ -30,8 +30,11 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
-      "@typescript-eslint/no-unsafe-assignment": "unknown",
-      'prettier/prettier': ['error', { endOfLine: 'auto', printWidth: 120, proseWrap: 'never' }],
+      '@typescript-eslint/no-unsafe-assignment': 'unknown',
+      'prettier/prettier': [
+        'error',
+        { endOfLine: 'auto', printWidth: 160, proseWrap: 'never' },
+      ],
     },
   },
 );

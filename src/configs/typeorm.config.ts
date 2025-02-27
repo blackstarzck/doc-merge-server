@@ -1,6 +1,4 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DocumentsModel } from 'src/documents/entity/documents.entity';
-import { SheetModel } from 'src/sheet/entity/sheet.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -9,7 +7,7 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   username: 'postgres',
   password: 'postgres',
   database: 'doc-merge',
-  entities: [DocumentsModel, SheetModel],
+  entities: [__dirname + '/../**/entity/*.entity.{js,ts}'],
   synchronize: true,
 };
 
