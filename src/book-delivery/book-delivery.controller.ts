@@ -1,5 +1,6 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { BookDeliveryService } from './book-delivery.service';
+import { QueryRunner as QR } from 'typeorm';
 
 @Controller('book_delivery')
 export class BookDeliveryController {
@@ -11,7 +12,7 @@ export class BookDeliveryController {
   }
 
   @Post()
-  postBookDelivery(data) {
-    return this.bookDeliveryService.postBookDelivery(data);
+  postBookDelivery(@Body('document') data: any[], @Query('qr') qr: QR) {
+    return this.bookDeliveryService.postBookDelivery(data, qr);
   }
 }

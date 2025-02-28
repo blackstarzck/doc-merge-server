@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
-import { excelDateToJSDate } from 'src/utils/date.utils';
-import { transformEmptyToNull } from 'src/utils/transform.utils';
+import { excelDateToJSDate } from 'src/common/utils/date.utils';
+import { transformEmptyToNull } from 'src/common/utils/transform.utils';
 import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
 export abstract class BaseModel {

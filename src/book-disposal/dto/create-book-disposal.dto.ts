@@ -1,39 +1,25 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
-import { excelDateToJSDate } from 'src/common/utils/date.utils';
-import { transformEmptyToNull } from 'src/common/utils/transform.utils';
+import { IsOptional, IsInt, IsString, IsDate } from 'class-validator';
+import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
+import { excelDateToJSDate } from 'src/common/utils/date.utils';
+import { transformEmptyToNull } from 'src/common/utils/transform.utils';
 
-export class CreateServiceDeliveryDto {
+export class CreateBookDisposalDto {
   @IsOptional()
   @IsInt({ message: integerValidationMessage })
   id?: number;
 
-  @IsInt()
+  @IsInt({ message: integerValidationMessage })
   @Transform(transformEmptyToNull)
-  balance: number;
+  no: number;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
-  balance_date: Date;
-
-  @IsInt()
-  @Transform(transformEmptyToNull)
-  total_payment: number;
-
-  @IsString({ message: stringValidationMessage })
-  notes: string;
-
-  @IsString({ message: stringValidationMessage })
-  @Transform(({ value }) => String(value))
-  no: string;
-
+  @IsDate({ message: dateValidationMessage })
   @Transform(({ value }) => excelDateToJSDate(value))
   date: Date;
 
   @IsString({ message: stringValidationMessage })
-  bid_org: string;
-
   @IsString({ message: stringValidationMessage })
   win_company: string;
 
@@ -41,64 +27,46 @@ export class CreateServiceDeliveryDto {
   parent_company: string;
 
   @IsString({ message: stringValidationMessage })
+  category: string;
+
+  @IsString({ message: stringValidationMessage })
   org_name: string;
+
+  @IsString({ message: stringValidationMessage })
+  status: string;
+
+  @IsString({ message: stringValidationMessage })
+  cost: string;
 
   @IsString({ message: stringValidationMessage })
   role_person: string;
 
   @IsString({ message: stringValidationMessage })
-  bid_num: string;
-
-  @Transform(({ value }) => excelDateToJSDate(value))
-  contract_date: Date;
-
-  @Transform(({ value }) => excelDateToJSDate(value))
-  delivery_date: Date;
-
-  @IsString({ message: stringValidationMessage })
   mark_equip: string;
 
+  @IsInt({ message: integerValidationMessage })
   @Transform(transformEmptyToNull)
-  base_price: number;
+  final_delivery_bks: number;
 
-  @Transform(transformEmptyToNull)
-  win_price: number;
-
-  @Transform(transformEmptyToNull)
-  win_rate: number;
-
-  @Transform(transformEmptyToNull)
-  purchase_cost: number;
-
-  @Transform(transformEmptyToNull)
-  final_delivery_quantity: number;
-
+  @IsInt({ message: integerValidationMessage })
   @Transform(transformEmptyToNull)
   final_sales: number;
 
-  @IsString({ message: stringValidationMessage })
-  payment_method: string;
+  @IsInt({ message: integerValidationMessage })
+  @Transform(transformEmptyToNull)
+  expend_cost: number;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(({ value }) => excelDateToJSDate(value))
   pre_payment_date: Date;
 
+  @IsInt({ message: integerValidationMessage })
   @Transform(transformEmptyToNull)
   pre_payment: number;
 
+  @IsInt({ message: integerValidationMessage })
   @Transform(transformEmptyToNull)
   expected_balance: number;
-
-  @Transform(transformEmptyToNull)
-  final_delivery_price: number;
-
-  @Transform(transformEmptyToNull)
-  final_bk_sales: number;
-
-  @Transform(transformEmptyToNull)
-  revenue: number;
-
-  @Transform(transformEmptyToNull)
-  net_revenue: number;
 
   @IsString({ message: stringValidationMessage })
   company_contact: string;
@@ -117,4 +85,23 @@ export class CreateServiceDeliveryDto {
 
   @IsString({ message: stringValidationMessage })
   lib_person: string;
+
+  @IsInt({ message: integerValidationMessage })
+  @Transform(transformEmptyToNull)
+  revenue: number;
+
+  @IsInt({ message: integerValidationMessage })
+  @Transform(transformEmptyToNull)
+  balance: number;
+
+  @IsDate({ message: dateValidationMessage })
+  @Transform(({ value }) => excelDateToJSDate(value))
+  balance_date: Date;
+
+  @IsInt({ message: integerValidationMessage })
+  @Transform(transformEmptyToNull)
+  total_payment: number;
+
+  @IsString({ message: stringValidationMessage })
+  notes: string;
 }

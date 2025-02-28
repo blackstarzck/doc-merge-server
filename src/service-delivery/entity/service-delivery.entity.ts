@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm';
 
 @Entity()
 export class ServiceDeliveryModel extends BaseModel {
-  @Column({ type: 'text', comment: '번호', nullable: true })
+  @Column({ type: 'varchar', comment: '번호', nullable: true })
   no: string;
 
   @Column({ type: 'date', comment: '날짜', nullable: true })

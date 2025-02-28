@@ -1,16 +1,17 @@
 import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { IsOptional, IsInt, IsString, IsNumber, IsDate } from 'class-validator';
 import { OrganizationsModel } from '../entity/organizations.entity';
+import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
 
 export class CreateDocumentDto extends PartialType(
   OmitType(OrganizationsModel, ['id'] as const),
 ) {
   @IsOptional()
-  @IsString()
+  @IsString({ message: stringValidationMessage })
   cost_rate?: string;
 
   @IsOptional()
-  @IsString()
+  @IsString({ message: stringValidationMessage })
   payment_method?: string;
 
   @IsOptional()

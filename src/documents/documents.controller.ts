@@ -1,12 +1,17 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { DocumentsService } from './documents.service';
 
-@Controller('documents')
+@Controller('document')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Get(':documentId')
-  getDocuments(@Param('documentId') id: string) {
-    return this.documentsService.getDocuments(id);
+  getDocument(@Param('documentId') id: string) {
+    return this.documentsService.getDocument(id);
+  }
+
+  @Post(':documentId')
+  postDocument(@Param('documentId') id: string, @Body('document') data: any[]) {
+    return this.documentsService.postDocument(data, id);
   }
 }
