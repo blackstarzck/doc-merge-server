@@ -3,7 +3,7 @@ import { IsDate, IsInt, IsOptional, IsString } from 'class-validator';
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
-import { excelDateToJSDate } from 'src/common/utils/date.utils';
+import { transformDate } from 'src/common/utils/date.utils';
 import { transformEmptyToNull } from 'src/common/utils/transform.utils';
 
 export class CreateCargoUseDto {
@@ -29,14 +29,14 @@ export class CreateCargoUseDto {
   quantity: string;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   shipment_date: Date;
 
   @IsString({ message: stringValidationMessage })
   company: string;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   delivery_date: Date;
 
   @IsInt({ message: integerValidationMessage })
@@ -52,7 +52,7 @@ export class CreateCargoUseDto {
   settlement_cost: number;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   settlement_date: Date;
 
   @IsString({ message: stringValidationMessage })

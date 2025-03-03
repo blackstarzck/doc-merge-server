@@ -8,6 +8,7 @@ import { QueryRunner, Repository } from 'typeorm';
 import { BookDeliveryModel } from './entity/book-delivery.entity';
 import { plainToInstance } from 'class-transformer';
 import { CreateBookDeliveryDto } from './dto/create-book-delivery.dto';
+import { validate, ValidationError } from 'class-validator';
 
 @Injectable()
 export class BookDeliveryService {
@@ -27,8 +28,20 @@ export class BookDeliveryService {
       plainToInstance(CreateBookDeliveryDto, row),
     );
 
-    // 유효성 검사 수행
-    // this.validate(dtoInstances);
+    // 유효성 검사
+    const validationErrors: ValidationError[] = [];
+    for (const instance of dtoInstances) {
+      const errors = await validate(instance, {
+        skipMissingProperties: true, // @IsOptional()과 호환
+        whitelist: true, // 정의되지 않은 속성 무시
+        forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
+      });
+      if (errors.length > 0) {
+        validationErrors.push(...errors);
+      }
+    }
+
+    console.log('validationErrors: ', validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -42,25 +55,5 @@ export class BookDeliveryService {
     return qr
       ? qr.manager.getRepository<BookDeliveryModel>(BookDeliveryModel)
       : this.bookDeliveryRepository;
-  }
-
-  private async validate(dtoInstances) {
-    const messages = [];
-    const validationPipe = new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      exceptionFactory: (errors) => {
-        console.error('Validation Errors:', errors); // 문제된 프로퍼티 출력
-        return new BadRequestException(errors);
-      },
-    });
-
-    for (const dto of dtoInstances) {
-      await validationPipe.transform(dto, {
-        type: 'body',
-        metatype: CreateBookDeliveryDto,
-      });
-    }
   }
 }

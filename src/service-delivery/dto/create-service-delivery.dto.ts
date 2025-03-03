@@ -1,6 +1,6 @@
 import { Transform } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
-import { excelDateToJSDate } from 'src/common/utils/date.utils';
+import { transformDate } from 'src/common/utils/date.utils';
 import { transformEmptyToNull } from 'src/common/utils/transform.utils';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
@@ -14,7 +14,7 @@ export class CreateServiceDeliveryDto {
   @Transform(transformEmptyToNull)
   balance: number;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   balance_date: Date;
 
   @IsInt()
@@ -28,7 +28,7 @@ export class CreateServiceDeliveryDto {
   @Transform(({ value }) => String(value))
   no: string;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   date: Date;
 
   @IsString({ message: stringValidationMessage })
@@ -49,10 +49,10 @@ export class CreateServiceDeliveryDto {
   @IsString({ message: stringValidationMessage })
   bid_num: string;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   contract_date: Date;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   delivery_date: Date;
 
   @IsString({ message: stringValidationMessage })
@@ -79,7 +79,7 @@ export class CreateServiceDeliveryDto {
   @IsString({ message: stringValidationMessage })
   payment_method: string;
 
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   pre_payment_date: Date;
 
   @Transform(transformEmptyToNull)

@@ -3,7 +3,7 @@ import { IsOptional, IsInt, IsString, IsDate } from 'class-validator';
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
-import { excelDateToJSDate } from 'src/common/utils/date.utils';
+import { transformDate } from 'src/common/utils/date.utils';
 import { transformEmptyToNull } from 'src/common/utils/transform.utils';
 
 export class CreateBookDisposalDto {
@@ -16,7 +16,7 @@ export class CreateBookDisposalDto {
   no: number;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   date: Date;
 
   @IsString({ message: stringValidationMessage })
@@ -57,7 +57,7 @@ export class CreateBookDisposalDto {
   expend_cost: number;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   pre_payment_date: Date;
 
   @IsInt({ message: integerValidationMessage })
@@ -95,7 +95,7 @@ export class CreateBookDisposalDto {
   balance: number;
 
   @IsDate({ message: dateValidationMessage })
-  @Transform(({ value }) => excelDateToJSDate(value))
+  @Transform(transformDate)
   balance_date: Date;
 
   @IsInt({ message: integerValidationMessage })

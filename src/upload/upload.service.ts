@@ -20,6 +20,7 @@ import { CargoUseModel } from 'src/cargo-use/entity/cargo-use.entity';
 import { CreateCargoUseDto } from 'src/cargo-use/dto/create-cargo-use.dto';
 import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
 import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job';
+import { validate, ValidationError } from 'class-validator';
 
 @Injectable()
 export class UploadService {
@@ -56,7 +57,7 @@ export class UploadService {
       (name) =>
         // OVERVIEW_TABLES.find((item) => item.name === name),
         // 테스트 삼아 "도서납품현황", name 으로 바꿔야함
-        name === '물류알바(대구, 창원, 대전)',
+        name === '도서납품현황',
     );
 
     for (const sheetName of filteredSheets) {
@@ -70,12 +71,27 @@ export class UploadService {
       const repository = this.getRepository(name, qr);
       const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, {
         defval: '',
+        raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
+        dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
       });
       const jsonData = this.matchColumnNames(jsonDataRaw, columns);
+
       const dtoInstances = jsonData.map((row) => plainToInstance(dto, row));
 
-      // 유효성 검사 수행
-      // this.validate(dto, dtoInstances);
+      // 유효성 검사
+      const validationErrors: ValidationError[] = [];
+      for (const instance of dtoInstances) {
+        const errors = await validate(instance, {
+          skipMissingProperties: true, // @IsOptional()과 호환
+          whitelist: true, // 정의되지 않은 속성 무시
+          forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
+        });
+        if (errors.length > 0) {
+          validationErrors.push(...errors);
+        }
+      }
+
+      console.log('validationErrors: ', validationErrors);
 
       const entityData = dtoInstances.map((dto) => {
         const entity = repository.create(dto);
@@ -86,26 +102,6 @@ export class UploadService {
     }
 
     return savedData;
-  }
-
-  private async validate(receivedDto, dtoInstances) {
-    const messages = [];
-    const validationPipe = new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      exceptionFactory: (errors) => {
-        console.error('Validation Errors:', errors); // 문제된 프로퍼티 출력
-        return new BadRequestException(errors);
-      },
-    });
-
-    for (const dto of dtoInstances) {
-      await validationPipe.transform(dto, {
-        type: 'body',
-        metatype: receivedDto,
-      });
-    }
   }
 
   private getDto(name: string) {
