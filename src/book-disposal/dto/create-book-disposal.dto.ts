@@ -1,25 +1,27 @@
 import { Transform } from 'class-transformer';
-import { IsOptional, IsInt, IsString, IsDate } from 'class-validator';
+import { IsOptional, IsInt, IsString, IsDate, IsNumber } from 'class-validator';
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
 import { transformDate } from 'src/common/utils/date.utils';
-import { transformEmptyToNull } from 'src/common/utils/transform.utils';
+import {
+  transformEmptyToNull,
+  transformFloat,
+} from 'src/common/utils/transform.utils';
 
 export class CreateBookDisposalDto {
   @IsOptional()
   @IsInt({ message: integerValidationMessage })
   id?: number;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   no: number;
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   date: Date;
 
-  @IsString({ message: stringValidationMessage })
   @IsString({ message: stringValidationMessage })
   win_company: string;
 
@@ -44,28 +46,28 @@ export class CreateBookDisposalDto {
   @IsString({ message: stringValidationMessage })
   mark_equip: string;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_delivery_bks: number;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_sales: number;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   expend_cost: number;
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   pre_payment_date: Date;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   pre_payment: number;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   expected_balance: number;
 
   @IsString({ message: stringValidationMessage })
@@ -86,20 +88,20 @@ export class CreateBookDisposalDto {
   @IsString({ message: stringValidationMessage })
   lib_person: string;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   revenue: number;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   balance: number;
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   balance_date: Date;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   total_payment: number;
 
   @IsString({ message: stringValidationMessage })

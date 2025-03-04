@@ -1,10 +1,10 @@
 import { Transform } from 'class-transformer';
-import { IsDate, IsInt, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
 import { transformDate } from 'src/common/utils/date.utils';
-import { transformEmptyToNull } from 'src/common/utils/transform.utils';
+import { transformFloat } from 'src/common/utils/transform.utils';
 
 export class CreateCargoUseDto {
   @IsOptional()
@@ -39,16 +39,16 @@ export class CreateCargoUseDto {
   @Transform(transformDate)
   delivery_date: Date;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   cost: number;
 
   @IsString({ message: stringValidationMessage })
   @Transform(({ value }) => String(value))
   additional_cost: string;
 
-  @IsInt({ message: integerValidationMessage })
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   settlement_cost: number;
 
   @IsDate({ message: dateValidationMessage })

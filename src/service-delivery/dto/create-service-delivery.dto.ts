@@ -1,7 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { transformDate } from 'src/common/utils/date.utils';
-import { transformEmptyToNull } from 'src/common/utils/transform.utils';
+import {
+  transformEmptyToNull,
+  transformFloat,
+} from 'src/common/utils/transform.utils';
+import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
 
@@ -10,15 +14,16 @@ export class CreateServiceDeliveryDto {
   @IsInt({ message: integerValidationMessage })
   id?: number;
 
-  @IsInt()
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   balance: number;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   balance_date: Date;
 
-  @IsInt()
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   total_payment: number;
 
   @IsString({ message: stringValidationMessage })
@@ -28,6 +33,7 @@ export class CreateServiceDeliveryDto {
   @Transform(({ value }) => String(value))
   no: string;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   date: Date;
 
@@ -49,55 +55,70 @@ export class CreateServiceDeliveryDto {
   @IsString({ message: stringValidationMessage })
   bid_num: string;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   contract_date: Date;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   delivery_date: Date;
 
   @IsString({ message: stringValidationMessage })
   mark_equip: string;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   base_price: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   win_price: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   win_rate: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   purchase_cost: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_delivery_quantity: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_sales: number;
 
   @IsString({ message: stringValidationMessage })
   payment_method: string;
 
+  @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   pre_payment_date: Date;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   pre_payment: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   expected_balance: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_delivery_price: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   final_bk_sales: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   revenue: number;
 
-  @Transform(transformEmptyToNull)
+  @IsNumber()
+  @Transform(transformFloat)
   net_revenue: number;
 
   @IsString({ message: stringValidationMessage })

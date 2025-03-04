@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
 import { BookDeliveryModel } from './entity/book-delivery.entity';
@@ -22,7 +18,13 @@ export class BookDeliveryService {
   }
 
   async postBookDelivery(data: BookDeliveryModel[], qr?: QueryRunner) {
-    console.log('data: ', data);
+    const result: {
+      data: BookDeliveryModel[] | [];
+      error: ValidationError[] | null;
+    } = {
+      data: [],
+      error: null,
+    };
     const repository = this.getRepository(qr);
     const dtoInstances = data.map((row) =>
       plainToInstance(CreateBookDeliveryDto, row),
@@ -32,9 +34,9 @@ export class BookDeliveryService {
     const validationErrors: ValidationError[] = [];
     for (const instance of dtoInstances) {
       const errors = await validate(instance, {
-        skipMissingProperties: true, // @IsOptional()과 호환
-        whitelist: true, // 정의되지 않은 속성 무시
-        forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
+        skipMissingProperties: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
       });
       if (errors.length > 0) {
         validationErrors.push(...errors);
@@ -43,12 +45,19 @@ export class BookDeliveryService {
 
     console.log('validationErrors: ', validationErrors);
 
+    if (validationErrors.length > 0) {
+      result.error = validationErrors;
+    }
+
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
       return entity;
     });
-    const saved = await repository.save(entityData);
-    return saved;
+
+    console.log('entityData: ', entityData);
+
+    result.data = await repository.save(entityData);
+    return result;
   }
 
   getRepository(qr?: QueryRunner): Repository<BookDeliveryModel> {

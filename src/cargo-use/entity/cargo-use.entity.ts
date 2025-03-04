@@ -20,25 +20,25 @@ export class CargoUseModel {
   @Column({ type: 'varchar', comment: '수량' })
   quantity: string;
 
-  @Column({ type: 'date', comment: '발송일자' })
+  @Column({ type: 'date', comment: '발송일자', nullable: true })
   shipment_date: Date;
 
   @Column({ type: 'text', comment: '업체' })
   company: string;
 
-  @Column({ type: 'date', comment: '납품일자' })
+  @Column({ type: 'date', comment: '납품일자', nullable: true })
   delivery_date: Date;
 
-  @Column({ type: 'int', comment: '요금', nullable: true })
+  @Column({ type: 'float', comment: '요금', nullable: true })
   cost: number;
 
   @Column({ type: 'varchar', comment: '추가비용' })
   additional_cost: string;
 
-  @Column({ type: 'int', comment: '정산비용', nullable: true })
+  @Column({ type: 'float', comment: '정산비용', nullable: true })
   settlement_cost: number;
 
-  @Column({ type: 'date', comment: '정산일자' })
+  @Column({ type: 'date', comment: '정산일자', nullable: true })
   settlement_date: Date;
 
   @Column({ type: 'text', comment: '차량' })

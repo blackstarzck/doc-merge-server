@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { OrganizationsModel } from './entity/organizations.entity';
+import { OrganizationModel } from './entity/organizations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OrganizationNamesModel } from './entity/organization-names.entity';
@@ -7,8 +7,8 @@ import { OrganizationNamesModel } from './entity/organization-names.entity';
 @Injectable()
 export class OrganizationsService {
   constructor(
-    @InjectRepository(OrganizationsModel)
-    private readonly organizationsRepository: Repository<OrganizationsModel>,
+    @InjectRepository(OrganizationModel)
+    private readonly organizationsRepository: Repository<OrganizationModel>,
     @InjectRepository(OrganizationNamesModel)
     private readonly organizationNamesRepository: Repository<OrganizationNamesModel>,
   ) {}
@@ -21,7 +21,7 @@ export class OrganizationsService {
     return await this.organizationNamesRepository.find();
   }
 
-  async postOrganizations(data: OrganizationsModel[]) {
+  async postOrganizations(data: OrganizationModel[]) {
     console.log('data: ', data);
 
     const saved = await this.organizationsRepository.save(data);

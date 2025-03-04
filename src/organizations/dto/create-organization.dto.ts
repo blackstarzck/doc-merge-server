@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsOptional,
   IsInt,
@@ -9,54 +10,29 @@ import {
 import { transformDate } from 'src/common/utils/date.utils';
 import {
   transformBoolean,
-  transformEmptyToNull,
   transformFloat,
 } from 'src/common/utils/transform.utils';
-import { Transform } from 'class-transformer';
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
-import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
-
-export class CreateBookDeliveryDto {
+export class CreateOrganizationDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
-  id?: number;
+  @IsInt()
+  id: number;
 
   @IsNumber()
   @Transform(transformFloat)
-  balance: number;
-
-  @IsDate({ message: dateValidationMessage })
-  @Transform(transformDate)
-  balance_date: Date;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  total_payment: number;
+  row_num: number;
 
   @IsString({ message: stringValidationMessage })
-  notes: string;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  no: number;
+  org_name: string;
 
   @IsBoolean()
   @Transform(transformBoolean)
-  b_close_status: boolean;
+  b_close_date: boolean;
 
   @IsBoolean()
   @Transform(transformBoolean)
   b_invoice: boolean;
-
-  @IsString({ message: stringValidationMessage })
-  continue_type: string;
-
-  @IsString({ message: stringValidationMessage })
-  bid_org: string;
-
-  @IsString({ message: stringValidationMessage })
-  sales_company: string;
 
   @IsString({ message: stringValidationMessage })
   win_company: string;
@@ -65,29 +41,16 @@ export class CreateBookDeliveryDto {
   parent_company: string;
 
   @IsString({ message: stringValidationMessage })
-  org_name: string;
+  category: string;
 
   @IsString({ message: stringValidationMessage })
-  purchase_price: string;
-
-  @IsString({ message: stringValidationMessage })
-  mark_equip: string;
-
-  @IsString({ message: stringValidationMessage })
-  sub_status: string;
-
-  @IsString({ message: stringValidationMessage })
-  outsourcing_company: string;
+  notes: string;
 
   @IsString({ message: stringValidationMessage })
   role_person: string;
 
   @IsString({ message: stringValidationMessage })
-  bid_number: string;
-
-  @IsDate({ message: dateValidationMessage })
-  @Transform(transformDate)
-  contract_date: Date;
+  cost_rate: string;
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
@@ -95,23 +58,14 @@ export class CreateBookDeliveryDto {
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
-  delivery_deadline: Date;
+  delivery_date: Date;
 
   @IsNumber()
   @Transform(transformFloat)
   total_bks: number;
 
-  @IsNumber()
-  @Transform(transformFloat)
-  base_price: number;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  win_price: number;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  win_rate: number;
+  @IsString({ message: stringValidationMessage })
+  mark_equip: string;
 
   @IsNumber()
   @Transform(transformFloat)
@@ -119,34 +73,35 @@ export class CreateBookDeliveryDto {
 
   @IsNumber()
   @Transform(transformFloat)
-  bk_supply_price: number;
-
-  @IsString({ message: stringValidationMessage })
-  bk_supply_rate: string;
+  win_price: number; // floor(bk_price * win_rate)
 
   @IsNumber()
   @Transform(transformFloat)
-  bk_cost_rate: number;
+  win_rate: number;
 
   @IsNumber()
   @Transform(transformFloat)
-  company_revenue: number;
+  bk_supply_price: number; // floor(bk_price * bk_supply_rate)
 
   @IsNumber()
   @Transform(transformFloat)
-  company_revenue_rate: number;
+  bk_supply_rate: number;
 
   @IsNumber()
   @Transform(transformFloat)
-  our_revenue_rate: number;
+  purchase_cost: number; // bk_price * bk_cost_late
 
   @IsNumber()
   @Transform(transformFloat)
-  org_m_price: number;
+  bk_cost_late: number;
 
   @IsNumber()
   @Transform(transformFloat)
-  org_m_equip_price: number;
+  org_m_per_price: number;
+
+  @IsNumber()
+  @Transform(transformFloat)
+  org_m_price: number; // total_bks * org_m_per_price
 
   @IsNumber()
   @Transform(transformFloat)
@@ -154,7 +109,7 @@ export class CreateBookDeliveryDto {
 
   @IsNumber()
   @Transform(transformFloat)
-  m_supply_total_price: number;
+  m_supply_total_price: number; // total_bks * m_supply_price
 
   @IsNumber()
   @Transform(transformFloat)
@@ -166,15 +121,18 @@ export class CreateBookDeliveryDto {
 
   @IsNumber()
   @Transform(transformFloat)
-  final_delivery_bks: number;
+  final_delivery_quantity: number; // total_bks - out_of_stock_bks
 
   @IsNumber()
   @Transform(transformFloat)
-  m_final_sales: number;
+  m_final_sales: number; // m_supply_price * m_supply_price
+
+  @IsString({ message: stringValidationMessage })
+  payment_method: string;
 
   @IsNumber()
   @Transform(transformFloat)
-  pre_payment: number;
+  payment: number;
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
@@ -182,39 +140,52 @@ export class CreateBookDeliveryDto {
 
   @IsNumber()
   @Transform(transformFloat)
-  expected_balance: number;
+  balance: number;
+
+  @IsDate({ message: dateValidationMessage })
+  @Transform(transformDate)
+  balance_date: Date;
 
   @IsNumber()
   @Transform(transformFloat)
-  final_delivery_price: number;
+  expected_balance: number; // floor(bk_supply_price+m_supply_total_price-pre_payment-balance)
 
   @IsNumber()
   @Transform(transformFloat)
-  final_bk_sales: number;
+  total_payment: number;
 
   @IsNumber()
   @Transform(transformFloat)
-  our_revenue: number;
-
-  @IsString({ message: stringValidationMessage })
-  admin_contact: string;
-
-  @IsString({ message: stringValidationMessage })
-  lib_contact: string;
+  final_delivery_price: number; // bk_price - out_of_stock_bks
 
   @IsNumber()
   @Transform(transformFloat)
-  d_day: number;
+  final_bk_sales: number; // bk_supply_rate * m_supply_price
+
+  @IsNumber()
+  @Transform(transformFloat)
+  bk_revenue: number; // final_bk_sales-(m_supply_price*bk_cost_late)
+
+  @IsNumber()
+  @Transform(transformFloat)
+  d_day: number; // d-day(delivery_date-today_date)
 
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   today_date: Date;
-}
 
-// 'UPDATE "book_delivery_model" SET "balance_date" = $1,
-// "contract_date" = $2,
-// "order_date" = $3,
-// "delivery_deadline" = $4,
-// "total_bks" = $5,
-// "pre_payment_date" = $6,
-// "today_date" = $7 WHERE "id" IN ($8)',
+  @IsNumber()
+  @Transform(transformFloat)
+  net_revenue: number;
+
+  @IsNumber()
+  @Transform(transformFloat)
+  revenue_rate: number;
+
+  @IsString({ message: stringValidationMessage })
+  sheet_name: string;
+
+  @IsNumber()
+  @Transform(transformFloat)
+  sheet_data_num: number;
+}

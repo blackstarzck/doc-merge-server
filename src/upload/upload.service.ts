@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import { OVERVIEW_TABLES } from 'src/common/constants.ts/table.const';
 import { removeAllSpaces } from 'src/common/utils/remove-spaces.utils';
@@ -21,6 +17,7 @@ import { CreateCargoUseDto } from 'src/cargo-use/dto/create-cargo-use.dto';
 import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
 import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job';
 import { validate, ValidationError } from 'class-validator';
+import { DocumentTypesEN } from './types/types';
 
 @Injectable()
 export class UploadService {
@@ -41,24 +38,29 @@ export class UploadService {
     private readonly logisticsJobRepo: Repository<LogisticsJobModel>,
   ) {}
 
-  async postUpload(file: Express.Multer.File, qr: QueryRunner) {
+  async postUpload(
+    file: Express.Multer.File,
+    documentId: DocumentTypesEN,
+    qr: QueryRunner,
+  ) {
+    console.log('documentId: ', documentId);
+
     const savedData = {
-      book_delivery: [],
-      service_delivery: [],
-      book_disposal: [],
-      logistics_job: [],
-      cargo_usage: [],
+      book_delivery: { data: [], error: null },
+      service_delivery: { data: [], error: null },
+      book_disposal: { data: [], error: null },
+      logistics_job: { data: [], error: null },
+      cargo_usage: { data: [], error: null },
     };
 
     // 1️⃣ 파일 버퍼를 엑셀로 변환
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
     const sheetNames = workbook.SheetNames;
-    const filteredSheets: any[] = sheetNames.filter(
-      (name) =>
-        // OVERVIEW_TABLES.find((item) => item.name === name),
-        // 테스트 삼아 "도서납품현황", name 으로 바꿔야함
-        name === '도서납품현황',
-    );
+    const filteredSheets: any[] = sheetNames.filter((name) => {
+      const find = OVERVIEW_TABLES.find((item) => item.name === documentId);
+      console.log('Find: ', find);
+      return find?.label === name;
+    });
 
     for (const sheetName of filteredSheets) {
       const match = OVERVIEW_TABLES.find((item) => item.label === sheetName);
@@ -76,7 +78,11 @@ export class UploadService {
       });
       const jsonData = this.matchColumnNames(jsonDataRaw, columns);
 
+      console.log('jsonData: ', jsonData[0]);
+
       const dtoInstances = jsonData.map((row) => plainToInstance(dto, row));
+
+      console.log('dtoInstances: ', dtoInstances[0]);
 
       // 유효성 검사
       const validationErrors: ValidationError[] = [];
@@ -93,12 +99,19 @@ export class UploadService {
 
       console.log('validationErrors: ', validationErrors);
 
+      if (validationErrors.length > 0) {
+        savedData[name].error = validationErrors;
+        continue;
+      }
+
       const entityData = dtoInstances.map((dto) => {
         const entity = repository.create(dto);
         return entity;
       });
 
-      savedData[name] = await repository.save(entityData);
+      console.log('entityData: ', entityData);
+
+      savedData[name].data = await repository.save(entityData);
     }
 
     return savedData;

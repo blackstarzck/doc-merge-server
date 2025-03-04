@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Param,
   Post,
   UploadedFile,
   UseInterceptors,
@@ -10,15 +11,20 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { QueryRunner } from 'src/common/decorator/query-runner.decorator';
 import { DataSource, QueryRunner as QR } from 'typeorm';
 import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor';
+import { DocumentTypesEN } from './types/types';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @Post()
+  @Post('/:documentId')
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransationInterceptor)
-  postUpload(@UploadedFile() file: Express.Multer.File, @QueryRunner() qr: QR) {
-    return this.uploadService.postUpload(file, qr);
+  postUpload(
+    @UploadedFile() file: Express.Multer.File,
+    @QueryRunner() qr: QR,
+    @Param('documentId') documentId: DocumentTypesEN,
+  ) {
+    return this.uploadService.postUpload(file, documentId, qr);
   }
 }

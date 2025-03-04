@@ -39,7 +39,9 @@ export class DocumentsService {
         book_disposal: this.bookDisposalService.getBookDisposal.bind(
           this.bookDisposalService,
         ),
-        cargo_use: this.cargoUseService.getCargoUse.bind(this.cargoUseService),
+        cargo_usage: this.cargoUseService.getCargoUse.bind(
+          this.cargoUseService,
+        ),
         logistics_job: this.logisticsJobService.getLogisticsJob.bind(
           this.logisticsJobService,
         ),
