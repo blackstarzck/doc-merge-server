@@ -1,5 +1,12 @@
 import { OrganizationsService } from './organizations.service';
-import { Controller, Get, Post } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseArrayPipe,
+  Post,
+} from '@nestjs/common';
 
 @Controller('organizations')
 export class organizationsController {
@@ -18,5 +25,12 @@ export class organizationsController {
   @Post()
   postOrganizations(data) {
     return this.organizationsService.postOrganizations(data);
+  }
+
+  @Delete(':ids')
+  deleteOrganizations(
+    @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+  ) {
+    return this.organizationsService.deleteOrganizations(ids);
   }
 }

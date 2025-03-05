@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseArrayPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ServiceDeliveryService } from './service-delivery.service';
 import { QueryRunner as QR } from 'typeorm';
 
@@ -16,5 +25,12 @@ export class ServiceDeliveryController {
   @Post()
   postServiceDelivery(@Body('document') data: any[], @Query('qr') qr: QR) {
     return this.serviceDeliveryService.postServiceDelivery(data, qr);
+  }
+
+  @Delete(':ids')
+  deleteServiceDelivery(
+    @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+  ) {
+    return this.serviceDeliveryService.deleteServiceDelivery(ids);
   }
 }

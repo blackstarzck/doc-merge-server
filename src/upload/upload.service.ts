@@ -12,8 +12,8 @@ import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delive
 import { QueryRunner } from 'typeorm';
 import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity';
 import { CreateBookDisposalDto } from 'src/book-disposal/dto/create-book-disposal.dto';
-import { CargoUseModel } from 'src/cargo-use/entity/cargo-use.entity';
-import { CreateCargoUseDto } from 'src/cargo-use/dto/create-cargo-use.dto';
+import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity';
+import { CreateCargoUseDto } from 'src/cargo-use/dto/create-cargo-usage.dto';
 import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
 import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job';
 import { validate, ValidationError } from 'class-validator';
@@ -31,8 +31,8 @@ export class UploadService {
     @InjectRepository(ServiceDeliveryModel)
     private readonly serviceDeliveryRepo: Repository<ServiceDeliveryModel>,
 
-    @InjectRepository(CargoUseModel)
-    private readonly cargoUseRepo: Repository<CargoUseModel>,
+    @InjectRepository(CargoUsageModel)
+    private readonly cargoUseRepo: Repository<CargoUsageModel>,
 
     @InjectRepository(LogisticsJobModel)
     private readonly logisticsJobRepo: Repository<LogisticsJobModel>,
@@ -158,7 +158,7 @@ export class UploadService {
           : this.logisticsJobRepo;
       case 'cargo_usage':
         return qr
-          ? qr.manager.getRepository<CargoUseModel>(CargoUseModel)
+          ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel)
           : this.cargoUseRepo;
       default:
         return this.bookDeliveryRepo;

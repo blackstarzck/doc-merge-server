@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { OrganizationModel } from './entity/organizations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { QueryRunner, Repository } from 'typeorm';
 import { OrganizationNamesModel } from './entity/organization-names.entity';
 
 @Injectable()
@@ -22,10 +22,21 @@ export class OrganizationsService {
   }
 
   async postOrganizations(data: OrganizationModel[]) {
+    const repository = this.getRepository();
     console.log('data: ', data);
 
-    const saved = await this.organizationsRepository.save(data);
+    const saved = await repository.save(data);
 
     return saved;
+  }
+
+  getRepository(qr?: QueryRunner): Repository<OrganizationModel> {
+    return qr
+      ? qr.manager.getRepository<OrganizationModel>(OrganizationModel)
+      : this.organizationsRepository;
+  }
+
+  async deleteOrganizations(ids: number[]) {
+    return await this.organizationsRepository.delete(ids);
   }
 }

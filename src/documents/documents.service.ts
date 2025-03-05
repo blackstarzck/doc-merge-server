@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BookDeliveryService } from 'src/book-delivery/book-delivery.service';
 import { BookDisposalService } from 'src/book-disposal/book-disposal.service';
-import { CargoUseService } from 'src/cargo-use/cargo-use.service';
+import { CargoUseService } from 'src/cargo-use/cargo-usage.service';
 import { OVERVIEW_TABLES } from 'src/common/constants.ts/table.const';
 import { LogisticsJobService } from 'src/logistics-job/logistics-job.service';
 import { OrganizationsService } from 'src/organizations/organizations.service';
@@ -39,7 +39,7 @@ export class DocumentsService {
         book_disposal: this.bookDisposalService.getBookDisposal.bind(
           this.bookDisposalService,
         ),
-        cargo_usage: this.cargoUseService.getCargoUse.bind(
+        cargo_usage: this.cargoUseService.getCargoUsage.bind(
           this.cargoUseService,
         ),
         logistics_job: this.logisticsJobService.getLogisticsJob.bind(

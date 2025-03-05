@@ -65,4 +65,8 @@ export class BookDisposalService {
       ? qr.manager.getRepository<BookDisposalModel>(BookDisposalModel)
       : this.bookDisposalRepository;
   }
+
+  async deleteBookDisposal(ids: number[]) {
+    return await this.bookDisposalRepository.delete(ids);
+  }
 }

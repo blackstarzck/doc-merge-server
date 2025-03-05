@@ -6,7 +6,7 @@ import { BookDeliveryModule } from './book-delivery/book-delivery.module';
 import { ServiceDeliveryModule } from './service-delivery/service-delivery.module';
 import { BookDisposalModule } from './book-disposal/book-disposal.module';
 import { LogisticsJobModule } from './logistics-job/logistics-job.module';
-import { CargoUseModule } from './cargo-use/cargo-use.module';
+import { CargoUseModule } from './cargo-use/cargo-usage.module';
 import { UploadModule } from './upload/upload.module';
 import { DocumentsModule } from './documents/documents.module';
 

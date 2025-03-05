@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { CargoUseModel } from './entity/cargo-use.entity';
+import { CargoUsageModel } from './entity/cargo-usage.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
-import { CreateCargoUseDto } from './dto/create-cargo-use.dto';
+import { CreateCargoUseDto } from './dto/create-cargo-usage.dto';
 
 @Injectable()
 export class CargoUseService {
   constructor(
-    @InjectRepository(CargoUseModel)
-    private readonly cargoUseRepository: Repository<CargoUseModel>,
+    @InjectRepository(CargoUsageModel)
+    private readonly cargoUsageRepository: Repository<CargoUsageModel>,
   ) {}
 
-  async getCargoUse() {
-    return await this.cargoUseRepository.find();
+  async getCargoUsage() {
+    return await this.cargoUsageRepository.find();
   }
 
-  async postCargoUse(data: CargoUseModel[], qr?: QueryRunner) {
+  async postCargoUse(data: CargoUsageModel[], qr?: QueryRunner) {
     const result: {
-      data: CargoUseModel[] | [];
+      data: CargoUsageModel[] | [];
       error: ValidationError[] | null;
     } = {
       data: [],
@@ -60,9 +60,13 @@ export class CargoUseService {
     return result;
   }
 
-  getRepository(qr?: QueryRunner): Repository<CargoUseModel> {
+  getRepository(qr?: QueryRunner): Repository<CargoUsageModel> {
     return qr
-      ? qr.manager.getRepository<CargoUseModel>(CargoUseModel)
-      : this.cargoUseRepository;
+      ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel)
+      : this.cargoUsageRepository;
+  }
+
+  async deleteCargoUsage(ids: number[]) {
+    return await this.cargoUsageRepository.delete(ids);
   }
 }

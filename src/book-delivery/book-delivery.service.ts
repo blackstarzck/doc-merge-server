@@ -57,6 +57,8 @@ export class BookDeliveryService {
     console.log('entityData: ', entityData);
 
     result.data = await repository.save(entityData);
+
+    console.log('SAVED DATA: ', result.data);
     return result;
   }
 
@@ -64,5 +66,9 @@ export class BookDeliveryService {
     return qr
       ? qr.manager.getRepository<BookDeliveryModel>(BookDeliveryModel)
       : this.bookDeliveryRepository;
+  }
+
+  async deleteBookDelivery(ids: number[]) {
+    return await this.bookDeliveryRepository.delete(ids);
   }
 }

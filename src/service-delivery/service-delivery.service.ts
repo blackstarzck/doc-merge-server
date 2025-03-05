@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { validate, ValidationError } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import { CreateServiceDeliveryDto } from './dto/create-service-delivery.dto';
+import { asapScheduler } from 'rxjs';
 
 @Injectable()
 export class ServiceDeliveryService {
@@ -60,9 +61,13 @@ export class ServiceDeliveryService {
     return result;
   }
 
-  getRepository(qr?: QueryRunner): Repository<ServiceDeliveryModel> {
+  private getRepository(qr?: QueryRunner): Repository<ServiceDeliveryModel> {
     return qr
       ? qr.manager.getRepository<ServiceDeliveryModel>(ServiceDeliveryModel)
       : this.serviceDeliveryRepository;
+  }
+
+  async deleteServiceDelivery(ids: number[]) {
+    return await this.serviceDeliveryRepository.delete(ids);
   }
 }

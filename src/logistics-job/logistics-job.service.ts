@@ -65,4 +65,8 @@ export class LogisticsJobService {
       ? qr.manager.getRepository<LogisticsJobModel>(LogisticsJobModel)
       : this.logisticsJobRepository;
   }
+
+  async deleteLogisticsJob(ids: number[]) {
+    return await this.logisticsJobRepository.delete(ids);
+  }
 }
