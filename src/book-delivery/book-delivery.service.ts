@@ -14,7 +14,9 @@ export class BookDeliveryService {
   ) {}
 
   async getBookDelivery() {
-    return await this.bookDeliveryRepository.find();
+    return await this.bookDeliveryRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postBookDelivery(data: BookDeliveryModel[], qr?: QueryRunner) {

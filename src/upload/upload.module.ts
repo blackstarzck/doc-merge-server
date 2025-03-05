@@ -9,6 +9,7 @@ import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delive
 import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity';
 import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity';
 import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
+import { OrganizationModel } from 'src/organizations/entity/organizations.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity
       BookDisposalModel,
       CargoUsageModel,
       LogisticsJobModel,
+      OrganizationModel,
     ]),
   ],
   controllers: [UploadController],

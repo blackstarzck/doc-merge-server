@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as XLSX from 'xlsx';
-import { OVERVIEW_TABLES } from 'src/common/constants.ts/table.const';
+import {
+  ORGANIZATION_COLUMNS,
+  OVERVIEW_TABLES,
+} from 'src/common/constants.ts/table.const';
 import { removeAllSpaces } from 'src/common/utils/remove-spaces.utils';
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity';
 import { Repository } from 'typeorm';
@@ -18,6 +21,8 @@ import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity
 import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job';
 import { validate, ValidationError } from 'class-validator';
 import { DocumentTypesEN } from './types/types';
+import { OrganizationModel } from 'src/organizations/entity/organizations.entity';
+import { CreateOrganizationDto } from 'src/organizations/dto/create-organization.dto';
 
 @Injectable()
 export class UploadService {
@@ -36,6 +41,9 @@ export class UploadService {
 
     @InjectRepository(LogisticsJobModel)
     private readonly logisticsJobRepo: Repository<LogisticsJobModel>,
+
+    @InjectRepository(OrganizationModel)
+    private readonly organizationRepo: Repository<OrganizationModel>,
   ) {}
 
   async postUpload(
@@ -43,81 +51,62 @@ export class UploadService {
     documentId: DocumentTypesEN,
     qr: QueryRunner,
   ) {
-    console.log('documentId: ', documentId);
-
-    const savedData = {
-      book_delivery: { data: [], error: null },
-      service_delivery: { data: [], error: null },
-      book_disposal: { data: [], error: null },
-      logistics_job: { data: [], error: null },
-      cargo_usage: { data: [], error: null },
+    const result: { data: any[]; error: ValidationError[] | null } = {
+      data: [],
+      error: null,
     };
 
     // 1️⃣ 파일 버퍼를 엑셀로 변환
     const workbook = XLSX.read(file.buffer, { type: 'buffer' });
-    const sheetNames = workbook.SheetNames;
-    const filteredSheets: any[] = sheetNames.filter((name) => {
-      const find = OVERVIEW_TABLES.find((item) => item.name === documentId);
-      console.log('Find: ', find);
-      return find?.label === name;
+    const sheetName = workbook.SheetNames[0];
+    const dto = this.getDto(documentId);
+    const worksheet = workbook.Sheets[sheetName];
+    const match = OVERVIEW_TABLES.find((item) => item.name === documentId);
+    const columns = match ? match.columns : ORGANIZATION_COLUMNS;
+    const repository = this.getRepository(documentId, qr);
+    const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, {
+      defval: '',
+      raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
+      dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
     });
+    const jsonData = this.matchColumnNames(jsonDataRaw, columns);
+    console.log('jsonData: ', jsonData[0]);
+    const dtoInstances = jsonData.map((row) =>
+      plainToInstance(dto as any, row),
+    );
 
-    for (const sheetName of filteredSheets) {
-      const match = OVERVIEW_TABLES.find((item) => item.label === sheetName);
-
-      if (!match) continue; // 다음 시트로
-      const dto = this.getDto(match.name);
-      const worksheet = workbook.Sheets[sheetName];
-      const columns = match.columns;
-      const name = match.name;
-      const repository = this.getRepository(name, qr);
-      const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, {
-        defval: '',
-        raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
-        dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
+    // 유효성 검사
+    const validationErrors: ValidationError[] = [];
+    for (const instance of dtoInstances) {
+      const errors = await validate(instance, {
+        skipMissingProperties: true, // @IsOptional()과 호환
+        whitelist: true, // 정의되지 않은 속성 무시
+        forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
       });
-      const jsonData = this.matchColumnNames(jsonDataRaw, columns);
-
-      console.log('jsonData: ', jsonData[0]);
-
-      const dtoInstances = jsonData.map((row) => plainToInstance(dto, row));
-
-      console.log('dtoInstances: ', dtoInstances[0]);
-
-      // 유효성 검사
-      const validationErrors: ValidationError[] = [];
-      for (const instance of dtoInstances) {
-        const errors = await validate(instance, {
-          skipMissingProperties: true, // @IsOptional()과 호환
-          whitelist: true, // 정의되지 않은 속성 무시
-          forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
-        });
-        if (errors.length > 0) {
-          validationErrors.push(...errors);
-        }
+      if (errors.length > 0) {
+        validationErrors.push(...errors);
       }
-
-      console.log('validationErrors: ', validationErrors);
-
-      if (validationErrors.length > 0) {
-        savedData[name].error = validationErrors;
-        continue;
-      }
-
-      const entityData = dtoInstances.map((dto) => {
-        const entity = repository.create(dto);
-        return entity;
-      });
-
-      console.log('entityData: ', entityData);
-
-      savedData[name].data = await repository.save(entityData);
     }
 
-    return savedData;
+    // console.log('validationErrors: ', validationErrors);
+
+    if (validationErrors.length > 0) {
+      result.error = validationErrors;
+    }
+
+    const entityData = dtoInstances.map((dto) => {
+      const entity = repository.create(dto);
+      return entity;
+    });
+
+    // console.log('entityData: ', entityData);
+
+    result.data = await repository.save(entityData);
+
+    return result;
   }
 
-  private getDto(name: string) {
+  private getDto(type: DocumentTypesEN) {
     const dtoMap = {
       book_delivery: {
         dto: CreateBookDeliveryDto,
@@ -135,10 +124,13 @@ export class UploadService {
         dto: CreateCargoUseDto,
       },
     };
-    return dtoMap[name].dto;
+    return typeof type === 'number' ? CreateOrganizationDto : dtoMap[type].dto;
   }
 
-  private getRepository(name: string, qr?: QueryRunner): Repository<any> {
+  private getRepository(
+    name: DocumentTypesEN,
+    qr?: QueryRunner,
+  ): Repository<any> {
     switch (name) {
       case 'book_delivery':
         return qr
@@ -161,7 +153,9 @@ export class UploadService {
           ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel)
           : this.cargoUseRepo;
       default:
-        return this.bookDeliveryRepo;
+        return qr
+          ? qr.manager.getRepository<OrganizationModel>(OrganizationModel)
+          : this.organizationRepo;
     }
   }
 

@@ -24,6 +24,10 @@ export class CreateOrganizationDto {
   row_num: number;
 
   @IsString({ message: stringValidationMessage })
+  @Transform(({ value }) => {
+    const isNumeric = /^[+-]?\d*\.?\d+$/.test(value);
+    return isNumeric ? String(value) : value || '';
+  })
   org_name: string;
 
   @IsBoolean()

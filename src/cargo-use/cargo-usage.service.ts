@@ -14,7 +14,9 @@ export class CargoUseService {
   ) {}
 
   async getCargoUsage() {
-    return await this.cargoUsageRepository.find();
+    return await this.cargoUsageRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postCargoUse(data: CargoUsageModel[], qr?: QueryRunner) {

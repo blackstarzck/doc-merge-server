@@ -14,7 +14,9 @@ export class BookDisposalService {
   ) {}
 
   async getBookDisposal() {
-    return await this.bookDisposalRepository.find();
+    return await this.bookDisposalRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postBookDisposal(data: BookDisposalModel[], qr?: QueryRunner) {

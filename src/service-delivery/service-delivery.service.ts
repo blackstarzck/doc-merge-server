@@ -15,7 +15,9 @@ export class ServiceDeliveryService {
   ) {}
 
   async getServiceDelivery() {
-    return await this.serviceDeliveryRepository.find();
+    return await this.serviceDeliveryRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postServiceDelivery(data: ServiceDeliveryModel[], qr?: QueryRunner) {

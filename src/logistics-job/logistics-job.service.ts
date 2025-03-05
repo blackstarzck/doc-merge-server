@@ -14,7 +14,9 @@ export class LogisticsJobService {
   ) {}
 
   async getLogisticsJob() {
-    return await this.logisticsJobRepository.find();
+    return await this.logisticsJobRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postLogisticsJob(data: LogisticsJobModel[], qr?: QueryRunner) {

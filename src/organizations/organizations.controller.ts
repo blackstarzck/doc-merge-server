@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseArrayPipe,
+  ParseIntPipe,
   Post,
 } from '@nestjs/common';
 
@@ -20,6 +21,11 @@ export class organizationsController {
   @Get('names')
   getOrganizationNames() {
     return this.organizationsService.getOrganizationNames();
+  }
+
+  @Get(':organizationId')
+  getOrganizationById(@Param('organizationId', ParseIntPipe) id: number) {
+    return this.organizationsService.getOrganizationById(id);
   }
 
   @Post()

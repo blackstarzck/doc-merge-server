@@ -23,8 +23,12 @@ export class UploadController {
   postUpload(
     @UploadedFile() file: Express.Multer.File,
     @QueryRunner() qr: QR,
-    @Param('documentId') documentId: DocumentTypesEN,
+    @Param('documentId') documentId: string,
   ) {
-    return this.uploadService.postUpload(file, documentId, qr);
+    const isNumeric = /^[+-]?\d*\.?\d+$/.test(documentId);
+    const id = isNumeric
+      ? parseInt(documentId)
+      : (documentId as DocumentTypesEN);
+    return this.uploadService.postUpload(file, id, qr);
   }
 }

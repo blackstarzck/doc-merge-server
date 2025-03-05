@@ -14,11 +14,22 @@ export class OrganizationsService {
   ) {}
 
   async getOrganizations() {
-    return await this.organizationsRepository.find();
+    return await this.organizationsRepository.find({
+      order: { id: 'ASC' },
+    });
+  }
+
+  async getOrganizationById(id: number) {
+    return await this.organizationsRepository.find({
+      where: { id },
+      order: { id: 'ASC' },
+    });
   }
 
   async getOrganizationNames() {
-    return await this.organizationNamesRepository.find();
+    return await this.organizationNamesRepository.find({
+      order: { id: 'ASC' },
+    });
   }
 
   async postOrganizations(data: OrganizationModel[]) {
