@@ -1,5 +1,6 @@
 import { OrganizationsService } from './organizations.service';
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -7,7 +8,9 @@ import {
   ParseArrayPipe,
   ParseIntPipe,
   Post,
+  Query,
 } from '@nestjs/common';
+import { QueryRunner as QR } from 'typeorm';
 
 @Controller('organizations')
 export class organizationsController {
@@ -29,14 +32,15 @@ export class organizationsController {
   }
 
   @Post()
-  postOrganizations(data) {
-    return this.organizationsService.postOrganizations(data);
+  postOrganizations(@Body('document') data: any[], @Query('qr') qr: QR) {
+    return this.organizationsService.postOrganizations(data, qr);
   }
 
   @Delete(':ids')
   deleteOrganizations(
     @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+    @Query('qr') qr: QR,
   ) {
-    return this.organizationsService.deleteOrganizations(ids);
+    return this.organizationsService.deleteOrganizations(ids, qr);
   }
 }

@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { OrganizationModel } from './entity/organizations.entity';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { OrganizationsModel } from './entity/organizations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
 import { OrganizationNamesModel } from './entity/organization-names.entity';
+import { validate } from 'class-validator';
+import { CreateOrganizationDto } from './dto/create-organization.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class OrganizationsService {
   constructor(
-    @InjectRepository(OrganizationModel)
-    private readonly organizationsRepository: Repository<OrganizationModel>,
+    @InjectRepository(OrganizationsModel)
+    private readonly organizationsRepository: Repository<OrganizationsModel>,
+
     @InjectRepository(OrganizationNamesModel)
     private readonly organizationNamesRepository: Repository<OrganizationNamesModel>,
   ) {}
@@ -21,7 +25,7 @@ export class OrganizationsService {
 
   async getOrganizationById(id: number) {
     return await this.organizationsRepository.find({
-      where: { id },
+      where: { sheet_data_num: id },
       order: { id: 'ASC' },
     });
   }
@@ -32,22 +36,55 @@ export class OrganizationsService {
     });
   }
 
-  async postOrganizations(data: OrganizationModel[]) {
-    const repository = this.getRepository();
-    console.log('data: ', data);
-
-    const saved = await repository.save(data);
-
-    return saved;
+  async getOrganizationNameById(id: number) {
+    return await this.organizationNamesRepository.findOne({
+      where: { id },
+    });
   }
 
-  getRepository(qr?: QueryRunner): Repository<OrganizationModel> {
+  async postOrganizations(data: OrganizationsModel[], qr: QueryRunner) {
+    const repository = this.getRepository(qr);
+    const dtoInstances = data.map((row) =>
+      plainToInstance(CreateOrganizationDto, row),
+    );
+
+    // 유효성 검사
+    const validationErrors: any[] = [];
+    for (const instance of dtoInstances) {
+      const errors = await validate(instance, {
+        skipMissingProperties: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      });
+      if (errors.length > 0) {
+        const result = errors.map((error) => {
+          return { ...error.constraints };
+        });
+        validationErrors.push(result);
+      }
+    }
+
+    if (validationErrors.length > 0)
+      throw new BadRequestException(validationErrors);
+
+    const entityData = dtoInstances.map((dto) => {
+      const entity = repository.create(dto);
+      return entity;
+    });
+
+    return await repository.save(entityData);
+  }
+
+  getRepository(qr?: QueryRunner): Repository<OrganizationsModel> {
     return qr
-      ? qr.manager.getRepository<OrganizationModel>(OrganizationModel)
+      ? qr.manager.getRepository<OrganizationsModel>(OrganizationsModel)
       : this.organizationsRepository;
   }
 
-  async deleteOrganizations(ids: number[]) {
-    return await this.organizationsRepository.delete(ids);
+  async deleteOrganizations(ids: number[], qr?: QueryRunner) {
+    const respository = this.getRepository(qr);
+    const result = await respository.delete(ids);
+    const find = await respository.find();
+    return find;
   }
 }

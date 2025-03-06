@@ -22,14 +22,14 @@ export class BookDeliveryController {
 
   @Post()
   postBookDelivery(@Body('document') data: any[], @Query('qr') qr: QR) {
-    console.log('data: ', data);
     return this.bookDeliveryService.postBookDelivery(data, qr);
   }
 
   @Delete(':ids')
   deleteBookDelivery(
     @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+    @Query('qr') qr: QR,
   ) {
-    return this.bookDeliveryService.deleteBookDelivery(ids);
+    return this.bookDeliveryService.deleteBookDelivery(ids, qr);
   }
 }

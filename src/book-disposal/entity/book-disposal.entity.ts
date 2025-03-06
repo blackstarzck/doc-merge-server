@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/common/entity/base.entity';
 import { Column, Entity } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'book_disposal_model' })
 export class BookDisposalModel extends BaseModel {
   @Column({ type: 'float', comment: '번호', nullable: true })
   no: number;

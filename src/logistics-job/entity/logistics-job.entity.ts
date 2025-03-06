@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/common/entity/base.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'logistics_job_model' })
 export class LogisticsJobModel {
   @PrimaryGeneratedColumn()
   id: number;

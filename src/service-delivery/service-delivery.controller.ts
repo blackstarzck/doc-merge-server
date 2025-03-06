@@ -30,6 +30,7 @@ export class ServiceDeliveryController {
   @Delete(':ids')
   deleteServiceDelivery(
     @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+    @Query('qr') qr: QR,
   ) {
     return this.serviceDeliveryService.deleteServiceDelivery(ids);
   }

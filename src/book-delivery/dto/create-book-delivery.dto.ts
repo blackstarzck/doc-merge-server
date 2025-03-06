@@ -210,11 +210,3 @@ export class CreateBookDeliveryDto {
   @Transform(transformDate)
   today_date: Date;
 }
-
-// 'UPDATE "book_delivery_model" SET "balance_date" = $1,
-// "contract_date" = $2,
-// "order_date" = $3,
-// "delivery_deadline" = $4,
-// "total_bks" = $5,
-// "pre_payment_date" = $6,
-// "today_date" = $7 WHERE "id" IN ($8)',

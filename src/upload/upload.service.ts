@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { OrganizationsService } from 'src/organizations/organizations.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import * as XLSX from 'xlsx';
 import {
   ORGANIZATION_COLUMNS,
@@ -6,7 +7,7 @@ import {
 } from 'src/common/constants.ts/table.const';
 import { removeAllSpaces } from 'src/common/utils/remove-spaces.utils';
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity';
-import { Repository } from 'typeorm';
+import { Repository, Entity } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateBookDeliveryDto } from 'src/book-delivery/dto/create-book-delivery.dto';
 import { plainToInstance } from 'class-transformer';
@@ -21,8 +22,17 @@ import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity
 import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job';
 import { validate, ValidationError } from 'class-validator';
 import { DocumentTypesEN } from './types/types';
-import { OrganizationModel } from 'src/organizations/entity/organizations.entity';
+import { OrganizationsModel } from 'src/organizations/entity/organizations.entity';
 import { CreateOrganizationDto } from 'src/organizations/dto/create-organization.dto';
+import { NotFoundError } from 'rxjs';
+
+type Model =
+  | BookDeliveryModel
+  | ServiceDeliveryModel
+  | BookDisposalModel
+  | CargoUsageModel
+  | LogisticsJobModel
+  | OrganizationsModel;
 
 @Injectable()
 export class UploadService {
@@ -42,57 +52,88 @@ export class UploadService {
     @InjectRepository(LogisticsJobModel)
     private readonly logisticsJobRepo: Repository<LogisticsJobModel>,
 
-    @InjectRepository(OrganizationModel)
-    private readonly organizationRepo: Repository<OrganizationModel>,
+    @InjectRepository(OrganizationsModel)
+    private readonly organizationRepo: Repository<OrganizationsModel>,
+
+    private readonly organizationsService: OrganizationsService,
   ) {}
+
+  private isOrganization(documentId: string) {
+    const isOrg = !OVERVIEW_TABLES.map((table) => table.name).includes(
+      documentId,
+    );
+    return isOrg;
+  }
+
+  private async getExsistingData(
+    repository: Repository<Model>,
+    documentId: string,
+  ) {
+    const isOrg = this.isOrganization(documentId);
+    return isOrg
+      ? await repository.findBy({ id: Number(documentId) })
+      : await repository.find();
+  }
 
   async postUpload(
     file: Express.Multer.File,
-    documentId: DocumentTypesEN,
+    documentId: string,
     qr: QueryRunner,
   ) {
-    const result: { data: any[]; error: ValidationError[] | null } = {
+    const result: {
+      receivedId: string;
+      data: any[];
+      error: ValidationError[] | null;
+    } = {
+      receivedId: documentId,
       data: [],
       error: null,
     };
-
-    // 1️⃣ 파일 버퍼를 엑셀로 변환
-    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
-    const sheetName = workbook.SheetNames[0];
+    const organization: {
+      sheet_data_num: number | null;
+      sheet_name: string | null;
+    } = { sheet_data_num: null, sheet_name: null };
     const dto = this.getDto(documentId);
-    const worksheet = workbook.Sheets[sheetName];
+    const repository = this.getRepository(documentId, qr);
     const match = OVERVIEW_TABLES.find((item) => item.name === documentId);
     const columns = match ? match.columns : ORGANIZATION_COLUMNS;
-    const repository = this.getRepository(documentId, qr);
-    const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, {
-      defval: '',
-      raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
-      dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
-    });
-    const jsonData = this.matchColumnNames(jsonDataRaw, columns);
-    console.log('jsonData: ', jsonData[0]);
+
+    if (!match) {
+      const org = await this.organizationsService.getOrganizationNameById(
+        Number(documentId),
+      );
+      if (!org) throw new NotFoundException(`Organization not found`);
+      organization.sheet_name = org.name;
+      organization.sheet_data_num = org.id;
+      result.receivedId = `organizations/${org.id.toString()}`;
+    }
+    result.data = await this.getExsistingData(repository, documentId); // 기존 데이터 조회
+
+    let jsonData = this.excelProcess(file, columns); // 엑셀파일 json 데이터로 변환
+
+    if (!match)
+      jsonData = jsonData.map((data) => ({ ...data, ...organization }));
+
     const dtoInstances = jsonData.map((row) =>
       plainToInstance(dto as any, row),
     );
 
     // 유효성 검사
     const validationErrors: ValidationError[] = [];
+    const option = {
+      skipMissingProperties: true, // @IsOptional()과 호환
+      whitelist: true, // 정의되지 않은 속성 무시
+      forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
+    };
     for (const instance of dtoInstances) {
-      const errors = await validate(instance, {
-        skipMissingProperties: true, // @IsOptional()과 호환
-        whitelist: true, // 정의되지 않은 속성 무시
-        forbidNonWhitelisted: true, // 정의되지 않은 속성 에러
-      });
-      if (errors.length > 0) {
-        validationErrors.push(...errors);
-      }
+      const errors = await validate(instance, option);
+
+      if (errors.length > 0) validationErrors.push(...errors);
     }
 
     // console.log('validationErrors: ', validationErrors);
 
-    if (validationErrors.length > 0) {
-      result.error = validationErrors;
-    }
+    if (validationErrors.length > 0) result.error = validationErrors;
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -106,7 +147,31 @@ export class UploadService {
     return result;
   }
 
+  excelProcess = (
+    file: Express.Multer.File,
+    columns: { name: string; key: string }[],
+  ) => {
+    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const option = {
+      defval: '',
+      raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
+      dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
+    };
+    const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, option);
+    const result = this.matchColumnNames(jsonDataRaw, columns);
+    return result;
+  };
+
   private getDto(type: DocumentTypesEN) {
+    const isOrg = ![
+      'book_delivery',
+      'service_delivery',
+      'book_disposal',
+      'logistics_job',
+      'cargo_usage',
+    ].includes(type);
     const dtoMap = {
       book_delivery: {
         dto: CreateBookDeliveryDto,
@@ -124,7 +189,7 @@ export class UploadService {
         dto: CreateCargoUseDto,
       },
     };
-    return typeof type === 'number' ? CreateOrganizationDto : dtoMap[type].dto;
+    return isOrg ? CreateOrganizationDto : dtoMap[type].dto;
   }
 
   private getRepository(
@@ -154,7 +219,7 @@ export class UploadService {
           : this.cargoUseRepo;
       default:
         return qr
-          ? qr.manager.getRepository<OrganizationModel>(OrganizationModel)
+          ? qr.manager.getRepository<OrganizationsModel>(OrganizationsModel)
           : this.organizationRepo;
     }
   }

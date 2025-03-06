@@ -28,7 +28,8 @@ export class BookDisposalController {
   @Delete(':ids')
   deleteBookDisposal(
     @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
+    @Query('qr') qr: QR,
   ) {
-    return this.bookDisposalService.deleteBookDisposal(ids);
+    return this.bookDisposalService.deleteBookDisposal(ids, qr);
   }
 }

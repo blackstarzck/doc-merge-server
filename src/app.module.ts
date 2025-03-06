@@ -8,7 +8,6 @@ import { BookDisposalModule } from './book-disposal/book-disposal.module';
 import { LogisticsJobModule } from './logistics-job/logistics-job.module';
 import { CargoUseModule } from './cargo-use/cargo-usage.module';
 import { UploadModule } from './upload/upload.module';
-import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -20,7 +19,6 @@ import { DocumentsModule } from './documents/documents.module';
     LogisticsJobModule,
     CargoUseModule,
     UploadModule,
-    DocumentsModule,
   ],
   controllers: [],
   providers: [],

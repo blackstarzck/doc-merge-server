@@ -9,6 +9,7 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   database: 'doc-merge',
   entities: [__dirname + '/../**/entity/*.entity.{js,ts}'],
   synchronize: true,
+  // logging: true, // 모든 쿼리 로깅 활성화
 };
 
 // entities: [__dirname + '/../**/*.entity.{js,ts}']

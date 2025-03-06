@@ -17,7 +17,7 @@ import { stringValidationMessage } from 'src/common/validation-message/string-va
 export class CreateOrganizationDto {
   @IsOptional()
   @IsInt()
-  id: number;
+  id?: number;
 
   @IsNumber()
   @Transform(transformFloat)
@@ -53,6 +53,7 @@ export class CreateOrganizationDto {
   @IsString({ message: stringValidationMessage })
   role_person: string;
 
+  @IsOptional()
   @IsString({ message: stringValidationMessage })
   cost_rate: string;
 
@@ -131,6 +132,7 @@ export class CreateOrganizationDto {
   @Transform(transformFloat)
   m_final_sales: number; // m_supply_price * m_supply_price
 
+  @IsOptional()
   @IsString({ message: stringValidationMessage })
   payment_method: string;
 
@@ -170,14 +172,17 @@ export class CreateOrganizationDto {
   @Transform(transformFloat)
   bk_revenue: number; // final_bk_sales-(m_supply_price*bk_cost_late)
 
+  @IsOptional()
   @IsNumber()
   @Transform(transformFloat)
   d_day: number; // d-day(delivery_date-today_date)
 
+  @IsOptional()
   @IsDate({ message: dateValidationMessage })
   @Transform(transformDate)
   today_date: Date;
 
+  @IsOptional()
   @IsNumber()
   @Transform(transformFloat)
   net_revenue: number;

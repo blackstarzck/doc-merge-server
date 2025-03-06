@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
-export class OrganizationModel {
+@Entity({ name: 'organizations_model' })
+export class OrganizationsModel {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -92,7 +92,7 @@ export class OrganizationModel {
   @Column({ type: 'float', comment: '마장 최종매출액', nullable: true })
   m_final_sales: number; // m_supply_price * m_supply_price
 
-  @Column({ type: 'text', comment: '결제방식' })
+  @Column({ type: 'text', comment: '결제방식', nullable: true })
   payment_method: string;
 
   @Column({ type: 'float', comment: '선입금', nullable: true })

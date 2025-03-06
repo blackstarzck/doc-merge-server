@@ -1,7 +1,7 @@
 import { BaseModel } from 'src/common/entity/base.entity';
 import { Column, Entity } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'service_delivery_model' })
 export class ServiceDeliveryModel extends BaseModel {
   @Column({ type: 'varchar', comment: '번호', nullable: true })
   no: string;

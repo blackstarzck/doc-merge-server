@@ -4,7 +4,7 @@ export type DocumentTypesEN =
   | 'book_disposal'
   | 'logistics_job'
   | 'cargo_usage'
-  | number;
+  | string;
 
 export type DocumentTypesKR =
   | '도서납품현황'
@@ -12,4 +12,4 @@ export type DocumentTypesKR =
   | '장서점검+도서폐기'
   | '물류알바(대구, 창원, 대전)'
   | '화물사용'
-  | number;
+  | string;

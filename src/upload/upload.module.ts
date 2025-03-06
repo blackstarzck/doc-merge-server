@@ -9,17 +9,19 @@ import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delive
 import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity';
 import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity';
 import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
-import { OrganizationModel } from 'src/organizations/entity/organizations.entity';
+import { OrganizationsModel } from 'src/organizations/entity/organizations.entity';
+import { OrganizationsModule } from 'src/organizations/organizations.module';
 
 @Module({
   imports: [
+    OrganizationsModule,
     TypeOrmModule.forFeature([
       BookDeliveryModel,
       ServiceDeliveryModel,
       BookDisposalModel,
       CargoUsageModel,
       LogisticsJobModel,
-      OrganizationModel,
+      OrganizationsModel,
     ]),
   ],
   controllers: [UploadController],

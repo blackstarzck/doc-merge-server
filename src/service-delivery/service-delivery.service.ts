@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { In, QueryRunner, Repository } from 'typeorm';
 import { ServiceDeliveryModel } from './entity/service-delivery.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,20 +21,13 @@ export class ServiceDeliveryService {
   }
 
   async postServiceDelivery(data: ServiceDeliveryModel[], qr?: QueryRunner) {
-    const result: {
-      data: ServiceDeliveryModel[] | [];
-      error: ValidationError[] | null;
-    } = {
-      data: [],
-      error: null,
-    };
     const repository = this.getRepository(qr);
     const dtoInstances = data.map((row) =>
       plainToInstance(CreateServiceDeliveryDto, row),
     );
 
     // 유효성 검사
-    const validationErrors: ValidationError[] = [];
+    const validationErrors: any[] = [];
     for (const instance of dtoInstances) {
       const errors = await validate(instance, {
         skipMissingProperties: true,
@@ -42,25 +35,22 @@ export class ServiceDeliveryService {
         forbidNonWhitelisted: true,
       });
       if (errors.length > 0) {
-        validationErrors.push(...errors);
+        const result = errors.map((error) => {
+          return { ...error.constraints };
+        });
+        validationErrors.push(result);
       }
     }
 
-    console.log('validationErrors: ', validationErrors);
-
-    if (validationErrors.length > 0) {
-      result.error = validationErrors;
-    }
+    if (validationErrors.length > 0)
+      throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
       return entity;
     });
 
-    console.log('entityData: ', entityData);
-
-    result.data = await repository.save(entityData);
-    return result;
+    return await repository.save(entityData);
   }
 
   private getRepository(qr?: QueryRunner): Repository<ServiceDeliveryModel> {
@@ -69,7 +59,10 @@ export class ServiceDeliveryService {
       : this.serviceDeliveryRepository;
   }
 
-  async deleteServiceDelivery(ids: number[]) {
-    return await this.serviceDeliveryRepository.delete(ids);
+  async deleteServiceDelivery(ids: number[], qr?: QueryRunner) {
+    const respository = this.getRepository(qr);
+    const result = await respository.delete(ids);
+    const find = await respository.find();
+    return find;
   }
 }
