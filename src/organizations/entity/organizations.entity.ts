@@ -11,10 +11,10 @@ export class OrganizationsModel {
   @Column({ type: 'text', comment: '기관명' })
   org_name: string;
 
-  @Column({ type: 'boolean', comment: '마감' })
+  @Column({ type: 'boolean', comment: '마감', nullable: true })
   b_close_date: boolean;
 
-  @Column({ type: 'boolean', comment: '계산서' })
+  @Column({ type: 'boolean', comment: '계산서', nullable: true })
   b_invoice: boolean;
 
   @Column({ type: 'text', comment: '낙찰업체' })
