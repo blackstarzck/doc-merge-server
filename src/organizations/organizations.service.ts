@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { OrganizationsModel } from './entity/organizations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
@@ -37,9 +41,11 @@ export class OrganizationsService {
   }
 
   async getOrganizationNameById(id: number) {
-    return await this.organizationNamesRepository.findOne({
+    const result = await this.organizationNamesRepository.findOne({
       where: { id },
     });
+    if (!result) throw new NotFoundException(`Organization ${id} not found`);
+    return result;
   }
 
   async postOrganizations(data: OrganizationsModel[], qr: QueryRunner) {
