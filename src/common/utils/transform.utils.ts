@@ -6,7 +6,7 @@ export const transformEmptyToNull = ({ value }) => {
   return value;
 };
 
-export const transformIntergerOrNull = ({ value }) => {
+export const transformIntegerOrNull = ({ value }) => {
   // undefined 또는 null 처리
   if (value === undefined || value === null) {
     return null;
@@ -14,11 +14,9 @@ export const transformIntergerOrNull = ({ value }) => {
 
   // 숫자인 경우
   if (typeof value === 'number') {
-    // 정수인지 확인
     if (Number.isInteger(value)) {
       return value;
     }
-    // 소수점이면 null 반환
     return null;
   }
 
@@ -28,7 +26,10 @@ export const transformIntergerOrNull = ({ value }) => {
     return null;
   }
 
-  const parsedValue = Number(trimmedValue);
+  // 쉼표 제거 후 파싱
+  const cleanValue = trimmedValue.replace(/,/g, '');
+  const parsedValue = Number(cleanValue);
+
   if (!isNaN(parsedValue) && Number.isInteger(parsedValue)) {
     return parsedValue;
   }
