@@ -17,7 +17,7 @@ export default tseslint.config(
         ...globals.node,
         ...globals.jest,
       },
-      ecmaVersion: 5,
+      ecmaVersion: 'latest',
       sourceType: 'module',
       parserOptions: {
         projectService: true,
@@ -40,7 +40,12 @@ export default tseslint.config(
       ],
       'prettier/prettier': [
         'error',
-        { endOfLine: 'auto', printWidth: 160, proseWrap: 'never' },
+        {
+          endOfLine: 'auto',
+          printWidth: 160,
+          proseWrap: 'never',
+          parser: 'typescript', // Prettier에 TypeScript 파서 명시적 지정
+        },
       ],
     },
   }

@@ -1,26 +1,26 @@
-import { OrganizationsService } from 'src/organizations/organizations.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
-import * as XLSX from 'xlsx';
-import { ORGANIZATION_COLUMNS, OVERVIEW_TABLES } from 'src/common/constants.ts/table.const';
-import { removeAllSpaces } from 'src/common/utils/remove-spaces.utils';
-import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateBookDeliveryDto } from 'src/book-delivery/dto/create-book-delivery.dto';
-import { plainToInstance } from 'class-transformer';
-import { CreateServiceDeliveryDto } from 'src/service-delivery/dto/create-service-delivery.dto';
-import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delivery.entity';
-import { QueryRunner } from 'typeorm';
-import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity';
-import { CreateBookDisposalDto } from 'src/book-disposal/dto/create-book-disposal.dto';
-import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity';
-import { CreateCargoUseDto } from 'src/cargo-use/dto/create-cargo-usage.dto';
-import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
-import { CreaeteLogisticsJobDto } from 'src/logistics-job/dto/create-logistics-job.dto';
-import { validate } from 'class-validator';
-import { DocumentTypesEN } from './types/types';
-import { OrganizationsModel } from 'src/organizations/entity/organizations.entity';
-import { CreateOrganizationDto } from 'src/organizations/dto/create-organization.dto';
+import { OrganizationsService } from "src/organizations/organizations.service";
+import { BadRequestException, Injectable } from "@nestjs/common";
+import * as XLSX from "xlsx";
+import { ORGANIZATION_COLUMNS, OVERVIEW_TABLES } from "src/common/constants.ts/table.const";
+import { removeAllSpaces } from "src/common/utils/remove-spaces.utils";
+import { BookDeliveryModel } from "src/book-delivery/entity/book-delivery.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateBookDeliveryDto } from "src/book-delivery/dto/create-book-delivery.dto";
+import { plainToInstance } from "class-transformer";
+import { CreateServiceDeliveryDto } from "src/service-delivery/dto/create-service-delivery.dto";
+import { ServiceDeliveryModel } from "src/service-delivery/entity/service-delivery.entity";
+import { QueryRunner } from "typeorm";
+import { BookDisposalModel } from "src/book-disposal/entity/book-disposal.entity";
+import { CreateBookDisposalDto } from "src/book-disposal/dto/create-book-disposal.dto";
+import { CargoUsageModel } from "src/cargo-use/entity/cargo-usage.entity";
+import { CreateCargoUseDto } from "src/cargo-use/dto/create-cargo-usage.dto";
+import { LogisticsJobModel } from "src/logistics-job/entity/logistics-job.entity";
+import { CreaeteLogisticsJobDto } from "src/logistics-job/dto/create-logistics-job.dto";
+import { validate } from "class-validator";
+import { DocumentTypesEN } from "./types/types";
+import { OrganizationsModel } from "src/organizations/entity/organizations.entity";
+import { CreateOrganizationDto } from "src/organizations/dto/create-organization.dto";
 
 type Model = BookDeliveryModel | ServiceDeliveryModel | BookDisposalModel | CargoUsageModel | LogisticsJobModel | OrganizationsModel;
 
@@ -45,7 +45,7 @@ export class UploadService {
     @InjectRepository(OrganizationsModel)
     private readonly organizationRepo: Repository<OrganizationsModel>,
 
-    private readonly organizationsService: OrganizationsService
+    private readonly organizationsService: OrganizationsService,
   ) {}
 
   private isOrganization(documentId: string) {
@@ -122,21 +122,22 @@ export class UploadService {
   }
 
   excelProcess = (file: Express.Multer.File) => {
-    const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+    const workbook = XLSX.read(file.buffer, { type: "buffer" });
+    console.log("workbook.SheetNames: ", workbook.SheetNames);
     // ↓ 첫번째 시트만 읽음, 만약 여러개의 시트에 대한 입력을 원하실 경우 반복문으로 수정하면됨
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];
     const option = {
-      defval: '',
+      defval: "",
       raw: false, // 날짜를 시리얼 번호 대신 포맷된 값으로 읽음
-      dateNF: 'yyyy-mm-dd', // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
+      dateNF: "yyyy-mm-dd", // 원하는 날짜 형식 지정 → 프론트에서 규칙으로 정해야함!
     };
     const jsonDataRaw = XLSX.utils.sheet_to_json<any>(worksheet, option);
     return { jsonDataRaw, sheetName };
   };
 
   private getDto(type: DocumentTypesEN) {
-    const isOrg = !['book_delivery', 'service_delivery', 'book_disposal', 'logistics_job', 'cargo_usage'].includes(type);
+    const isOrg = !["book_delivery", "service_delivery", "book_disposal", "logistics_job", "cargo_usage"].includes(type);
     const dtoMap = {
       book_delivery: {
         dto: CreateBookDeliveryDto,
@@ -159,15 +160,15 @@ export class UploadService {
 
   private getRepository(name: DocumentTypesEN, qr?: QueryRunner): Repository<any> {
     switch (name) {
-      case 'book_delivery':
+      case "book_delivery":
         return qr ? qr.manager.getRepository<BookDeliveryModel>(BookDeliveryModel) : this.bookDeliveryRepo;
-      case 'service_delivery':
+      case "service_delivery":
         return qr ? qr.manager.getRepository<ServiceDeliveryModel>(ServiceDeliveryModel) : this.serviceDeliveryRepo;
-      case 'book_disposal':
+      case "book_disposal":
         return qr ? qr.manager.getRepository<BookDisposalModel>(BookDisposalModel) : this.bookDisposalRepo;
-      case 'logistics_job':
+      case "logistics_job":
         return qr ? qr.manager.getRepository<LogisticsJobModel>(LogisticsJobModel) : this.logisticsJobRepo;
-      case 'cargo_usage':
+      case "cargo_usage":
         return qr ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel) : this.cargoUseRepo;
       default:
         return qr ? qr.manager.getRepository<OrganizationsModel>(OrganizationsModel) : this.organizationRepo;
@@ -190,8 +191,8 @@ export class UploadService {
 
           return acc;
         },
-        {} as Record<string, any>
-      )
+        {} as Record<string, any>,
+      ),
     );
   }
 }
