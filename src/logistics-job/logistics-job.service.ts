@@ -1,16 +1,16 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
 import { LogisticsJobModel } from './entity/logistics-job.entity';
-import { validate, ValidationError } from 'class-validator';
-import { CreaeteLogisticsJobDto } from './dto/create-logistics-job';
+import { validate } from 'class-validator';
+import { CreaeteLogisticsJobDto } from './dto/create-logistics-job.dto';
 import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class LogisticsJobService {
   constructor(
     @InjectRepository(LogisticsJobModel)
-    private readonly logisticsJobRepository: Repository<LogisticsJobModel>,
+    private readonly logisticsJobRepository: Repository<LogisticsJobModel>
   ) {}
 
   async getLogisticsJob() {
@@ -21,9 +21,7 @@ export class LogisticsJobService {
 
   async postLogisticsJob(data: LogisticsJobModel[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreaeteLogisticsJobDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreaeteLogisticsJobDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -41,8 +39,7 @@ export class LogisticsJobService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -53,15 +50,12 @@ export class LogisticsJobService {
   }
 
   getRepository(qr?: QueryRunner): Repository<LogisticsJobModel> {
-    return qr
-      ? qr.manager.getRepository<LogisticsJobModel>(LogisticsJobModel)
-      : this.logisticsJobRepository;
+    return qr ? qr.manager.getRepository<LogisticsJobModel>(LogisticsJobModel) : this.logisticsJobRepository;
   }
 
   async deleteLogisticsJob(ids: number[], qr?: QueryRunner) {
-    const respository = this.getRepository(qr);
-    const result = await respository.delete(ids);
-    const find = await respository.find();
-    return find;
+    const repository = this.getRepository(qr);
+    await repository.delete(ids);
+    return await repository.find();
   }
 }

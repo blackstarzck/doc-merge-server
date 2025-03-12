@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseArrayPipe,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseArrayPipe, Post, Query } from '@nestjs/common';
 import { CargoUseService } from './cargo-usage.service';
 import { QueryRunner as QR } from 'typeorm';
 
@@ -25,10 +16,8 @@ export class CargoUseController {
     return this.cargoUseService.postCargoUse(data, qr);
   }
 
-  @Delete(':ids')
-  deleteCargoUsage(
-    @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-  ) {
-    return this.cargoUseService.deleteCargoUsage(ids);
+  @Post('delete')
+  deleteCargoUsage(@Body('ids', new ParseArrayPipe({ items: Number })) ids: number[], @Query('qr') qr: QR) {
+    return this.cargoUseService.deleteCargoUsage(ids, qr);
   }
 }

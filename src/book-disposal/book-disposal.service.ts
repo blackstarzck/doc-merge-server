@@ -10,7 +10,7 @@ import { CreateBookDisposalDto } from './dto/create-book-disposal.dto';
 export class BookDisposalService {
   constructor(
     @InjectRepository(BookDisposalModel)
-    private readonly bookDisposalRepository: Repository<BookDisposalModel>,
+    private readonly bookDisposalRepository: Repository<BookDisposalModel>
   ) {}
 
   async getBookDisposal() {
@@ -21,9 +21,7 @@ export class BookDisposalService {
 
   async postBookDisposal(data: BookDisposalModel[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateBookDisposalDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreateBookDisposalDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -41,8 +39,7 @@ export class BookDisposalService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -53,15 +50,12 @@ export class BookDisposalService {
   }
 
   getRepository(qr?: QueryRunner): Repository<BookDisposalModel> {
-    return qr
-      ? qr.manager.getRepository<BookDisposalModel>(BookDisposalModel)
-      : this.bookDisposalRepository;
+    return qr ? qr.manager.getRepository<BookDisposalModel>(BookDisposalModel) : this.bookDisposalRepository;
   }
 
   async deleteBookDisposal(ids: number[], qr: QueryRunner) {
     const repository = this.getRepository(qr);
-    const result = await repository.delete(ids);
-    const find = await repository.find();
-    return find;
+    await repository.delete(ids);
+    return await repository.find();
   }
 }

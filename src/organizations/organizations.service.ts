@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { OrganizationsModel } from './entity/organizations.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryRunner, Repository } from 'typeorm';
@@ -18,7 +14,7 @@ export class OrganizationsService {
     private readonly organizationsRepository: Repository<OrganizationsModel>,
 
     @InjectRepository(OrganizationNamesModel)
-    private readonly organizationNamesRepository: Repository<OrganizationNamesModel>,
+    private readonly organizationNamesRepository: Repository<OrganizationNamesModel>
   ) {}
 
   async getOrganizations() {
@@ -50,9 +46,7 @@ export class OrganizationsService {
 
   async postOrganizations(data: OrganizationsModel[], qr: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateOrganizationDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreateOrganizationDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -70,8 +64,7 @@ export class OrganizationsService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -82,15 +75,13 @@ export class OrganizationsService {
   }
 
   getRepository(qr?: QueryRunner): Repository<OrganizationsModel> {
-    return qr
-      ? qr.manager.getRepository<OrganizationsModel>(OrganizationsModel)
-      : this.organizationsRepository;
+    return qr ? qr.manager.getRepository<OrganizationsModel>(OrganizationsModel) : this.organizationsRepository;
   }
 
-  async deleteOrganizations(ids: number[], qr?: QueryRunner) {
+  async deleteOrganizations(orgId: number, ids: number[], qr?: QueryRunner) {
     const respository = this.getRepository(qr);
     const result = await respository.delete(ids);
-    const find = await respository.find();
+    const find = await respository.find({ where: { sheet_data_num: orgId }, order: { id: 'ASC' } });
     return find;
   }
 }

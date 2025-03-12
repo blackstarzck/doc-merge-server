@@ -10,7 +10,7 @@ import { validate, ValidationError } from 'class-validator';
 export class BookDeliveryService {
   constructor(
     @InjectRepository(BookDeliveryModel)
-    private readonly bookDeliveryRepository: Repository<BookDeliveryModel>,
+    private readonly bookDeliveryRepository: Repository<BookDeliveryModel>
   ) {}
 
   async getBookDelivery() {
@@ -21,9 +21,7 @@ export class BookDeliveryService {
 
   async postBookDelivery(data: BookDeliveryModel[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateBookDeliveryDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreateBookDeliveryDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -41,8 +39,7 @@ export class BookDeliveryService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -53,15 +50,12 @@ export class BookDeliveryService {
   }
 
   getRepository(qr?: QueryRunner): Repository<BookDeliveryModel> {
-    return qr
-      ? qr.manager.getRepository<BookDeliveryModel>(BookDeliveryModel)
-      : this.bookDeliveryRepository;
+    return qr ? qr.manager.getRepository<BookDeliveryModel>(BookDeliveryModel) : this.bookDeliveryRepository;
   }
 
   async deleteBookDelivery(ids: number[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const result = await repository.delete(ids);
-    const find = await repository.find();
-    return find;
+    await repository.delete(ids);
+    return await repository.find();
   }
 }

@@ -10,7 +10,7 @@ import { CreateCargoUseDto } from './dto/create-cargo-usage.dto';
 export class CargoUseService {
   constructor(
     @InjectRepository(CargoUsageModel)
-    private readonly cargoUsageRepository: Repository<CargoUsageModel>,
+    private readonly cargoUsageRepository: Repository<CargoUsageModel>
   ) {}
 
   async getCargoUsage() {
@@ -21,9 +21,7 @@ export class CargoUseService {
 
   async postCargoUse(data: CargoUsageModel[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateCargoUseDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreateCargoUseDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -41,8 +39,7 @@ export class CargoUseService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -53,12 +50,12 @@ export class CargoUseService {
   }
 
   getRepository(qr?: QueryRunner): Repository<CargoUsageModel> {
-    return qr
-      ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel)
-      : this.cargoUsageRepository;
+    return qr ? qr.manager.getRepository<CargoUsageModel>(CargoUsageModel) : this.cargoUsageRepository;
   }
 
-  async deleteCargoUsage(ids: number[]) {
-    return await this.cargoUsageRepository.delete(ids);
+  async deleteCargoUsage(ids: number[], qr: QueryRunner) {
+    const repository = this.getRepository(qr);
+    await repository.delete(ids);
+    return await repository.find();
   }
 }

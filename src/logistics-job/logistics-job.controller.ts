@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseArrayPipe,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseArrayPipe, Post, Query } from '@nestjs/common';
 import { LogisticsJobService } from './logistics-job.service';
 import { QueryRunner as QR } from 'typeorm';
 
@@ -25,10 +16,8 @@ export class LogisticsJobController {
     return this.logisticsJobService.postLogisticsJob(data, qr);
   }
 
-  @Delete(':ids')
-  deleteLogisticsJob(
-    @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-  ) {
-    return this.logisticsJobService.deleteLogisticsJob(ids);
+  @Post('delete')
+  deleteLogisticsJob(@Body('ids', new ParseArrayPipe({ items: Number })) ids: number[], qr: QR) {
+    return this.logisticsJobService.deleteLogisticsJob(ids, qr);
   }
 }

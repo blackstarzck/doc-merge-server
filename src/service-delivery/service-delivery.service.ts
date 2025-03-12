@@ -11,7 +11,7 @@ import { asapScheduler } from 'rxjs';
 export class ServiceDeliveryService {
   constructor(
     @InjectRepository(ServiceDeliveryModel)
-    private readonly serviceDeliveryRepository: Repository<ServiceDeliveryModel>,
+    private readonly serviceDeliveryRepository: Repository<ServiceDeliveryModel>
   ) {}
 
   async getServiceDelivery() {
@@ -22,9 +22,7 @@ export class ServiceDeliveryService {
 
   async postServiceDelivery(data: ServiceDeliveryModel[], qr?: QueryRunner) {
     const repository = this.getRepository(qr);
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateServiceDeliveryDto, row),
-    );
+    const dtoInstances = data.map((row) => plainToInstance(CreateServiceDeliveryDto, row));
 
     // 유효성 검사
     const validationErrors: any[] = [];
@@ -42,8 +40,7 @@ export class ServiceDeliveryService {
       }
     }
 
-    if (validationErrors.length > 0)
-      throw new BadRequestException(validationErrors);
+    if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
     const entityData = dtoInstances.map((dto) => {
       const entity = repository.create(dto);
@@ -54,15 +51,12 @@ export class ServiceDeliveryService {
   }
 
   private getRepository(qr?: QueryRunner): Repository<ServiceDeliveryModel> {
-    return qr
-      ? qr.manager.getRepository<ServiceDeliveryModel>(ServiceDeliveryModel)
-      : this.serviceDeliveryRepository;
+    return qr ? qr.manager.getRepository<ServiceDeliveryModel>(ServiceDeliveryModel) : this.serviceDeliveryRepository;
   }
 
   async deleteServiceDelivery(ids: number[], qr?: QueryRunner) {
     const respository = this.getRepository(qr);
-    const result = await respository.delete(ids);
-    const find = await respository.find();
-    return find;
+    await respository.delete(ids);
+    return await respository.find();
   }
 }

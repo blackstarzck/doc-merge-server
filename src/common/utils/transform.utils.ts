@@ -1,4 +1,4 @@
-export const transformEmptyToNull = ({ value }) => {
+export const transformEmptyToNull = ({ value }): any => {
   // 빈 문자열이나 공백은 null로 변환
   if (value === '-' || value === '' || value === ' ' || value === null) {
     return null;
@@ -80,7 +80,7 @@ export const transformFloat = ({ value }) => {
 export const transformBoolean = ({ value }) => {
   // 빈 문자열, 공백, null, undefined는 null로 변환
   if (value === '' || value === ' ' || value === null || value === undefined) {
-    return null;
+    return false;
   }
 
   // 문자열로 변환 후 소문자로 통일
@@ -91,7 +91,7 @@ export const transformBoolean = ({ value }) => {
   if (strValue === 'false') return false;
 
   // 나머지는 그대로 반환 (검증에서 실패 처리)
-  return null;
+  return false;
 };
 
 export function transformDate({ value }): Date | null {

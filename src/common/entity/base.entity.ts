@@ -13,6 +13,6 @@ export abstract class BaseModel {
   @Column({ type: 'float', comment: '총입금액', nullable: true })
   total_payment: number;
 
-  @Column({ type: 'text', comment: '특이사항' })
+  @Column({ type: 'text', comment: '특이사항', nullable: true })
   notes: string;
 }

@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Query,
-  Delete,
-  ParseArrayPipe,
-  Param,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Delete, ParseArrayPipe, Param } from '@nestjs/common';
 import { BookDeliveryService } from './book-delivery.service';
 import { QueryRunner as QR } from 'typeorm';
 
@@ -25,11 +16,8 @@ export class BookDeliveryController {
     return this.bookDeliveryService.postBookDelivery(data, qr);
   }
 
-  @Delete(':ids')
-  deleteBookDelivery(
-    @Param('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-    @Query('qr') qr: QR,
-  ) {
+  @Post('delete')
+  deleteBookDelivery(@Body('ids', new ParseArrayPipe({ items: Number })) ids: number[], @Query('qr') qr: QR) {
     return this.bookDeliveryService.deleteBookDelivery(ids, qr);
   }
 }

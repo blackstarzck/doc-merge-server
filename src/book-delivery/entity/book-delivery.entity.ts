@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import { BaseModel } from '../../common/entity/base.entity';
 import { Column, Entity } from 'typeorm';
 
@@ -6,10 +7,28 @@ export class BookDeliveryModel extends BaseModel {
   @Column({ type: 'float', comment: '연번', nullable: true })
   no: number;
 
-  @Column({ type: 'boolean', comment: '마감유부', nullable: true })
+  @Column({
+    type: 'boolean',
+    comment: '마감유부',
+    nullable: true,
+    default: false,
+    transformer: {
+      to: (value) => value,
+      from: (value) => (value ? value : false),
+    },
+  })
   b_close_status: boolean;
 
-  @Column({ type: 'boolean', comment: '계산서발행유무', nullable: true })
+  @Column({
+    type: 'boolean',
+    comment: '계산서발행유무',
+    nullable: true,
+    default: false,
+    transformer: {
+      to: (value) => value,
+      from: (value) => (value ? value : false),
+    },
+  })
   b_invoice: boolean;
 
   @Column({ type: 'text', comment: '날짜' })
