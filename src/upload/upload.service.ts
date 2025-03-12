@@ -105,7 +105,7 @@ export class UploadService {
       }
     }
 
-    // console.log('validationErrors: ', validationErrors);
+    console.log("validationErrors: ", validationErrors);
 
     if (validationErrors.length > 0) throw new BadRequestException(validationErrors);
 
@@ -123,7 +123,6 @@ export class UploadService {
 
   excelProcess = (file: Express.Multer.File) => {
     const workbook = XLSX.read(file.buffer, { type: "buffer" });
-    console.log("workbook.SheetNames: ", workbook.SheetNames);
     // ↓ 첫번째 시트만 읽음, 만약 여러개의 시트에 대한 입력을 원하실 경우 반복문으로 수정하면됨
     const sheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[sheetName];

@@ -1,10 +1,10 @@
-import { Transform } from 'class-transformer';
-import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
-import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
-import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
-import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
-import { transformDate } from 'src/common/utils/date.utils';
-import { transformFloat } from 'src/common/utils/transform.utils';
+import { Transform } from "class-transformer";
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
+import { dateValidationMessage } from "src/common/validation-message/date-validation-message";
+import { integerValidationMessage } from "src/common/validation-message/integer-validation-message copy";
+import { stringValidationMessage } from "src/common/validation-message/string-validation-message copy";
+import { transformDate } from "src/common/utils/date.utils";
+import { transformFloat } from "src/common/utils/transform.utils";
 
 export class CreateCargoUseDto {
   @IsOptional()

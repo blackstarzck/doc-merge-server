@@ -1,21 +1,12 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  InternalServerErrorException,
-  NestInterceptor,
-} from '@nestjs/common';
-import { Observable, catchError, tap } from 'rxjs';
-import { DataSource } from 'typeorm';
+import { BadRequestException, CallHandler, ExecutionContext, Injectable, InternalServerErrorException, NestInterceptor } from "@nestjs/common";
+import { Observable, catchError, finalize, tap } from "rxjs";
+import { DataSource, QueryFailedError } from "typeorm";
 
 @Injectable()
 export class TransationInterceptor implements NestInterceptor {
   constructor(private readonly dataSource: DataSource) {}
 
-  async intercept(
-    context: ExecutionContext,
-    next: CallHandler,
-  ): Promise<Observable<any>> {
+  async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
 
     const qr = this.dataSource.createQueryRunner();
@@ -27,12 +18,16 @@ export class TransationInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError(async (e) => {
         await qr.rollbackTransaction();
-        console.log('에러메시지입니다 → ', e);
-        throw new InternalServerErrorException(e.message);
+        console.log("에러메시지입니다 → ", e);
+        if (e instanceof QueryFailedError) {
+          throw new BadRequestException("잘못된 입력값입니다: " + e.message);
+        }
+        throw new InternalServerErrorException("서버 오류 발생");
       }),
-      tap(async () => {
-        await qr.commitTransaction();
-        await qr.release();
+      finalize(() => {
+        qr.commitTransaction()
+          .then(() => qr.release())
+          .catch((e) => console.log("Transaction commit/release error: ", e));
       }),
     );
   }
