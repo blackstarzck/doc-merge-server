@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
-import { CargoUseController } from './cargo-usage.controller';
-import { CargoUseService } from './cargo-usage.service';
-import { CargoUsageModel } from './entity/cargo-usage.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common'
+import { CargoUsageController } from './cargo-usage.controller'
+import { CargoUsageService } from './cargo-usage.service'
+import { CargoUsageModel } from './entity/cargo-usage.entity'
+import { TypeOrmModule } from '@nestjs/typeorm'
 
 @Module({
   imports: [TypeOrmModule.forFeature([CargoUsageModel])],
-  exports: [CargoUseService],
-  controllers: [CargoUseController],
-  providers: [CargoUseService],
+  exports: [CargoUsageService],
+  controllers: [CargoUsageController],
+  providers: [CargoUsageService]
 })
-export class CargoUseModule {}
+export class CargoUsageModule {}

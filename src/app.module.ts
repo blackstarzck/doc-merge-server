@@ -1,13 +1,17 @@
-import { Module } from '@nestjs/common';
-import { OrganizationsModule } from './organizations/organizations.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeORMConfig } from './configs/typeorm.config';
-import { BookDeliveryModule } from './book-delivery/book-delivery.module';
-import { ServiceDeliveryModule } from './service-delivery/service-delivery.module';
-import { BookDisposalModule } from './book-disposal/book-disposal.module';
-import { LogisticsJobModule } from './logistics-job/logistics-job.module';
-import { CargoUseModule } from './cargo-use/cargo-usage.module';
-import { UploadModule } from './upload/upload.module';
+import { Module } from '@nestjs/common'
+import { OrganizationsModule } from './organization/organization.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { typeORMConfig } from './configs/typeorm.config'
+import { BookDeliveryModule } from './book-delivery/book-delivery.module'
+import { ServiceDeliveryModule } from './service-delivery/service-delivery.module'
+import { BookDisposalModule } from './book-disposal/book-disposal.module'
+import { LogisticsJobModule } from './logistics-job/logistics-job.module'
+import { CargoUsageModule } from './cargo-use/cargo-usage.module'
+import { UploadModule } from './upload/upload.module'
+import { ClientModule } from './client/client.module'
+import { ClientLedgerModule } from './client-ledger/client-ledger.module'
+import { VendorLedgerModule } from './vendor-ledger/vendor-ledger.module'
+import { VendorModule } from './vendor/vendor.module'
 
 @Module({
   imports: [
@@ -17,10 +21,14 @@ import { UploadModule } from './upload/upload.module';
     ServiceDeliveryModule,
     BookDisposalModule,
     LogisticsJobModule,
-    CargoUseModule,
+    CargoUsageModule,
     UploadModule,
+    ClientModule,
+    ClientLedgerModule,
+    VendorModule,
+    VendorLedgerModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule {}

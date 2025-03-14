@@ -1,6 +1,6 @@
 export const transformEmptyToNull = ({ value }): any => {
   // 빈 문자열이나 공백은 null로 변환
-  if (value === '-' || value === '' || value === ' ' || value === null) {
+  if (value === "-" || value === "" || value === " " || value === null) {
     return null;
   }
   return value;
@@ -13,7 +13,7 @@ export const transformIntegerOrNull = ({ value }) => {
   }
 
   // 숫자인 경우
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     if (Number.isInteger(value)) {
       return value;
     }
@@ -22,12 +22,12 @@ export const transformIntegerOrNull = ({ value }) => {
 
   // 문자열인 경우
   const trimmedValue = value.trim();
-  if (trimmedValue === '') {
+  if (trimmedValue === "") {
     return null;
   }
 
   // 쉼표 제거 후 파싱
-  const cleanValue = trimmedValue.replace(/,/g, '');
+  const cleanValue = trimmedValue.replace(/,/g, "");
   const parsedValue = Number(cleanValue);
 
   if (!isNaN(parsedValue) && Number.isInteger(parsedValue)) {
@@ -39,18 +39,12 @@ export const transformIntegerOrNull = ({ value }) => {
 
 export const transformFloat = ({ value }) => {
   // undefined, null, 빈 문자열, 공백, '-'는 null로 변환
-  if (
-    value === undefined ||
-    value === null ||
-    value === '' ||
-    value === ' ' ||
-    value === '-'
-  ) {
+  if (value === undefined || value === null || value === "" || value === " " || value === "-") {
     return null;
   }
 
   // 숫자 타입이면 그대로 반환
-  if (typeof value === 'number' && !isNaN(value)) {
+  if (typeof value === "number" && !isNaN(value)) {
     return value;
   }
 
@@ -58,12 +52,12 @@ export const transformFloat = ({ value }) => {
   let strValue = String(value).trim(); // 공백 제거
 
   // 퍼센트 기호 제거
-  if (strValue.endsWith('%')) {
+  if (strValue.endsWith("%")) {
     strValue = strValue.slice(0, -1).trim();
   }
 
   // 쉼표 제거
-  strValue = strValue.replace(/,/g, ''); // 모든 쉼표 제거
+  strValue = strValue.replace(/,/g, ""); // 모든 쉼표 제거
 
   // 숫자로 변환 시도
   const numValue = Number(strValue);
@@ -79,7 +73,7 @@ export const transformFloat = ({ value }) => {
 
 export const transformBoolean = ({ value }) => {
   // 빈 문자열, 공백, null, undefined는 null로 변환
-  if (value === '' || value === ' ' || value === null || value === undefined) {
+  if (value === "" || value === " " || value === null || value === undefined) {
     return false;
   }
 
@@ -87,8 +81,8 @@ export const transformBoolean = ({ value }) => {
   const strValue = String(value).toLowerCase().trim(); // 공백 제거
 
   // 'true' 또는 'false'만 변환
-  if (strValue === 'true') return true;
-  if (strValue === 'false') return false;
+  if (strValue === "true") return true;
+  if (strValue === "false") return false;
 
   // 나머지는 그대로 반환 (검증에서 실패 처리)
   return false;
@@ -96,7 +90,7 @@ export const transformBoolean = ({ value }) => {
 
 export function transformDate({ value }): Date | null {
   // 입력값이 undefined, null, 빈 문자열이면 null 반환
-  if (value === undefined || value === null || value === '') {
+  if (value === undefined || value === null || value === "") {
     return null;
   }
 
@@ -111,3 +105,15 @@ export function transformDate({ value }): Date | null {
 
   return date; // 유효한 경우 Date 객체 반환
 }
+
+export const columnRateTransformers = {
+  to: (value: string | number | null | undefined): number | null => {
+    if (value === null || value === undefined || value === "") return null;
+    const strValue = String(value).trim().replace(/[%-/]/g, "");
+    const numValue = Number(strValue);
+    return isNaN(numValue) || strValue === "" ? null : numValue;
+  },
+  from: (value: number | null): string => {
+    return value !== null ? `${value}%` : "";
+  },
+};

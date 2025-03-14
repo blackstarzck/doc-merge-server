@@ -1,6 +1,7 @@
+import { columnRateTransformers } from "src/common/utils/transform.utils";
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: "vendor_ledger_model", comment: "매입처원장" })
+@Entity({ name: "vendor_ledger_model", comment: "매입처 원장" })
 export class VendorLedgerModel {
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,25 +21,25 @@ export class VendorLedgerModel {
   @Column({ type: "text", comment: "발주건" })
   order_item: string;
 
-  @Column({ type: "float", comment: "기초금액(정가)", nullable: true })
+  @Column({ type: "int", comment: "기초금액(정가)", nullable: true })
   base_price: number;
 
-  @Column({ type: "float", comment: "낙찰가(공급가)", nullable: true })
+  @Column({ type: "int", comment: "낙찰가(공급가)", nullable: true })
   bid_price: number;
 
-  @Column({ type: "float", comment: "매입가", nullable: true })
+  @Column({ type: "int", comment: "매입가", nullable: true })
   purchase_price: number;
 
-  @Column({ type: "text", comment: "매입률(%)" })
-  purchase_rate: string;
+  @Column({ type: "float", comment: "매입률(%)", transformer: columnRateTransformers, nullable: true })
+  purchase_rate: number;
 
-  @Column({ type: "float", comment: "이익금", nullable: true })
+  @Column({ type: "int", comment: "이익금", nullable: true })
   profit: number;
 
-  @Column({ type: "text", comment: "이익률(%)" })
-  profit_rate: string;
+  @Column({ type: "float", comment: "이익률(%)", transformer: columnRateTransformers, nullable: true })
+  profit_rate: number;
 
-  @Column({ type: "text", comment: "현황 (예: 지출 완료, 수금 완료)" })
+  @Column({ type: "text", comment: "현황" })
   status: string;
 
   @Column({ type: "date", comment: "수금일", nullable: true })

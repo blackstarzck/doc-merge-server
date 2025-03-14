@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity({ name: "logistics_job_model" })
+@Entity({ name: "logistics_job_model", comment: "물류알바(대전, 창원, 대전)" })
 export class LogisticsJobModel {
   @PrimaryGeneratedColumn()
   id: number;

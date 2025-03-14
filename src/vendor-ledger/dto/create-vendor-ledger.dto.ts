@@ -1,7 +1,7 @@
 import { Transform } from "class-transformer";
-import { IsDate, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsDate, IsInt, IsOptional, IsString } from "class-validator";
 import { transformDate } from "src/common/utils/date.utils";
-import { transformFloat } from "src/common/utils/transform.utils";
+import { transformIntegerOrNull } from "src/common/utils/transform.utils";
 import { dateValidationMessage } from "src/common/validation-message/date-validation-message";
 import { integerValidationMessage } from "src/common/validation-message/integer-validation-message copy";
 import { stringValidationMessage } from "src/common/validation-message/string-validation-message copy";
@@ -9,7 +9,7 @@ import { stringValidationMessage } from "src/common/validation-message/string-va
 export class CreateVendorLedgerDto {
   @IsOptional()
   @IsInt({ message: integerValidationMessage })
-  id: number;
+  id?: number;
 
   @IsString({ message: stringValidationMessage })
   vendor_name: string;
@@ -27,23 +27,23 @@ export class CreateVendorLedgerDto {
   @IsString({ message: stringValidationMessage })
   order_item: string;
 
-  @IsNumber()
-  @Transform(transformFloat)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   base_price: number;
 
-  @IsNumber()
-  @Transform(transformFloat)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   bid_price: number;
 
-  @IsNumber()
-  @Transform(transformFloat)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   purchase_price: number;
 
   @IsString({ message: stringValidationMessage })
   purchase_rate: string;
 
-  @IsNumber()
-  @Transform(transformFloat)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   profit: number;
 
   @IsString({ message: stringValidationMessage })

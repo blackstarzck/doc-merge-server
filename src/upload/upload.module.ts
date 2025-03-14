@@ -1,16 +1,16 @@
-import { Module } from '@nestjs/common';
-import { UploadService } from './upload.service';
-import { UploadController } from './upload.controller';
-import { BookDeliveryModule } from 'src/book-delivery/book-delivery.module';
-import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ServiceDeliveryModule } from 'src/service-delivery/service-delivery.module';
-import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delivery.entity';
-import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity';
-import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity';
-import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity';
-import { OrganizationsModel } from 'src/organizations/entity/organizations.entity';
-import { OrganizationsModule } from 'src/organizations/organizations.module';
+import { Module } from '@nestjs/common'
+import { UploadService } from './upload.service'
+import { UploadController } from './upload.controller'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ServiceDeliveryModel } from 'src/service-delivery/entity/service-delivery.entity'
+import { BookDisposalModel } from 'src/book-disposal/entity/book-disposal.entity'
+import { CargoUsageModel } from 'src/cargo-use/entity/cargo-usage.entity'
+import { LogisticsJobModel } from 'src/logistics-job/entity/logistics-job.entity'
+import { OrganizationsModule } from 'src/organization/organization.module'
+import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
+import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
+import { OrganizationModel } from 'src/organization/entity/organizations.entity'
 
 @Module({
   imports: [
@@ -21,10 +21,12 @@ import { OrganizationsModule } from 'src/organizations/organizations.module';
       BookDisposalModel,
       CargoUsageModel,
       LogisticsJobModel,
-      OrganizationsModel,
-    ]),
+      OrganizationModel,
+      VendorLedgerModel,
+      ClientLedgerModel
+    ])
   ],
   controllers: [UploadController],
-  providers: [UploadService],
+  providers: [UploadService]
 })
 export class UploadModule {}

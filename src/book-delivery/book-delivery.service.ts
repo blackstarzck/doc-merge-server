@@ -1,21 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { QueryRunner, Repository } from 'typeorm';
-import { BookDeliveryModel } from './entity/book-delivery.entity';
-import { plainToInstance } from 'class-transformer';
-import { CreateBookDeliveryDto } from './dto/create-book-delivery.dto';
-import { validate, ValidationError } from 'class-validator';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { QueryRunner, Repository } from "typeorm";
+import { BookDeliveryModel } from "./entity/book-delivery.entity";
+import { plainToInstance } from "class-transformer";
+import { CreateBookDeliveryDto } from "./dto/create-book-delivery.dto";
+import { validate, ValidationError } from "class-validator";
 
 @Injectable()
 export class BookDeliveryService {
   constructor(
     @InjectRepository(BookDeliveryModel)
-    private readonly bookDeliveryRepository: Repository<BookDeliveryModel>
+    private readonly bookDeliveryRepository: Repository<BookDeliveryModel>,
   ) {}
 
   async getBookDelivery() {
     return await this.bookDeliveryRepository.find({
-      order: { id: 'ASC' },
+      order: { id: "ASC" },
     });
   }
 

@@ -1,22 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { In, QueryRunner, Repository } from 'typeorm';
-import { ServiceDeliveryModel } from './entity/service-delivery.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { validate, ValidationError } from 'class-validator';
-import { plainToInstance } from 'class-transformer';
-import { CreateServiceDeliveryDto } from './dto/create-service-delivery.dto';
-import { asapScheduler } from 'rxjs';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { In, QueryRunner, Repository } from "typeorm";
+import { ServiceDeliveryModel } from "./entity/service-delivery.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { validate, ValidationError } from "class-validator";
+import { plainToInstance } from "class-transformer";
+import { CreateServiceDeliveryDto } from "./dto/create-service-delivery.dto";
+import { asapScheduler } from "rxjs";
 
 @Injectable()
 export class ServiceDeliveryService {
   constructor(
     @InjectRepository(ServiceDeliveryModel)
-    private readonly serviceDeliveryRepository: Repository<ServiceDeliveryModel>
+    private readonly serviceDeliveryRepository: Repository<ServiceDeliveryModel>,
   ) {}
 
   async getServiceDelivery() {
     return await this.serviceDeliveryRepository.find({
-      order: { id: 'ASC' },
+      order: { id: "ASC" },
     });
   }
 

@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity({ name: "거래처 정보" })
+@Entity({ name: 'client_model', comment: '거래처 정보' })
 export class ClientModel {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
-  @Column({ type: "text", comment: "거래처명" })
-  client_name: string;
+  @Column({ type: 'text', comment: '거래처명' })
+  name: string
 }
