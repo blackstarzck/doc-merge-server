@@ -6,42 +6,53 @@ import { OrganizationNamesModel } from './entity/organization-names.entity'
 import { validate } from 'class-validator'
 import { CreateOrganizationDto } from './dto/create-organization.dto'
 import { plainToInstance } from 'class-transformer'
+import { CreateOrganizationNameDto } from './dto/create_organization-name.dto'
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @InjectRepository(OrganizationModel)
-    private readonly organizationsRepository: Repository<OrganizationModel>,
+    private readonly organizationsRepo: Repository<OrganizationModel>,
 
     @InjectRepository(OrganizationNamesModel)
-    private readonly organizationNamesRepository: Repository<OrganizationNamesModel>
+    private readonly organizationNamesRepo: Repository<OrganizationNamesModel>
   ) {}
 
-  async getOrganizations() {
-    return await this.organizationsRepository.find({
+  async getAllOrganizations() {
+    return await this.organizationsRepo.find({
       order: { id: 'ASC' }
     })
   }
 
   async getOrganizationById(id: number) {
-    return await this.organizationsRepository.find({
+    return await this.organizationsRepo.find({
       where: { sheet_data_num: id },
       order: { id: 'ASC' }
     })
   }
 
   async getOrganizationNames() {
-    return await this.organizationNamesRepository.find({
+    return await this.organizationNamesRepo.find({
       order: { id: 'ASC' }
     })
   }
 
   async getOrganizationNameById(id: number) {
-    const result = await this.organizationNamesRepository.findOne({
+    const result = await this.organizationNamesRepo.findOne({
       where: { id }
     })
     if (!result) throw new NotFoundException(`Organization ${id} not found`)
     return result
+  }
+
+  async createOrganizationName(dto: CreateOrganizationNameDto) {
+    const nameExists = await this.organizationNamesRepo.exists({ where: { name: dto.name } })
+    if (nameExists) throw new BadRequestException('이미 등록된 기관명입니다.')
+
+    const instance = plainToInstance(CreateOrganizationNameDto, dto)
+    const entity = this.organizationNamesRepo.create(instance)
+
+    return await this.organizationNamesRepo.save(entity)
   }
 
   async postOrganizations(data: OrganizationModel[], qr: QueryRunner) {
@@ -77,13 +88,26 @@ export class OrganizationService {
   getRepository(qr?: QueryRunner): Repository<OrganizationModel> {
     return qr
       ? qr.manager.getRepository<OrganizationModel>(OrganizationModel)
-      : this.organizationsRepository
+      : this.organizationsRepo
   }
 
   async deleteOrganizations(orgId: number, ids: number[], qr?: QueryRunner) {
     const respository = this.getRepository(qr)
     const result = await respository.delete(ids)
     const find = await respository.find({ where: { sheet_data_num: orgId }, order: { id: 'ASC' } })
+    return find
+  }
+
+  async updateOrganizationName(orgId: number, dto: CreateOrganizationNameDto) {
+    const nameExists = await this.organizationNamesRepo.exists({ where: { id: orgId } })
+    if (!nameExists) throw new BadRequestException('기관이 존재하지 않습니다.')
+
+    const instance = plainToInstance(CreateOrganizationNameDto, dto)
+    const entity = this.organizationNamesRepo.create(instance)
+    const update = await this.organizationNamesRepo.update(orgId, { ...entity })
+
+    if (update.affected === 0) throw new BadRequestException('기관명 정보를 수정할 수 없습니다.')
+    const find = await this.organizationNamesRepo.findOne({ where: { id: orgId } })
     return find
   }
 }

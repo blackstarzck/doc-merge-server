@@ -27,5 +27,5 @@ export class VendorModel {
   payment: string
 
   @Column({ type: 'text', comment: '특징' })
-  features: string
+  notes: string
 }

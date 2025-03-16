@@ -16,7 +16,7 @@ export class ClientService {
     return await this.clientRepo.find({ order: { id: 'ASC' } })
   }
 
-  async getClientsById(clientId: number) {
+  async getClientById(clientId: number) {
     return await this.clientRepo.findBy({ id: clientId })
   }
 
@@ -41,6 +41,5 @@ export class ClientService {
     if (update.affected === 0) throw new BadRequestException('거래처 정보를 수정할 수 없습니다.')
     const find = await this.clientRepo.findOne({ where: { id: clientId } })
     return find
-    // return await this.clientRepo.save(entity)
   }
 }

@@ -12,11 +12,11 @@ export class ClientController {
   }
 
   @Get(':clientId')
-  getClientsById(
+  getClientById(
     @Param('clientId', ParseIntPipe)
     clientId: number
   ) {
-    return this.clientService.getClientsById(clientId)
+    return this.clientService.getClientById(clientId)
   }
 
   @Post()

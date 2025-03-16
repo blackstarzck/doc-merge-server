@@ -32,5 +32,5 @@ export class CreateVendorDto {
   payment: string
 
   @IsString({ message: stringValidationMessage })
-  features: string
+  notes: string
 }
