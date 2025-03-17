@@ -1,107 +1,112 @@
-import { Transform } from "class-transformer";
-import { IsOptional, IsInt, IsString, IsDate, IsNumber } from "class-validator";
-import { dateValidationMessage } from "src/common/validation-message/date-validation-message";
-import { integerValidationMessage } from "src/common/validation-message/integer-validation-message copy";
-import { stringValidationMessage } from "src/common/validation-message/string-validation-message copy";
-import { transformDate } from "src/common/utils/date.utils";
-import { transformEmptyToNull, transformFloat } from "src/common/utils/transform.utils";
+import { Transform } from 'class-transformer'
+import { IsOptional, IsInt, IsString, IsDate, IsNumber } from 'class-validator'
+import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
+import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
+import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
+import { transformDate } from 'src/common/utils/date.utils'
+import {
+  transformEmptyToNull,
+  transformFloat,
+  transformIntegerOrNull
+} from 'src/common/utils/transform.utils'
 
 export class CreateBookDisposalDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
-  id?: number;
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  id?: number
 
   @IsNumber()
   @Transform(transformFloat)
-  no: number;
+  no: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  date: Date;
+  date: Date
 
-  @IsString({ message: stringValidationMessage })
-  win_company: string;
+  @IsString()
+  win_company: string
 
-  @IsString({ message: stringValidationMessage })
-  parent_company: string;
+  @IsString()
+  parent_company: string
 
-  @IsString({ message: stringValidationMessage })
-  category: string;
+  @IsString()
+  category: string
 
-  @IsString({ message: stringValidationMessage })
-  org_name: string;
+  @IsString()
+  org_name: string
 
-  @IsString({ message: stringValidationMessage })
-  status: string;
+  @IsString()
+  status: string
 
-  @IsString({ message: stringValidationMessage })
-  cost: string;
+  @IsString()
+  cost: string
 
-  @IsString({ message: stringValidationMessage })
-  role_person: string;
+  @IsString()
+  role_person: string
 
-  @IsString({ message: stringValidationMessage })
-  mark_equip: string;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  final_delivery_bks: number;
+  @IsString()
+  mark_equip: string
 
   @IsNumber()
   @Transform(transformFloat)
-  final_sales: number;
+  final_delivery_bks: number
 
   @IsNumber()
   @Transform(transformFloat)
-  expend_cost: number;
+  final_sales: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsNumber()
+  @Transform(transformFloat)
+  expend_cost: number
+
+  @IsDate()
   @Transform(transformDate)
-  pre_payment_date: Date;
+  pre_payment_date: Date
 
   @IsNumber()
   @Transform(transformFloat)
-  pre_payment: number;
+  pre_payment: number
 
   @IsNumber()
   @Transform(transformFloat)
-  expected_balance: number;
+  expected_balance: number
 
-  @IsString({ message: stringValidationMessage })
-  company_contact: string;
+  @IsString()
+  company_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  company_person: string;
+  @IsString()
+  company_person: string
 
-  @IsString({ message: stringValidationMessage })
-  admin_contact: string;
+  @IsString()
+  admin_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  admin_person: string;
+  @IsString()
+  admin_person: string
 
-  @IsString({ message: stringValidationMessage })
-  lib_contact: string;
+  @IsString()
+  lib_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  lib_person: string;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  revenue: number;
+  @IsString()
+  lib_person: string
 
   @IsNumber()
   @Transform(transformFloat)
-  balance: number;
+  revenue: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsNumber()
+  @Transform(transformFloat)
+  balance: number
+
+  @IsDate()
   @Transform(transformDate)
-  balance_date: Date;
+  balance_date: Date
 
   @IsNumber()
   @Transform(transformFloat)
-  total_payment: number;
+  total_payment: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(transformEmptyToNull)
-  notes: string;
+  notes: string
 }

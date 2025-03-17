@@ -32,7 +32,7 @@ export class organizationsController {
     return this.OrganizationService.getOrganizationById(id)
   }
 
-  @Post()
+  @Post(':organizationId')
   postOrganizations(@Body('document') data: any[], @Query('qr') qr: QR) {
     return this.OrganizationService.postOrganizations(data, qr)
   }
@@ -42,13 +42,14 @@ export class organizationsController {
     return this.OrganizationService.createOrganizationName(data)
   }
 
-  @Post(':organizationId')
+  @Post(':organizationId/delete')
   deleteOrganizations(
     @Param('organizationId', ParseIntPipe) orgId: number,
     @Body('ids', new ParseArrayPipe({ items: Number }))
     ids: number[],
     @Query('qr') qr: QR
   ) {
+    console.log('delete???')
     return this.OrganizationService.deleteOrganizations(orgId, ids, qr)
   }
 

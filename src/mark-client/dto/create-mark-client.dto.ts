@@ -1,28 +1,31 @@
+import { Transform } from 'class-transformer'
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { transformIntegerOrNull } from 'src/common/utils/transform.utils'
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
 
 export class CreateMarkClientDto {
   @IsOptional()
   @IsInt()
+  @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @IsNotEmpty({ message: '거래처명은 필수입니다.' })
   name: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   ip_address: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   phone: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   email: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   address: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @IsOptional()
   notes?: string
 }

@@ -13,6 +13,7 @@ import { ClientLedgerModule } from './client-ledger/client-ledger.module'
 import { VendorLedgerModule } from './vendor-ledger/vendor-ledger.module'
 import { VendorModule } from './vendor/vendor.module'
 import { MarkClientModule } from './mark-client/mark-client.module'
+import { MarkStatusModule } from './mark-status/mark-status.module'
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { MarkClientModule } from './mark-client/mark-client.module'
     ClientLedgerModule,
     VendorModule,
     VendorLedgerModule,
-    MarkClientModule
+    MarkClientModule,
+    MarkStatusModule
   ],
   controllers: [],
   providers: []

@@ -5,7 +5,10 @@ export class OrganizationModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'float', comment: '입력타이틀 번호', nullable: true })
+  @Column({ type: 'int', comment: '연도', nullable: true })
+  year: number
+
+  @Column({ type: 'int', comment: '입력타이틀 번호', nullable: true })
   row_num: number
 
   @Column({ type: 'text', comment: '기관명' })

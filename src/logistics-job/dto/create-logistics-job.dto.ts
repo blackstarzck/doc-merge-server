@@ -8,58 +8,62 @@ import { stringValidationMessage } from 'src/common/validation-message/string-va
 
 export class CreateLogisticsJobDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
   no: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
   author: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
   progress_item: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
   quantity: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
   shipment_date: Date
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   progress_person: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
   delivery_date: Date
 
-  @IsInt({ message: integerValidationMessage })
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   @Transform(transformIntegerOrNull)
   commission: number
 
-  @IsInt({ message: integerValidationMessage })
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   @Transform(transformIntegerOrNull)
   additional_cost: number
 
-  @IsInt({ message: integerValidationMessage })
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   @Transform(transformIntegerOrNull)
   settlement_cost: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
   settlement_date: Date
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   shipping_method: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   tracking_number: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   remarks: string
 }

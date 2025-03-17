@@ -1,141 +1,143 @@
-import { Transform } from 'class-transformer';
-import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
-import { transformDate } from 'src/common/utils/date.utils';
+import { Transform } from 'class-transformer'
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
+import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformEmptyToNull,
   transformFloat,
-} from 'src/common/utils/transform.utils';
-import { dateValidationMessage } from 'src/common/validation-message/date-validation-message';
-import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy';
-import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy';
+  transformIntegerOrNull
+} from 'src/common/utils/transform.utils'
+import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
+import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
+import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
 
 export class CreateServiceDeliveryDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
-  id?: number;
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  id?: number
 
   @IsNumber()
   @Transform(transformFloat)
-  balance: number;
+  balance: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  balance_date: Date;
+  balance_date: Date
 
   @IsNumber()
   @Transform(transformFloat)
-  total_payment: number;
+  total_payment: number
 
-  @IsString({ message: stringValidationMessage })
-  notes: string;
+  @IsString()
+  notes: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
-  no: string;
+  no: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  date: Date;
+  date: Date
 
-  @IsString({ message: stringValidationMessage })
-  bid_org: string;
+  @IsString()
+  bid_org: string
 
-  @IsString({ message: stringValidationMessage })
-  win_company: string;
+  @IsString()
+  win_company: string
 
-  @IsString({ message: stringValidationMessage })
-  parent_company: string;
+  @IsString()
+  parent_company: string
 
-  @IsString({ message: stringValidationMessage })
-  org_name: string;
+  @IsString()
+  org_name: string
 
-  @IsString({ message: stringValidationMessage })
-  role_person: string;
+  @IsString()
+  role_person: string
 
-  @IsString({ message: stringValidationMessage })
-  bid_num: string;
+  @IsString()
+  bid_num: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  contract_date: Date;
+  contract_date: Date
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  delivery_date: Date;
+  delivery_date: Date
 
-  @IsString({ message: stringValidationMessage })
-  mark_equip: string;
-
-  @IsNumber()
-  @Transform(transformFloat)
-  base_price: number;
+  @IsString()
+  mark_equip: string
 
   @IsNumber()
   @Transform(transformFloat)
-  win_price: number;
+  base_price: number
 
   @IsNumber()
   @Transform(transformFloat)
-  win_rate: number;
+  win_price: number
 
   @IsNumber()
   @Transform(transformFloat)
-  purchase_cost: number;
+  win_rate: number
 
   @IsNumber()
   @Transform(transformFloat)
-  final_delivery_quantity: number;
+  purchase_cost: number
 
   @IsNumber()
   @Transform(transformFloat)
-  final_sales: number;
+  final_delivery_quantity: number
 
-  @IsString({ message: stringValidationMessage })
-  payment_method: string;
+  @IsNumber()
+  @Transform(transformFloat)
+  final_sales: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsString()
+  payment_method: string
+
+  @IsDate()
   @Transform(transformDate)
-  pre_payment_date: Date;
+  pre_payment_date: Date
 
   @IsNumber()
   @Transform(transformFloat)
-  pre_payment: number;
+  pre_payment: number
 
   @IsNumber()
   @Transform(transformFloat)
-  expected_balance: number;
+  expected_balance: number
 
   @IsNumber()
   @Transform(transformFloat)
-  final_delivery_price: number;
+  final_delivery_price: number
 
   @IsNumber()
   @Transform(transformFloat)
-  final_bk_sales: number;
+  final_bk_sales: number
 
   @IsNumber()
   @Transform(transformFloat)
-  revenue: number;
+  revenue: number
 
   @IsNumber()
   @Transform(transformFloat)
-  net_revenue: number;
+  net_revenue: number
 
-  @IsString({ message: stringValidationMessage })
-  company_contact: string;
+  @IsString()
+  company_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  company_person: string;
+  @IsString()
+  company_person: string
 
-  @IsString({ message: stringValidationMessage })
-  admin_contact: string;
+  @IsString()
+  admin_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  admin_person: string;
+  @IsString()
+  admin_person: string
 
-  @IsString({ message: stringValidationMessage })
-  lib_contact: string;
+  @IsString()
+  lib_contact: string
 
-  @IsString({ message: stringValidationMessage })
-  lib_person: string;
+  @IsString()
+  lib_person: string
 }

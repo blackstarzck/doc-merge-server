@@ -112,8 +112,8 @@ export class UploadService {
       } = { sheet_data_num: null, sheet_name: null }
       const org = await this.OrganizationService.getOrganizationNameById(id)
 
-      if (sheetName !== org.name)
-        throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${org.name}`)
+      // if (sheetName !== org.name)
+      //   throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${org.name}`)
 
       organization.sheet_name = org.name
       organization.sheet_data_num = org.id

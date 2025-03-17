@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { MarkStatusModel } from './entity/mark-status.entity'
 import { Repository } from 'typeorm'
-import { VendorLedgerModel } from './entity/vendor-ledger.entity'
 
 @Injectable()
-export class VendorLedgerService {
+export class MarkStatusService {
   constructor(
-    @InjectRepository(VendorLedgerModel)
-    private readonly vendorLedgerRepo: Repository<VendorLedgerModel>
+    @InjectRepository(MarkStatusModel)
+    private readonly markStatusRepo: Repository<MarkStatusModel>
   ) {}
 
   async getVendorLedgerById(id: number) {
-    return await this.vendorLedgerRepo.find({
+    return await this.markStatusRepo.find({
       where: { id },
       order: { id: 'ASC' }
     })

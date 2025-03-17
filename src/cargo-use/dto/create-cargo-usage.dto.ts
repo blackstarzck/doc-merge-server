@@ -1,63 +1,64 @@
-import { Transform } from "class-transformer";
-import { IsDate, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
-import { dateValidationMessage } from "src/common/validation-message/date-validation-message";
-import { integerValidationMessage } from "src/common/validation-message/integer-validation-message copy";
-import { stringValidationMessage } from "src/common/validation-message/string-validation-message copy";
-import { transformDate } from "src/common/utils/date.utils";
-import { transformFloat } from "src/common/utils/transform.utils";
+import { Transform } from 'class-transformer'
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
+import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
+import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
+import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
+import { transformDate } from 'src/common/utils/date.utils'
+import { transformFloat, transformIntegerOrNull } from 'src/common/utils/transform.utils'
 
 export class CreateCargoUseDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
-  id?: number;
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  id?: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
-  no: string;
+  no: string
 
-  @IsString({ message: stringValidationMessage })
-  author: string;
+  @IsString()
+  author: string
 
-  @IsString({ message: stringValidationMessage })
-  destination: string;
+  @IsString()
+  destination: string
 
-  @IsString({ message: stringValidationMessage })
-  progress_item: string;
+  @IsString()
+  progress_item: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
-  quantity: string;
+  quantity: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  shipment_date: Date;
+  shipment_date: Date
 
-  @IsString({ message: stringValidationMessage })
-  company: string;
+  @IsString()
+  company: string
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  delivery_date: Date;
+  delivery_date: Date
 
   @IsNumber()
   @Transform(transformFloat)
-  cost: number;
+  cost: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @Transform(({ value }) => String(value))
-  additional_cost: string;
+  additional_cost: string
 
   @IsNumber()
   @Transform(transformFloat)
-  settlement_cost: number;
+  settlement_cost: number
 
-  @IsDate({ message: dateValidationMessage })
+  @IsDate()
   @Transform(transformDate)
-  settlement_date: Date;
+  settlement_date: Date
 
-  @IsString({ message: stringValidationMessage })
-  vehicle: string;
+  @IsString()
+  vehicle: string
 
-  @IsString({ message: stringValidationMessage })
-  remarks: string;
+  @IsString()
+  remarks: string
 }

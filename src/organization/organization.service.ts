@@ -81,7 +81,6 @@ export class OrganizationService {
       const entity = repository.create(dto)
       return entity
     })
-
     return await repository.save(entityData)
   }
 

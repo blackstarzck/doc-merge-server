@@ -1,36 +1,38 @@
+import { Transform } from 'class-transformer'
 import { IsString, IsOptional, IsInt, IsNotEmpty } from 'class-validator'
+import { transformIntegerOrNull } from 'src/common/utils/transform.utils'
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
 
 export class CreateVendorDto {
   @IsOptional()
-  @IsInt({ message: integerValidationMessage })
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @IsNotEmpty()
   name: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   @IsNotEmpty()
   representative: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   mobile_phone: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   office_phone: string
 
-  @IsString({ message: stringValidationMessage })
-  @IsNotEmpty()
+  @IsString()
   email: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   shipping_rate: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   payment: string
 
-  @IsString({ message: stringValidationMessage })
+  @IsString()
   notes: string
 }

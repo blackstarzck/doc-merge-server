@@ -1,10 +1,13 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity({ name: 'organization_names_model' })
 export class OrganizationNamesModel {
   @PrimaryGeneratedColumn()
-  id: number;
+  id: number
 
   @Column({ type: 'text' })
-  name: string;
+  name: string
+
+  @Column({ type: 'int', comment: '연도', nullable: true })
+  year: number
 }
