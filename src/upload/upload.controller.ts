@@ -57,6 +57,6 @@ export class UploadController {
     @QueryRunner() qr: QR,
     @Param('clientId', ParseIntPipe) clientId: number
   ) {
-    return this.uploadService.postUpload('lient_ledger', file, clientId, qr)
+    return this.uploadService.postUpload('client_ledger', file, clientId, qr)
   }
 }

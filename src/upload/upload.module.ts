@@ -11,10 +11,16 @@ import { OrganizationsModule } from 'src/organization/organization.module'
 import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
 import { OrganizationModel } from 'src/organization/entity/organizations.entity'
+import { ClientModel } from 'src/client/entity/client.entity'
+import { ClientModule } from 'src/client/client.module'
+import { VendorModule } from 'src/vendor/vendor.module'
+import { VendorModel } from 'src/vendor/entity/vendor.entity'
 
 @Module({
   imports: [
     OrganizationsModule,
+    ClientModule,
+    VendorModule,
     TypeOrmModule.forFeature([
       BookDeliveryModel,
       ServiceDeliveryModel,
@@ -23,7 +29,9 @@ import { OrganizationModel } from 'src/organization/entity/organizations.entity'
       LogisticsJobModel,
       OrganizationModel,
       VendorLedgerModel,
-      ClientLedgerModel
+      ClientLedgerModel,
+      VendorModel,
+      ClientModel
     ])
   ],
   controllers: [UploadController],

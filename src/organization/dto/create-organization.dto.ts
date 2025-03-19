@@ -3,7 +3,7 @@ import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsBoolean } from 'class-
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformBoolean,
-  transformFloat,
+  transformNumber,
   transformIntegerOrNull
 } from 'src/common/utils/transform.utils'
 
@@ -66,70 +66,70 @@ export class CreateOrganizationDto {
   delivery_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   total_bks: number
 
   @IsString()
   mark_equip: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   bk_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   win_price: number // floor(bk_price * win_rate)
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   win_rate: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   bk_supply_price: number // floor(bk_price * bk_supply_rate)
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   bk_supply_rate: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   purchase_cost: number // bk_price * bk_cost_late
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   bk_cost_late: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   org_m_per_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   org_m_price: number // total_bks * org_m_per_price
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   m_supply_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   m_supply_total_price: number // total_bks * m_supply_price
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   out_of_stock_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   out_of_stock_bks: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_delivery_quantity: number // total_bks - out_of_stock_bks
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   m_final_sales: number // m_supply_price * m_supply_price
 
   @IsOptional()
@@ -137,7 +137,7 @@ export class CreateOrganizationDto {
   payment_method: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   payment: number
 
   @IsDate()
@@ -145,7 +145,7 @@ export class CreateOrganizationDto {
   pre_payment_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   balance: number
 
   @IsDate()
@@ -153,28 +153,28 @@ export class CreateOrganizationDto {
   balance_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   expected_balance: number // floor(bk_supply_price+m_supply_total_price-pre_payment-balance)
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   total_payment: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_delivery_price: number // bk_price - out_of_stock_bks
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_bk_sales: number // bk_supply_rate * m_supply_price
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   bk_revenue: number // final_bk_sales-(m_supply_price*bk_cost_late)
 
   @IsOptional()
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   d_day: number // d-day(delivery_date-today_date)
 
   @IsOptional()
@@ -184,17 +184,17 @@ export class CreateOrganizationDto {
 
   @IsOptional()
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   net_revenue: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   revenue_rate: number
 
   @IsString()
   sheet_name: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   sheet_data_num: number
 }

@@ -4,7 +4,7 @@ import { dateValidationMessage } from 'src/common/validation-message/date-valida
 import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
 import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
 import { transformDate } from 'src/common/utils/date.utils'
-import { transformFloat, transformIntegerOrNull } from 'src/common/utils/transform.utils'
+import { transformNumber, transformIntegerOrNull } from 'src/common/utils/transform.utils'
 
 export class CreateCargoUseDto {
   @IsOptional()
@@ -41,7 +41,7 @@ export class CreateCargoUseDto {
   delivery_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   cost: number
 
   @IsString()
@@ -49,7 +49,7 @@ export class CreateCargoUseDto {
   additional_cost: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   settlement_cost: number
 
   @IsDate()

@@ -1,25 +1,36 @@
-import { Transform } from 'class-transformer'
-import { IsDate, IsInt, IsOptional, IsString } from 'class-validator'
+import { Expose, Transform } from 'class-transformer'
+import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
 import { transformDate } from 'src/common/utils/date.utils'
-import { transformIntegerOrNull } from 'src/common/utils/transform.utils'
-import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
-import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
-import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
+import {
+  transformNumber,
+  transformIntegerOrNull,
+  transformString
+} from 'src/common/utils/transform.utils'
 
 export class CreateVendorLedgerDto {
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
+  @Expose()
   id?: number
 
   @IsString()
-  vendor_name: string
+  @Transform(transformString)
+  @Expose()
+  outsourcing_company: string
+
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  @Expose()
+  outsourcing_company_id?: number
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   order_date: Date
 
   @IsString()
+  @Expose()
   author: string
 
   @IsString()
@@ -30,53 +41,62 @@ export class CreateVendorLedgerDto {
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   base_price: number
 
   @IsInt()
-  @Transform(transformIntegerOrNull)
   @Transform(transformIntegerOrNull)
   bid_price: number
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   purchase_price: number
 
-  @IsString()
-  purchase_rate: string
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
+  purchase_rate: number
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
+  @Expose()
   profit: number
 
-  @IsString()
-  profit_rate: string
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
+  profit_rate: number
 
   @IsString()
+  @Expose()
   status: string
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   collection_date: Date
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   remittance_date: Date
 
   @IsString()
+  @Expose()
   invoice: string
 
   @IsString()
+  @Transform(transformString)
+  @Expose()
   invoice_recipient: string
 
   @IsString()
+  @Expose()
   account_info: string
 
   @IsString()
   manager: string
 
   @IsString()
+  @Expose()
   manager_phone: string
 }

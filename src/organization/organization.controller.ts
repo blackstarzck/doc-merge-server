@@ -49,7 +49,6 @@ export class organizationsController {
     ids: number[],
     @Query('qr') qr: QR
   ) {
-    console.log('delete???')
     return this.OrganizationService.deleteOrganizations(orgId, ids, qr)
   }
 

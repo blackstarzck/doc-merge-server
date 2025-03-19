@@ -24,6 +24,9 @@ import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity
 import { CreateVendorLedgerDto } from 'src/vendor-ledger/dto/create-vendor-ledger.dto'
 import { CreateClientLedgerDto } from 'src/client-ledger/dto/create-client-ledger.dto'
 import { OrganizationModel } from 'src/organization/entity/organizations.entity'
+import { ClientModel } from 'src/client/entity/client.entity'
+import { ClientService } from 'src/client/client.service'
+import { VendorService } from 'src/vendor/vendor.service'
 
 type Model =
   | BookDeliveryModel
@@ -60,7 +63,9 @@ export class UploadService {
     @InjectRepository(ClientLedgerModel)
     private readonly clientLedgerRepo: Repository<ClientLedgerModel>,
 
-    private readonly OrganizationService: OrganizationService
+    private readonly organizationService: OrganizationService,
+    private readonly clientService: ClientService,
+    private readonly vendorService: VendorService
   ) {}
 
   private async getExsistingData<T extends BaseEntity>(
@@ -110,15 +115,38 @@ export class UploadService {
         sheet_data_num: number | null
         sheet_name: string | null
       } = { sheet_data_num: null, sheet_name: null }
-      const org = await this.OrganizationService.getOrganizationNameById(id)
+      const org = await this.organizationService.getOrganizationNameById(id)
 
-      // if (sheetName !== org.name)
-      //   throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${org.name}`)
+      if (sheetName !== org.name)
+        throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${org.name}`)
 
       organization.sheet_name = org.name
       organization.sheet_data_num = org.id
 
       jsonData = jsonData.map((data) => ({ ...data, ...organization }))
+      // 매출처
+    } else if (path === 'client_ledger') {
+      const client = await this.clientService.getOneClientById(id)
+
+      if (sheetName !== client.name)
+        throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${client.name}`)
+
+      jsonData = jsonData.map((data) => ({
+        ...data,
+        parent_company: client.name,
+        parent_company_id: client.id
+      }))
+    } else if (path === 'vendor_ledger') {
+      const vendor = await this.vendorService.getOneVendorById(id)
+
+      if (sheetName !== vendor.name)
+        throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${vendor.name}`)
+
+      jsonData = jsonData.map((data) => ({
+        ...data,
+        outsourcing_company: vendor.name,
+        outsourcing_company_id: vendor.id
+      }))
     }
 
     const dtoInstances = jsonData.map((row) => {

@@ -1,21 +1,30 @@
 import { IsString, IsInt, IsDate, IsOptional, IsNumber } from 'class-validator'
-import { Transform } from 'class-transformer'
+import { Expose, Transform } from 'class-transformer'
 import { transformDate } from 'src/common/utils/date.utils'
-import { transformFloat, transformIntegerOrNull } from 'src/common/utils/transform.utils'
-import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
-import { integerValidationMessage } from 'src/common/validation-message/integer-validation-message copy'
-import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
+import { transformNumber } from 'src/common/utils/transform.utils'
 
 export class CreateClientLedgerDto {
   @IsOptional()
   @IsInt()
-  @Transform(transformIntegerOrNull)
+  @Expose()
   id?: number
 
   @IsString()
+  @Expose()
+  parent_company: string // book_deliver
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformNumber)
+  @Expose()
+  parent_company_id?: number // book_deliver
+
+  @IsString()
+  @Expose()
   no: string
 
   @IsString()
+  @Expose()
   details: string
 
   @IsString()
@@ -23,68 +32,78 @@ export class CreateClientLedgerDto {
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   order_date: Date
 
   @IsString()
+  @Expose()
   deposit_status: string
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   deposit_date: Date
 
   @IsString()
+  @Expose()
   pre_payment_status: string
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   pre_payment_date: Date
 
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
   bk_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
-  supply_rate: number
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
-  bk_supply_price: number
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
-  total_payment: number
+  @Transform(transformNumber)
+  @Expose()
+  bk_supply_rate: number // book_delivery
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
+  @Expose()
+  bk_supply_price: number // book_delivery
+
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
+  total_payment: number // book_delivery
+
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
   purchase_rate: number
 
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
   purchase_amount: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
+  @Expose()
   profit_rate: number
 
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
   profit: number
 
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
+  @Expose()
   balance: number
 
   @IsDate()
   @Transform(transformDate)
+  @Expose()
   invoice_date: Date
 
   @IsString()
+  @Expose()
   remarks: string
 }

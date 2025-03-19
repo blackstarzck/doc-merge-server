@@ -6,6 +6,12 @@ export class ClientLedgerModel {
   @PrimaryGeneratedColumn()
   id: number
 
+  @Column({ type: 'text', comment: '상위사업자', nullable: true })
+  parent_company: string
+
+  @Column({ type: 'int', comment: '상위사업자 아이디', nullable: true })
+  parent_company_id: number
+
   @Column({ type: 'text', comment: '연번', nullable: true })
   no: string
 
@@ -27,39 +33,39 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '선금상태', nullable: true })
   pre_payment_status: string
 
-  @Column({ type: 'date', comment: '선금날짜', nullable: true })
+  @Column({ type: 'date', comment: '선금일자', nullable: true })
   pre_payment_date: Date
 
-  @Column({ type: 'int', comment: '도서정가', nullable: true })
+  @Column({ type: 'bigint', comment: '도서정가', nullable: true })
   bk_price: number
 
   @Column({
     type: 'float',
-    comment: '공급율',
+    comment: '도서공급율',
     transformer: columnRateTransformers,
     nullable: true
   })
   bk_supply_rate: number
 
-  @Column({ type: 'int', comment: '도서공급단가', nullable: true })
+  @Column({ type: 'bigint', comment: '도서공급단가', nullable: true })
   bk_supply_price: number
 
-  @Column({ type: 'int', comment: '총입금액', nullable: true })
+  @Column({ type: 'bigint', comment: '총입금액', nullable: true })
   total_payment: number
 
   @Column({ type: 'float', comment: '매입율', transformer: columnRateTransformers, nullable: true })
   purchase_rate: number
 
-  @Column({ type: 'int', comment: '매입액', nullable: true })
+  @Column({ type: 'bigint', comment: '매입액', nullable: true })
   purchase_amount: number
 
   @Column({ type: 'float', comment: '이익율', transformer: columnRateTransformers, nullable: true })
   profit_rate: number
 
-  @Column({ type: 'int', comment: '이익금', nullable: true })
+  @Column({ type: 'bigint', comment: '이익금', nullable: true })
   profit: number
 
-  @Column({ type: 'int', comment: '잔액', nullable: true })
+  @Column({ type: 'bigint', comment: '잔액', nullable: true })
   balance: number
 
   @Column({ type: 'date', comment: '계산서발행일', nullable: true })

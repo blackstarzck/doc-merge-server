@@ -2,8 +2,10 @@ import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsBoolean } from 'class-
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformBoolean,
-  transformFloat,
-  transformIntegerOrNull
+  transformNumber,
+  transformIntegerOrNull,
+  transformString,
+  transStringRateToFloat
 } from 'src/common/utils/transform.utils'
 import { Transform } from 'class-transformer'
 
@@ -14,7 +16,7 @@ export class CreateBookDeliveryDto {
   id?: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   balance: number
 
   @IsDate()
@@ -22,14 +24,14 @@ export class CreateBookDeliveryDto {
   balance_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   total_payment: number
 
   @IsString()
   notes: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   no: number
 
   @IsBoolean()
@@ -53,6 +55,7 @@ export class CreateBookDeliveryDto {
   win_company: string
 
   @IsString()
+  @Transform(transformString)
   parent_company: string
 
   @IsString()
@@ -68,6 +71,7 @@ export class CreateBookDeliveryDto {
   sub_status: string
 
   @IsString()
+  @Transform(transformString)
   outsourcing_company: string
 
   @IsString()
@@ -104,7 +108,7 @@ export class CreateBookDeliveryDto {
   win_price?: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transStringRateToFloat)
   win_rate: number
 
   @IsOptional()
@@ -121,7 +125,7 @@ export class CreateBookDeliveryDto {
   bk_supply_rate: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transStringRateToFloat)
   bk_cost_rate: number
 
   @IsOptional()
@@ -130,11 +134,11 @@ export class CreateBookDeliveryDto {
   company_revenue?: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transStringRateToFloat)
   company_revenue_rate: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   our_revenue_rate: number
 
   @IsOptional()
@@ -220,4 +224,12 @@ export class CreateBookDeliveryDto {
   @IsDate()
   @Transform(transformDate)
   today_date: Date
+
+  @IsOptional()
+  @IsInt()
+  client_ledger_id?: number
+
+  @IsOptional()
+  @IsInt()
+  vendor_ledger_id?: number
 }

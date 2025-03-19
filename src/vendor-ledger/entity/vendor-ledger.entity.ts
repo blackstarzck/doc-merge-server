@@ -6,19 +6,22 @@ export class VendorLedgerModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'text', comment: '매입처' })
-  vendor_name: string
+  @Column({ type: 'text', comment: '매입처', nullable: true })
+  outsourcing_company: string
+
+  @Column({ type: 'int', comment: '외주업체 아이디', nullable: true })
+  outsourcing_company_id: number
 
   @Column({ type: 'date', comment: '발주일', nullable: true })
   order_date: Date
 
-  @Column({ type: 'text', comment: '작성자' })
+  @Column({ type: 'text', comment: '작성자', nullable: true })
   author: string
 
-  @Column({ type: 'text', comment: '진행업체' })
+  @Column({ type: 'text', comment: '진행업체', nullable: true })
   processing_company: string
 
-  @Column({ type: 'text', comment: '발주건' })
+  @Column({ type: 'text', comment: '발주건', nullable: true })
   order_item: string
 
   @Column({ type: 'int', comment: '기초금액', nullable: true })
@@ -49,7 +52,7 @@ export class VendorLedgerModel {
   })
   profit_rate: number
 
-  @Column({ type: 'text', comment: '현황' })
+  @Column({ type: 'text', comment: '현황', nullable: true })
   status: string
 
   @Column({ type: 'date', comment: '수금일', nullable: true })
@@ -58,18 +61,18 @@ export class VendorLedgerModel {
   @Column({ type: 'date', comment: '송금일', nullable: true })
   remittance_date: Date
 
-  @Column({ type: 'text', comment: '계산서' })
+  @Column({ type: 'text', comment: '계산서', nullable: true })
   invoice: string
 
-  @Column({ type: 'text', comment: '계산서 수신 사업자' })
+  @Column({ type: 'text', comment: '계산서 수신 사업자', nullable: true })
   invoice_recipient: string
 
-  @Column({ type: 'text', comment: '계좌정보' })
+  @Column({ type: 'text', comment: '계좌정보', nullable: true })
   account_info: string
 
-  @Column({ type: 'text', comment: '담당자' })
+  @Column({ type: 'text', comment: '담당자', nullable: true })
   manager: string
 
-  @Column({ type: 'text', comment: '담당자 전화번호' })
+  @Column({ type: 'text', comment: '담당자 전화번호', nullable: true })
   manager_phone: string
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { VendorModel } from './entity/vendor.entity'
@@ -18,6 +18,12 @@ export class VendorService {
 
   async getVendorById(clientId: number) {
     return await this.vendorRepo.findBy({ id: clientId })
+  }
+
+  async getOneVendorById(vendorId: number) {
+    const result = await this.vendorRepo.findOne({ where: { id: vendorId } })
+    if (!result) throw new NotFoundException(`매입처( ${vendorId}) 정보를 찾지 못했습니다.`)
+    return result
   }
 
   async createVendor(dto: CreateVendorDto) {

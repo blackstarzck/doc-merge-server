@@ -3,7 +3,7 @@ import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformEmptyToNull,
-  transformFloat,
+  transformNumber,
   transformIntegerOrNull
 } from 'src/common/utils/transform.utils'
 import { dateValidationMessage } from 'src/common/validation-message/date-validation-message'
@@ -17,7 +17,7 @@ export class CreateServiceDeliveryDto {
   id?: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   balance: number
 
   @IsDate()
@@ -25,7 +25,7 @@ export class CreateServiceDeliveryDto {
   balance_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   total_payment: number
 
   @IsString()
@@ -69,27 +69,27 @@ export class CreateServiceDeliveryDto {
   mark_equip: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   base_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   win_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   win_rate: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   purchase_cost: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_delivery_quantity: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_sales: number
 
   @IsString()
@@ -100,27 +100,27 @@ export class CreateServiceDeliveryDto {
   pre_payment_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   pre_payment: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   expected_balance: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_delivery_price: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_bk_sales: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   revenue: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   net_revenue: number
 
   @IsString()

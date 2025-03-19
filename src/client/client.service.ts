@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ClientModel } from './entity/client.entity'
 import { Repository } from 'typeorm'
@@ -18,6 +18,12 @@ export class ClientService {
 
   async getClientById(clientId: number) {
     return await this.clientRepo.findBy({ id: clientId })
+  }
+
+  async getOneClientById(clientId: number) {
+    const result = await this.clientRepo.findOne({ where: { id: clientId } })
+    if (!result) throw new NotFoundException(`매출처( ${clientId}) 정보를 찾지 못했습니다.`)
+    return result
   }
 
   async createClient(dto: CreateClientDto) {

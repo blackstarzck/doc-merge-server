@@ -58,7 +58,7 @@ export class BookDeliveryModel extends BaseModel {
   @Column({ type: 'text', comment: '대체여부' })
   sub_status: string
 
-  @Column({ type: 'text', comment: '외주업체' })
+  @Column({ type: 'text', comment: '외주업체', default: '없음' })
   outsourcing_company: string
 
   @Column({ type: 'text', comment: '진행담당자' })
@@ -97,16 +97,31 @@ export class BookDeliveryModel extends BaseModel {
   @Column({ type: 'text', comment: '도서공급율', nullable: true })
   bk_supply_rate: string
 
-  @Column({ type: 'float', comment: '도서원가율', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '도서원가율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   bk_cost_rate: number
 
   @Column({ type: 'int', comment: '업체이익금', nullable: true })
   company_revenue: number
 
-  @Column({ type: 'float', comment: '업체이익율', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '업체이익율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   company_revenue_rate: number
 
-  @Column({ type: 'float', comment: '자사이익률', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '자사이익률',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   our_revenue_rate: number
 
   @Column({ type: 'int', comment: '기관마,장단가', nullable: true })

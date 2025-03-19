@@ -6,7 +6,7 @@ import { stringValidationMessage } from 'src/common/validation-message/string-va
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformEmptyToNull,
-  transformFloat,
+  transformNumber,
   transformIntegerOrNull
 } from 'src/common/utils/transform.utils'
 
@@ -17,7 +17,7 @@ export class CreateBookDisposalDto {
   id?: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   no: number
 
   @IsDate()
@@ -49,15 +49,15 @@ export class CreateBookDisposalDto {
   mark_equip: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_delivery_bks: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   final_sales: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   expend_cost: number
 
   @IsDate()
@@ -65,11 +65,11 @@ export class CreateBookDisposalDto {
   pre_payment_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   pre_payment: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   expected_balance: number
 
   @IsString()
@@ -91,11 +91,11 @@ export class CreateBookDisposalDto {
   lib_person: string
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   revenue: number
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   balance: number
 
   @IsDate()
@@ -103,7 +103,7 @@ export class CreateBookDisposalDto {
   balance_date: Date
 
   @IsNumber()
-  @Transform(transformFloat)
+  @Transform(transformNumber)
   total_payment: number
 
   @IsString()
