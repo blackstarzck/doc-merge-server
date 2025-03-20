@@ -147,6 +147,15 @@ export const columnRateTransformers = {
   }
 }
 
+export const columnBigIntTransformers = {
+  to: (value): number | null => {
+    return value
+  },
+  from: (value: string | null): number | null => {
+    return value !== null ? parseInt(value) : null
+  }
+}
+
 export const transStringRateToFloat = ({ value }): number | null => {
   // null, undefined, 빈 문자열은 null로 변환
   if (value === null || value === undefined || value === '') {
