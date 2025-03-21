@@ -1,16 +1,11 @@
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 import { columnBigIntTransformers, columnRateTransformers } from 'src/common/utils/transform.utils'
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity({ name: 'client_ledger_model', comment: '매출처 원장' })
 export class ClientLedgerModel {
   @PrimaryGeneratedColumn()
   id: number
-
-  @Column({ type: 'text', comment: '상위사업자', nullable: true })
-  parent_company: string
-
-  @Column({ type: 'int', comment: '상위사업자 아이디', nullable: true })
-  parent_company_id: number
 
   @Column({ type: 'text', comment: '연번', nullable: true })
   no: string
@@ -103,4 +98,16 @@ export class ClientLedgerModel {
 
   @Column({ type: 'text', comment: '비고', nullable: true })
   remarks: string
+
+  @Column({ type: 'text', comment: '상위사업자', nullable: true })
+  parent_company: string
+
+  @Column({ type: 'int', comment: '상위사업자 아이디', nullable: true })
+  parent_company_id: number
+
+  @Column({ type: 'int', comment: '매츨압체 행 아이디', nullable: true, unique: true })
+  cl_row_id: number
+
+  @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.client_ledger)
+  bookDelivery: BookDeliveryModel
 }

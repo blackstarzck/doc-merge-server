@@ -5,6 +5,7 @@ import { ClientLedgerModel } from './entity/client-ledger.entity'
 import { CreateClientLedgerDto } from './dto/create-client-ledger.dto'
 import { plainToInstance } from 'class-transformer'
 import { ClientModel } from 'src/client/entity/client.entity'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 
 @Injectable()
 export class ClientLedgerService {
@@ -34,22 +35,34 @@ export class ClientLedgerService {
     return result
   }
 
-  async postClientLedger(datas: CreateClientLedgerDto[]) {
-    const deleteResult = await this.clientLedgerRepo.delete({})
-
-    const dtoInstances = datas.map((data) =>
-      plainToInstance(CreateClientLedgerDto, data, {
+  async postClientLedger(data: BookDeliveryModel[], qr?: QueryRunner) {
+    const repository = this.getRepository(qr)
+    const dtoInstances = data.map((row) =>
+      plainToInstance(CreateClientLedgerDto, row, {
         excludeExtraneousValues: true // @Expose 가 필요함
       })
     )
 
     const entityData = dtoInstances.map((dto) => {
-      const entity = this.clientLedgerRepo.create(dto)
+      const entity = repository.create(dto)
       return entity
     })
 
-    const saved = await this.clientLedgerRepo.save(entityData)
-    return saved
+    const ledger = await repository.upsert(entityData, {
+      conflictPaths: ['cl_row_id'],
+      skipUpdateIfNoValuesChanged: true
+    })
+
+    if (ledger.identifiers.length === 0) throw new BadRequestException('저장에 실패하였습니다.')
+
+    const bookDelivery = data.map((data, i) => {
+      if (!data.cl_row_id) {
+        data.cl_row_id = ledger.identifiers[i].id
+      }
+      return data
+    })
+
+    return { ledger, data: bookDelivery }
   }
 
   getRepository(qr?: QueryRunner): Repository<ClientLedgerModel> {

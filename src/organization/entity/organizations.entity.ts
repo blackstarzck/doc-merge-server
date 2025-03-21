@@ -1,3 +1,4 @@
+import { columnBigIntTransformers, columnRateTransformers } from 'src/common/utils/transform.utils'
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity({ name: 'organizations_model' })
@@ -24,7 +25,7 @@ export class OrganizationModel {
       from: (value) => (value ? value : false)
     }
   })
-  b_close_date: boolean
+  b_close_status: boolean
 
   @Column({
     type: 'boolean',
@@ -50,7 +51,7 @@ export class OrganizationModel {
   @Column({ type: 'text', comment: '특이사항' })
   notes: string
 
-  @Column({ type: 'text', comment: '담당' })
+  @Column({ type: 'text', comment: '진행담당자' })
   role_person: string
 
   @Column({ type: 'text', comment: '원가율 확정', nullable: true })
@@ -68,25 +69,50 @@ export class OrganizationModel {
   @Column({ type: 'text', comment: '마크장비' })
   mark_equip: string
 
-  @Column({ type: 'float', comment: '도서정가', nullable: true })
+  @Column({
+    type: 'bigint',
+    comment: '도서정가',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
   bk_price: number
 
-  @Column({ type: 'float', comment: '낙찰금액', nullable: true })
+  @Column({ type: 'int', comment: '낙찰금액', nullable: true })
   win_price: number // floor(bk_price * win_rate)
 
-  @Column({ type: 'float', comment: '낙찰율(%)', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '낙찰율(%)',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   win_rate: number
 
-  @Column({ type: 'float', comment: '도서공급단가', nullable: true })
+  @Column({
+    type: 'bigint',
+    comment: '도서공급단가',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
   bk_supply_price: number // floor(bk_price * bk_supply_rate)
 
-  @Column({ type: 'float', comment: '도서공급율', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '도서공급율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   bk_supply_rate: number
 
   @Column({ type: 'float', comment: '매입원가', nullable: true })
   purchase_cost: number // bk_price * bk_cost_late
 
-  @Column({ type: 'float', comment: '도서원가율', nullable: true })
+  @Column({
+    type: 'float',
+    comment: '도서원가율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
   bk_cost_late: number
 
   @Column({ type: 'float', comment: '기관마,장단가(권당)', nullable: true })
@@ -151,9 +177,6 @@ export class OrganizationModel {
 
   @Column({ type: 'float', comment: '순이익금', nullable: true })
   net_revenue: number
-
-  @Column({ type: 'float', comment: '이익율', nullable: true })
-  revenue_rate: number
 
   @Column({ type: 'text', comment: '입력타이틀' })
   sheet_name: string

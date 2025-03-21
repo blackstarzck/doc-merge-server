@@ -11,10 +11,15 @@ import {
 import { ClientLedgerService } from './client-ledger.service'
 import { CreateClientLedgerDto } from './dto/create-client-ledger.dto'
 import { QueryRunner as QR } from 'typeorm'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
+import { BookDeliveryService } from 'src/book-delivery/book-delivery.service'
 
 @Controller('client_ledger')
 export class ClientLedgerController {
-  constructor(private readonly clientLedgerService: ClientLedgerService) {}
+  constructor(
+    private readonly clientLedgerService: ClientLedgerService,
+    private readonly bookDeliveryService: BookDeliveryService
+  ) {}
 
   @Get()
   getClientLedger() {
@@ -27,8 +32,12 @@ export class ClientLedgerController {
   }
 
   @Post()
-  postClientLedger(@Body('data') datas: CreateClientLedgerDto[]) {
-    return this.clientLedgerService.postClientLedger(datas)
+  async postClientLedger(@Body('data') datas: BookDeliveryModel[], @Query('qr') qr: QR) {
+    const { ledger, data } = await this.clientLedgerService.postClientLedger(datas, qr)
+
+    const bookDelivery = await this.bookDeliveryService.postBookDelivery(data, qr)
+
+    return { ledger, bookDelivery }
   }
 
   @Post(':clientId/delete')

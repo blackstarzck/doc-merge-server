@@ -32,7 +32,7 @@ export class CreateOrganizationDto {
 
   @IsBoolean()
   @Transform(transformBoolean)
-  b_close_date: boolean
+  b_close_status: boolean
 
   @IsBoolean()
   @Transform(transformBoolean)
@@ -76,8 +76,8 @@ export class CreateOrganizationDto {
   @Transform(transformNumber)
   bk_price: number
 
-  @IsNumber()
-  @Transform(transformNumber)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   win_price: number // floor(bk_price * win_rate)
 
   @IsNumber()
@@ -186,10 +186,6 @@ export class CreateOrganizationDto {
   @IsNumber()
   @Transform(transformNumber)
   net_revenue: number
-
-  @IsNumber()
-  @Transform(transformNumber)
-  revenue_rate: number
 
   @IsString()
   sheet_name: string

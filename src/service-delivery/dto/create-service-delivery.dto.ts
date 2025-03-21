@@ -68,12 +68,12 @@ export class CreateServiceDeliveryDto {
   @IsString()
   mark_equip: string
 
-  @IsNumber()
-  @Transform(transformNumber)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   base_price: number
 
-  @IsNumber()
-  @Transform(transformNumber)
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   win_price: number
 
   @IsNumber()

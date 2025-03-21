@@ -1,4 +1,12 @@
-import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsBoolean } from 'class-validator'
+import {
+  IsOptional,
+  IsInt,
+  IsString,
+  IsNumber,
+  IsDate,
+  IsBoolean,
+  IsNotEmpty
+} from 'class-validator'
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformBoolean,
@@ -8,6 +16,8 @@ import {
   transStringRateToFloat
 } from 'src/common/utils/transform.utils'
 import { Transform } from 'class-transformer'
+import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
+import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 
 export class CreateBookDeliveryDto {
   @IsOptional()
@@ -54,9 +64,15 @@ export class CreateBookDeliveryDto {
   @IsString()
   win_company: string
 
+  @IsNotEmpty()
   @IsString()
   @Transform(transformString)
   parent_company: string
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformNumber)
+  parent_company_id?: number // book_deliver
 
   @IsString()
   org_name: string
@@ -74,7 +90,12 @@ export class CreateBookDeliveryDto {
   @Transform(transformString)
   outsourcing_company: string
 
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  outsourcing_company_id?: number
+
   @IsString()
+  // @Transform(transformString)
   role_person: string
 
   @IsString()
@@ -112,13 +133,13 @@ export class CreateBookDeliveryDto {
   win_rate: number
 
   @IsOptional()
-  @IsInt()
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
   bk_price?: number
 
   @IsOptional()
-  @IsInt()
-  @Transform(transformIntegerOrNull)
+  @IsNumber()
+  @Transform(transformNumber)
   bk_supply_price?: number
 
   @IsString()
@@ -227,9 +248,15 @@ export class CreateBookDeliveryDto {
 
   @IsOptional()
   @IsInt()
-  client_ledger_id?: number
+  cl_row_id?: number
 
   @IsOptional()
   @IsInt()
-  vendor_ledger_id?: number
+  vl_row_id?: number
+
+  @IsOptional()
+  client_ledger?: ClientLedgerModel
+
+  @IsOptional()
+  vendor_ledger?: VendorLedgerModel
 }

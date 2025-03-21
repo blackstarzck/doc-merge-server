@@ -108,7 +108,7 @@ export class UploadService {
     const columns = TABLE_COLUMNS.find((item) => item.name === tableName)?.columns
     let jsonData = this.matchColumnNames(jsonDataRaw, columns)
 
-    // console.log('jsonData: ', jsonData);
+    console.log('jsonData: ', jsonData)
 
     if (path === 'organization') {
       const organization: {
@@ -260,7 +260,7 @@ export class UploadService {
 
           // 매핑된 컬럼이 있는 경우만 포함 (없으면 무시)
           if (mappedColumn) {
-            acc[mappedColumn.key] = row[key] ?? null // 값이 없을 경우 null 처리
+            acc[mappedColumn.key] = row[key] ?? '' // 값이 없을 경우 null 처리
           }
 
           return acc

@@ -1,6 +1,8 @@
-import { columnRateTransformers } from 'src/common/utils/transform.utils'
+import { columnBigIntTransformers, columnRateTransformers } from 'src/common/utils/transform.utils'
 import { BaseModel } from '../../common/entity/base.entity'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
+import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
+import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 
 @Entity({ name: 'book_delivery_model' })
 export class BookDeliveryModel extends BaseModel {
@@ -9,7 +11,7 @@ export class BookDeliveryModel extends BaseModel {
 
   @Column({
     type: 'boolean',
-    comment: '마감유부',
+    comment: '마감',
     nullable: true,
     default: false,
     transformer: {
@@ -46,6 +48,9 @@ export class BookDeliveryModel extends BaseModel {
   @Column({ type: 'text', comment: '상위사업자' })
   parent_company: string
 
+  @Column({ type: 'int', comment: '상위사업자 아이디', nullable: true })
+  parent_company_id: number
+
   @Column({ type: 'text', comment: '기관명' })
   org_name: string
 
@@ -60,6 +65,9 @@ export class BookDeliveryModel extends BaseModel {
 
   @Column({ type: 'text', comment: '외주업체', default: '없음' })
   outsourcing_company: string
+
+  @Column({ type: 'int', comment: '외주업체 아이디', nullable: true })
+  outsourcing_company_id: number
 
   @Column({ type: 'text', comment: '진행담당자' })
   role_person: string
@@ -88,13 +96,23 @@ export class BookDeliveryModel extends BaseModel {
   @Column({ type: 'float', comment: '낙찰율', transformer: columnRateTransformers, nullable: true })
   win_rate: number
 
-  @Column({ type: 'int', comment: '도서정가', nullable: true })
+  @Column({
+    type: 'bigint',
+    comment: '도서정가',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
   bk_price: number
 
-  @Column({ type: 'int', comment: '도서공급단가', nullable: true })
+  @Column({
+    type: 'int',
+    comment: '도서공급단가',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
   bk_supply_price: number
 
-  @Column({ type: 'text', comment: '도서공급율', nullable: true })
+  @Column({ type: 'text', comment: '도서공급율', nullable: true }) // 다른 테이블이랑 다름. 텍스트로 받음
   bk_supply_rate: string
 
   @Column({
@@ -177,4 +195,18 @@ export class BookDeliveryModel extends BaseModel {
 
   @Column({ type: 'date', comment: '오늘날짜', nullable: true })
   today_date: Date
+
+  @Column({ type: 'int', comment: '매츨압체 행 아이디', nullable: true })
+  cl_row_id: number
+
+  @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true })
+  vl_row_id: number
+
+  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery)
+  @JoinColumn({ name: 'vl_row_id' }) // vendor_ledger_model 테이블의 id 와 연결
+  vendor_ledger: VendorLedgerModel
+
+  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery)
+  @JoinColumn({ name: 'cl_row_id' }) // client_ledger_model 테이블의 id 와 연결
+  client_ledger: ClientLedgerModel
 }

@@ -11,26 +11,21 @@ export class CreateVendorLedgerDto {
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Expose()
   id?: number
 
   @IsString()
   @Transform(transformString)
-  @Expose()
   outsourcing_company: string
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Expose()
   outsourcing_company_id?: number
 
   @IsDate()
   @Transform(transformDate)
-  @Expose()
   order_date: Date
 
   @IsString()
-  @Expose()
   author: string
 
   @IsString()
@@ -53,50 +48,41 @@ export class CreateVendorLedgerDto {
 
   @IsNumber()
   @Transform(transformNumber)
-  @Expose()
   purchase_rate: number
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Expose()
   profit: number
 
   @IsNumber()
   @Transform(transformNumber)
-  @Expose()
   profit_rate: number
 
   @IsString()
-  @Expose()
   status: string
 
   @IsDate()
   @Transform(transformDate)
-  @Expose()
   collection_date: Date
 
   @IsDate()
   @Transform(transformDate)
-  @Expose()
   remittance_date: Date
 
   @IsString()
-  @Expose()
-  invoice: string
+  @Transform(transformDate)
+  invoice_received_date: Date
 
   @IsString()
   @Transform(transformString)
-  @Expose()
   invoice_recipient: string
 
   @IsString()
-  @Expose()
   account_info: string
 
   @IsString()
   manager: string
 
   @IsString()
-  @Expose()
   manager_phone: string
 }

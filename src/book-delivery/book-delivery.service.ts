@@ -4,7 +4,7 @@ import { QueryRunner, Repository } from 'typeorm'
 import { BookDeliveryModel } from './entity/book-delivery.entity'
 import { plainToInstance } from 'class-transformer'
 import { CreateBookDeliveryDto } from './dto/create-book-delivery.dto'
-import { validate, ValidationError } from 'class-validator'
+import { validate } from 'class-validator'
 
 @Injectable()
 export class BookDeliveryService {
@@ -15,6 +15,7 @@ export class BookDeliveryService {
 
   async getBookDelivery() {
     return await this.bookDeliveryRepository.find({
+      relations: ['client_ledger'],
       order: { id: 'ASC' }
     })
   }
