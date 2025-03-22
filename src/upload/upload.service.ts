@@ -108,7 +108,7 @@ export class UploadService {
     const columns = TABLE_COLUMNS.find((item) => item.name === tableName)?.columns
     let jsonData = this.matchColumnNames(jsonDataRaw, columns)
 
-    console.log('jsonData: ', jsonData)
+    // console.log('jsonData: ', jsonData)
 
     if (path === 'organization') {
       const organization: {
@@ -181,9 +181,12 @@ export class UploadService {
 
     // console.log('entityData: ', entityData);
 
-    const result = await repository.save(entityData)
-
-    return [...prevData, ...result]
+    try {
+      const result = await repository.save(entityData)
+      return [...prevData, ...result]
+    } catch (e) {
+      throw new BadRequestException(e.message)
+    }
   }
 
   excelProcess = (file: Express.Multer.File) => {

@@ -29,13 +29,15 @@ export class ClientLedgerService {
     if (!client) throw new NotFoundException(`매출처(${id}) 를 찾지 못했습니다.`)
 
     const result = await this.clientLedgerRepo.find({
-      where: { parent_company: client.name },
+      where: { client: client.name },
       order: { id: 'ASC' }
     })
     return result
   }
 
   async postClientLedger(data: BookDeliveryModel[], qr?: QueryRunner) {
+    // @TODO: data 에 있는 parent_company 로 client_model 에서 name 과 id를 찾아서 넣어줘야함
+
     const repository = this.getRepository(qr)
     const dtoInstances = data.map((row) =>
       plainToInstance(CreateClientLedgerDto, row, {
@@ -48,6 +50,7 @@ export class ClientLedgerService {
       return entity
     })
 
+    // 매출처 저장
     const ledger = await repository.upsert(entityData, {
       conflictPaths: ['cl_row_id'],
       skipUpdateIfNoValuesChanged: true
@@ -78,7 +81,7 @@ export class ClientLedgerService {
     if (result.affected === 0) throw new BadRequestException(`${clientId} 삭제를 실패했습니다.`)
 
     const find = await respository.find({
-      where: { parent_company_id: clientId },
+      where: { client_id: clientId },
       order: { id: 'ASC' }
     })
     return find

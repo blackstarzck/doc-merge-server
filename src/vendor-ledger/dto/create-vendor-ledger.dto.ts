@@ -1,5 +1,5 @@
 import { Expose, Transform } from 'class-transformer'
-import { IsDate, IsInt, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformNumber,
@@ -13,14 +13,6 @@ export class CreateVendorLedgerDto {
   @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsString()
-  @Transform(transformString)
-  outsourcing_company: string
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  outsourcing_company_id?: number
-
   @IsDate()
   @Transform(transformDate)
   order_date: Date
@@ -28,8 +20,17 @@ export class CreateVendorLedgerDto {
   @IsString()
   author: string
 
+  @IsNotEmpty()
   @IsString()
-  processing_company: string
+  contractor: string
+
+  @IsNotEmpty()
+  @IsString()
+  vendor: string
+
+  @IsNotEmpty()
+  @IsInt()
+  vendor_id: number
 
   @IsString()
   order_item: string

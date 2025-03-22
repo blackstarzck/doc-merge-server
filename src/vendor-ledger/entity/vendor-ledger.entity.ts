@@ -13,8 +13,14 @@ export class VendorLedgerModel {
   @Column({ type: 'text', comment: '작성자', nullable: true })
   author: string
 
-  @Column({ type: 'text', comment: '진행업체', nullable: true })
-  parent_company: string
+  @Column({ type: 'text', comment: '진행업체' })
+  contractor: string
+
+  @Column({ type: 'text', comment: '매입처', nullable: true })
+  vendor: string
+
+  @Column({ type: 'int', comment: '매입처', nullable: true })
+  vendor_id: number
 
   @Column({ type: 'text', comment: '발주건', nullable: true })
   order_item: string
@@ -70,12 +76,6 @@ export class VendorLedgerModel {
 
   @Column({ type: 'text', comment: '담당자 전화번호', nullable: true })
   manager_phone: string
-
-  @Column({ type: 'text', comment: '매입처', default: '없음' })
-  outsourcing_company: string
-
-  @Column({ type: 'int', comment: '외주업체 아이디', nullable: true })
-  outsourcing_company_id: number
 
   @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.vendor_ledger)
   bookDelivery: BookDeliveryModel

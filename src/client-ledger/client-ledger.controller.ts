@@ -33,8 +33,10 @@ export class ClientLedgerController {
 
   @Post()
   async postClientLedger(@Body('data') datas: BookDeliveryModel[], @Query('qr') qr: QR) {
+    // 매출처 저장
     const { ledger, data } = await this.clientLedgerService.postClientLedger(datas, qr)
 
+    // 도서납품현황
     const bookDelivery = await this.bookDeliveryService.postBookDelivery(data, qr)
 
     return { ledger, bookDelivery }

@@ -10,6 +10,12 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '연번', nullable: true })
   no: string
 
+  @Column({ type: 'text', comment: '매출처 이름' })
+  client: string
+
+  @Column({ type: 'int', comment: '매출처 아이디' })
+  client_id: number
+
   @Column({ type: 'text', comment: '내역', nullable: true })
   details: string
 
@@ -98,12 +104,6 @@ export class ClientLedgerModel {
 
   @Column({ type: 'text', comment: '비고', nullable: true })
   remarks: string
-
-  @Column({ type: 'text', comment: '상위사업자', nullable: true })
-  parent_company: string
-
-  @Column({ type: 'int', comment: '상위사업자 아이디', nullable: true })
-  parent_company_id: number
 
   @Column({ type: 'int', comment: '매츨압체 행 아이디', nullable: true, unique: true })
   cl_row_id: number

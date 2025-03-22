@@ -14,10 +14,19 @@ export class BookDeliveryService {
   ) {}
 
   async getBookDelivery() {
-    return await this.bookDeliveryRepository.find({
-      relations: ['client_ledger'],
-      order: { id: 'ASC' }
-    })
+    // return await this.bookDeliveryRepository.find({
+    //   relations: ['client_ledger'],
+    //   order: { id: 'ASC' }
+    // })
+    const result = await this.bookDeliveryRepository
+      .createQueryBuilder('book_delivery')
+      .leftJoinAndSelect('book_delivery.client_ledger', 'client_ledger')
+      .leftJoinAndSelect('book_delivery.vendor_ledger', 'vendor_ledger')
+      .select(['*', 'client_ledger.*', 'vendor_ledger.*'])
+      .orderBy('book_delivery.id', 'ASC')
+      .getRawMany()
+
+    return result
   }
 
   async postBookDelivery(data: BookDeliveryModel[], qr?: QueryRunner) {

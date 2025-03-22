@@ -1,13 +1,12 @@
 import { columnBigIntTransformers, columnRateTransformers } from 'src/common/utils/transform.utils'
-import { BaseModel } from '../../common/entity/base.entity'
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
 import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 
 @Entity({ name: 'book_delivery_model' })
-export class BookDeliveryModel extends BaseModel {
-  @Column({ type: 'float', comment: '연번', nullable: true })
-  no: number
+export class BookDeliveryModel {
+  @PrimaryGeneratedColumn()
+  id: number
 
   @Column({
     type: 'boolean',
@@ -62,6 +61,9 @@ export class BookDeliveryModel extends BaseModel {
 
   @Column({ type: 'text', comment: '대체여부' })
   sub_status: string
+
+  @Column({ type: 'text', comment: '특이사항', nullable: true })
+  notes: string
 
   @Column({ type: 'text', comment: '외주업체', default: '없음' })
   outsourcing_company: string
@@ -171,6 +173,15 @@ export class BookDeliveryModel extends BaseModel {
 
   @Column({ type: 'date', comment: '선입금일자', nullable: true })
   pre_payment_date: Date
+
+  @Column({ type: 'int', comment: '잔금', nullable: true })
+  balance: number
+
+  @Column({ type: 'date', comment: '잔금일자', nullable: true })
+  balance_date: Date
+
+  @Column({ type: 'int', comment: '총입금액', nullable: true })
+  total_payment: number
 
   @Column({ type: 'int', comment: '예정잔금', nullable: true })
   expected_balance: number

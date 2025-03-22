@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsDate, IsOptional, IsNumber } from 'class-validator'
+import { IsString, IsInt, IsDate, IsOptional, IsNumber, IsNotEmpty } from 'class-validator'
 import { Expose, Transform } from 'class-transformer'
 import { transformDate } from 'src/common/utils/date.utils'
 import { transformIntegerOrNull, transformNumber } from 'src/common/utils/transform.utils'
@@ -8,15 +8,15 @@ export class CreateClientLedgerDto {
   @IsInt()
   id?: number
 
-  @Expose()
+  @IsNotEmpty()
   @IsString()
-  parent_company: string // book_deliver
-
   @Expose()
-  @IsOptional()
+  client: string
+
+  @IsNotEmpty()
   @IsInt()
-  @Transform(transformNumber)
-  parent_company_id?: number // book_deliver
+  @Expose()
+  client_id: number
 
   @Expose()
   @IsString()

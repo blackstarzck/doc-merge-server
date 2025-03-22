@@ -28,7 +28,7 @@ export class VendorLedgerService {
     if (!vendor) throw new NotFoundException(`매입처(${id}) 를 찾지 못했습니다.`)
 
     return await this.vendorLedgerRepo.find({
-      where: { outsourcing_company: vendor.name },
+      where: { vendor: vendor.name },
       order: { id: 'ASC' }
     })
   }
@@ -65,7 +65,7 @@ export class VendorLedgerService {
       throw new BadRequestException(`매출처(${vendorId}) 삭제를 실패했습니다.`)
 
     const find = await respository.find({
-      where: { outsourcing_company_id: vendorId },
+      where: { id: vendorId },
       order: { id: 'ASC' }
     })
     return find
