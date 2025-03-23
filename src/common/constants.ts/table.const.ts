@@ -225,10 +225,10 @@ export const TABLE_COLUMNS = [
     label: '매입처 원장',
     name: 'vendor_ledger',
     columns: [
-      { name: '매입처', key: 'outsourcing_company' },
+      { name: '매입처', key: 'vendor' },
       { name: '발주일', key: 'order_date' },
       { name: '작성자', key: 'author' },
-      { name: '진행업체', key: 'company' },
+      { name: '진행업체', key: 'contractor' },
       { name: '발주건', key: 'order_item' },
       { name: '기초금액', key: 'base_price' },
       { name: '낙찰가(공급가)', key: 'bid_price' },

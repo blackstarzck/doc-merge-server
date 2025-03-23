@@ -1,7 +1,7 @@
 import { IsString, IsInt, IsDate, IsOptional, IsNumber, IsNotEmpty } from 'class-validator'
 import { Expose, Transform } from 'class-transformer'
 import { transformDate } from 'src/common/utils/date.utils'
-import { transformIntegerOrNull, transformNumber } from 'src/common/utils/transform.utils'
+import { transformNumber } from 'src/common/utils/transform.utils'
 
 export class CreateClientLedgerDto {
   @IsOptional()

@@ -5,6 +5,7 @@ import { VendorLedgerModel } from './entity/vendor-ledger.entity'
 import { plainToInstance } from 'class-transformer'
 import { CreateVendorLedgerDto } from './dto/create-vendor-ledger.dto'
 import { VendorModel } from 'src/vendor/entity/vendor.entity'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 
 @Injectable()
 export class VendorLedgerService {
@@ -33,22 +34,31 @@ export class VendorLedgerService {
     })
   }
 
-  async postVendorLedger(datas: CreateVendorLedgerDto[]) {
-    const deleteResult = await this.vendorLedgerRepo.delete({})
+  async postVendorLedger(data: BookDeliveryModel[], qr?: QueryRunner) {
+    const repository = this.getRepository(qr)
 
-    const dtoInstances = datas.map((data) =>
-      plainToInstance(CreateVendorLedgerDto, data, {
+    // 매입처 관련 프로퍼티만 걸러낸 뒤 저장
+    const dtoInstances = data.map((row) =>
+      plainToInstance(CreateVendorLedgerDto, row, {
         excludeExtraneousValues: true // @Expose 가 필요함
       })
     )
 
     const entityData = dtoInstances.map((dto) => {
-      const entity = this.vendorLedgerRepo.create(dto)
+      const entity = repository.create(dto)
       return entity
     })
 
-    const saved = await this.vendorLedgerRepo.save(entityData)
-    return saved
+    // 매입처 저장
+    const ledger = await repository.upsert(entityData, {
+      conflictPaths: ['vl_row_id'],
+      skipUpdateIfNoValuesChanged: true
+    })
+
+    if (ledger.identifiers.length === 0)
+      throw new BadRequestException('매입처 원장 저장에 실패하였습니다.')
+
+    return ledger
   }
 
   getRepository(qr?: QueryRunner): Repository<VendorLedgerModel> {

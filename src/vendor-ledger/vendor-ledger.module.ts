@@ -7,6 +7,7 @@ import { VendorModel } from 'src/vendor/entity/vendor.entity'
 
 @Module({
   imports: [TypeOrmModule.forFeature([VendorLedgerModel, VendorModel])],
+  exports: [VendorLedgerService],
   controllers: [VendorLedgerController],
   providers: [VendorLedgerService]
 })

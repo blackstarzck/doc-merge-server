@@ -11,6 +11,7 @@ import {
 import { VendorLedgerService } from './vendor-ledger.service'
 import { CreateVendorLedgerDto } from './dto/create-vendor-ledger.dto'
 import { QueryRunner as QR } from 'typeorm'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 
 @Controller('vendor_ledger')
 export class VendorLedgerController {
@@ -27,8 +28,8 @@ export class VendorLedgerController {
   }
 
   @Post()
-  postVendorLedger(@Body('data') datas: CreateVendorLedgerDto[]) {
-    return this.vendorLedgerService.postVendorLedger(datas)
+  postVendorLedger(@Body('data') data: BookDeliveryModel[], @Query('qr') qr: QR) {
+    return this.vendorLedgerService.postVendorLedger(data, qr)
   }
 
   @Post(':vendorId/delete')

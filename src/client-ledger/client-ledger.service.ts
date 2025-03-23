@@ -36,9 +36,9 @@ export class ClientLedgerService {
   }
 
   async postClientLedger(data: BookDeliveryModel[], qr?: QueryRunner) {
-    // @TODO: data 에 있는 parent_company 로 client_model 에서 name 과 id를 찾아서 넣어줘야함
-
     const repository = this.getRepository(qr)
+
+    // 매출처 관련 프로퍼티만 걸러낸 뒤 저장
     const dtoInstances = data.map((row) =>
       plainToInstance(CreateClientLedgerDto, row, {
         excludeExtraneousValues: true // @Expose 가 필요함
@@ -56,16 +56,10 @@ export class ClientLedgerService {
       skipUpdateIfNoValuesChanged: true
     })
 
-    if (ledger.identifiers.length === 0) throw new BadRequestException('저장에 실패하였습니다.')
+    if (ledger.identifiers.length === 0)
+      throw new BadRequestException('매출처 원장 저장에 실패하였습니다.')
 
-    const bookDelivery = data.map((data, i) => {
-      if (!data.cl_row_id) {
-        data.cl_row_id = ledger.identifiers[i].id
-      }
-      return data
-    })
-
-    return { ledger, data: bookDelivery }
+    return ledger
   }
 
   getRepository(qr?: QueryRunner): Repository<ClientLedgerModel> {

@@ -9,17 +9,12 @@ import {
   Query
 } from '@nestjs/common'
 import { ClientLedgerService } from './client-ledger.service'
-import { CreateClientLedgerDto } from './dto/create-client-ledger.dto'
 import { QueryRunner as QR } from 'typeorm'
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
-import { BookDeliveryService } from 'src/book-delivery/book-delivery.service'
 
 @Controller('client_ledger')
 export class ClientLedgerController {
-  constructor(
-    private readonly clientLedgerService: ClientLedgerService,
-    private readonly bookDeliveryService: BookDeliveryService
-  ) {}
+  constructor(private readonly clientLedgerService: ClientLedgerService) {}
 
   @Get()
   getClientLedger() {
@@ -32,14 +27,8 @@ export class ClientLedgerController {
   }
 
   @Post()
-  async postClientLedger(@Body('data') datas: BookDeliveryModel[], @Query('qr') qr: QR) {
-    // 매출처 저장
-    const { ledger, data } = await this.clientLedgerService.postClientLedger(datas, qr)
-
-    // 도서납품현황
-    const bookDelivery = await this.bookDeliveryService.postBookDelivery(data, qr)
-
-    return { ledger, bookDelivery }
+  postClientLedger(@Body('data') data: BookDeliveryModel[], @Query('qr') qr: QR) {
+    return this.clientLedgerService.postClientLedger(data, qr)
   }
 
   @Post(':clientId/delete')
