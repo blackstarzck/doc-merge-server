@@ -29,7 +29,7 @@ export class OrganizationModel {
 
   @Column({
     type: 'boolean',
-    comment: '계산서',
+    comment: '계산서발행상태',
     nullable: true,
     default: false,
     transformer: {
@@ -37,7 +37,7 @@ export class OrganizationModel {
       from: (value) => (value ? value : false)
     }
   })
-  b_invoice: boolean
+  invoice_received: boolean
 
   @Column({ type: 'text', comment: '낙찰업체' })
   win_company: string
@@ -82,7 +82,7 @@ export class OrganizationModel {
 
   @Column({
     type: 'float',
-    comment: '낙찰율(%)',
+    comment: '낙찰율',
     transformer: columnRateTransformers,
     nullable: true
   })
@@ -142,10 +142,10 @@ export class OrganizationModel {
   @Column({ type: 'text', comment: '결제방식', nullable: true })
   payment_method: string
 
-  @Column({ type: 'float', comment: '선입금', nullable: true })
-  payment: number
+  @Column({ type: 'float', comment: '선입금액', nullable: true })
+  pre_payment: number
 
-  @Column({ type: 'date', comment: '선입금일자', nullable: true })
+  @Column({ type: 'date', comment: '선금일자', nullable: true })
   pre_payment_date: Date
 
   @Column({ type: 'float', comment: '잔금', nullable: true })

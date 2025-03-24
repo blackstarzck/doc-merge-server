@@ -45,7 +45,7 @@ export class BookDisposalModel extends BaseModel {
   @Column({ type: 'date', comment: '선입금일자', nullable: true })
   pre_payment_date: Date
 
-  @Column({ type: 'float', comment: '선입금', nullable: true })
+  @Column({ type: 'float', comment: '선입금액', nullable: true })
   pre_payment: number
 
   @Column({ type: 'float', comment: '예정잔금', nullable: true })

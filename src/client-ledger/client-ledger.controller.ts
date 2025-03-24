@@ -6,11 +6,14 @@ import {
   ParseArrayPipe,
   ParseIntPipe,
   Post,
-  Query
+  Query,
+  UseInterceptors
 } from '@nestjs/common'
 import { ClientLedgerService } from './client-ledger.service'
 import { QueryRunner as QR } from 'typeorm'
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('client_ledger')
 export class ClientLedgerController {
@@ -27,16 +30,18 @@ export class ClientLedgerController {
   }
 
   @Post()
-  postClientLedger(@Body('data') data: BookDeliveryModel[], @Query('qr') qr: QR) {
+  @UseInterceptors(TransationInterceptor)
+  postClientLedger(@Body('data') data: BookDeliveryModel[], @QueryRunner('qr') qr: QR) {
     return this.clientLedgerService.postClientLedger(data, qr)
   }
 
   @Post(':clientId/delete')
+  @UseInterceptors(TransationInterceptor)
   deleteClientLedger(
     @Param('clientId', ParseIntPipe) clientId: number,
     @Body('ids', new ParseArrayPipe({ items: Number }))
     ids: number[],
-    @Query('qr') qr: QR
+    @QueryRunner('qr') qr: QR
   ) {
     return this.clientLedgerService.deleteClientLedger(clientId, ids, qr)
   }

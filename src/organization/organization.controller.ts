@@ -8,10 +8,13 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query
+  Query,
+  UseInterceptors
 } from '@nestjs/common'
 import { QueryRunner as QR } from 'typeorm'
 import { CreateOrganizationNameDto } from './dto/create_organization-name.dto'
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('organization')
 export class organizationsController {
@@ -33,7 +36,8 @@ export class organizationsController {
   }
 
   @Post(':organizationId')
-  postOrganizations(@Body('document') data: any[], @Query('qr') qr: QR) {
+  @UseInterceptors(TransationInterceptor)
+  postOrganizations(@Body('document') data: any[], @QueryRunner('qr') qr: QR) {
     return this.OrganizationService.postOrganizations(data, qr)
   }
 
@@ -43,11 +47,12 @@ export class organizationsController {
   }
 
   @Post(':organizationId/delete')
+  @UseInterceptors(TransationInterceptor)
   deleteOrganizations(
     @Param('organizationId', ParseIntPipe) orgId: number,
     @Body('ids', new ParseArrayPipe({ items: Number }))
     ids: number[],
-    @Query('qr') qr: QR
+    @QueryRunner('qr') qr: QR
   ) {
     return this.OrganizationService.deleteOrganizations(orgId, ids, qr)
   }

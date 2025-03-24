@@ -1,6 +1,8 @@
-import { Body, Controller, Get, ParseArrayPipe, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, ParseArrayPipe, Post, Query, UseInterceptors } from '@nestjs/common'
 import { CargoUsageService } from './cargo-usage.service'
 import { QueryRunner as QR } from 'typeorm'
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('overview/cargo_usage')
 export class CargoUsageController {
@@ -12,14 +14,15 @@ export class CargoUsageController {
   }
 
   @Post()
-  postCargoUse(@Body('document') data: any[], @Query('qr') qr: QR) {
+  @UseInterceptors(TransationInterceptor)
+  postCargoUse(@Body('document') data: any[], @QueryRunner('qr') qr: QR) {
     return this.cargoUseService.postCargoUse(data, qr)
   }
 
   @Post('delete')
   deleteCargoUsage(
     @Body('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-    @Query('qr') qr: QR
+    @QueryRunner('qr') qr: QR
   ) {
     return this.cargoUseService.deleteCargoUsage(ids, qr)
   }

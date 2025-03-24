@@ -13,7 +13,7 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '매출처 이름' })
   client: string
 
-  @Column({ type: 'int', comment: '매출처 아이디' })
+  @Column({ type: 'int', comment: '매출처 아이디', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
   client_id: number
 
   @Column({ type: 'text', comment: '내역', nullable: true })
@@ -74,22 +74,27 @@ export class ClientLedgerModel {
 
   @Column({
     type: 'bigint',
-    comment: '매입액',
+    comment: '매입가',
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  purchase_amount: number
+  purchase_price: number
 
-  @Column({ type: 'float', comment: '이익율', transformer: columnRateTransformers, nullable: true })
-  profit_rate: number
+  @Column({
+    type: 'float',
+    comment: '자사이익율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
+  our_revenue_rate: number
 
   @Column({
     type: 'bigint',
-    comment: '이익금',
+    comment: '자사이익금',
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  profit: number
+  our_revenue: number
 
   @Column({
     type: 'bigint',
@@ -105,7 +110,7 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '비고', nullable: true })
   remarks: string
 
-  @Column({ type: 'int', comment: '매츨압체 행 아이디', nullable: true, unique: true })
+  @Column({ type: 'int', comment: '매츨업체 행 아이디', nullable: true, unique: true })
   cl_row_id: number
 
   @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.client_ledger)

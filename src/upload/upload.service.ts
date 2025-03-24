@@ -133,8 +133,8 @@ export class UploadService {
 
       jsonData = jsonData.map((data) => ({
         ...data,
-        parent_company: client.name,
-        parent_company_id: client.id
+        client: client.name,
+        client_id: client.id
       }))
     } else if (path === 'vendor_ledger') {
       const vendor = await this.vendorService.getOneVendorById(id)
@@ -144,8 +144,8 @@ export class UploadService {
 
       jsonData = jsonData.map((data) => ({
         ...data,
-        outsourcing_company: vendor.name,
-        outsourcing_company_id: vendor.id
+        vendor: vendor.name,
+        vendor_id: vendor.id
       }))
     }
 

@@ -13,7 +13,7 @@ export class VendorLedgerModel {
   @Column({ type: 'text', comment: '작성자', nullable: true })
   author: string
 
-  @Column({ type: 'text', comment: '진행업체' })
+  @Column({ type: 'text', comment: '상위사업자', nullable: true })
   contractor: string
 
   @Column({ type: 'text', comment: '매입처', nullable: true })
@@ -28,30 +28,30 @@ export class VendorLedgerModel {
   @Column({ type: 'int', comment: '기초금액', nullable: true })
   base_price: number
 
-  @Column({ type: 'int', comment: '낙찰가(공급가)', nullable: true })
-  bid_price: number
+  @Column({ type: 'int', comment: '도서공급단가', nullable: true })
+  bk_supply_price: number
 
   @Column({ type: 'int', comment: '매입가', nullable: true })
   purchase_price: number
 
   @Column({
     type: 'float',
-    comment: '매입률(%)',
+    comment: '자사매입율',
     transformer: columnRateTransformers,
     nullable: true
   })
   purchase_rate: number
 
   @Column({ type: 'int', comment: '이익금', nullable: true })
-  profit: number
+  our_revenue: number
 
   @Column({
     type: 'float',
-    comment: '이익률(%)',
+    comment: '자사이익률',
     transformer: columnRateTransformers,
     nullable: true
   })
-  profit_rate: number
+  our_revenue_rate: number
 
   @Column({ type: 'text', comment: '현황', nullable: true })
   status: string
@@ -62,8 +62,8 @@ export class VendorLedgerModel {
   @Column({ type: 'date', comment: '송금일', nullable: true })
   remittance_date: Date
 
-  @Column({ type: 'text', comment: '계산서', nullable: true })
-  invoice_received_date: Date
+  @Column({ type: 'text', comment: '계산서발행일', nullable: true })
+  invoice_date: Date
 
   @Column({ type: 'text', comment: '계산서 수신 사업자', nullable: true })
   invoice_recipient: string
@@ -76,6 +76,9 @@ export class VendorLedgerModel {
 
   @Column({ type: 'text', comment: '담당자 전화번호', nullable: true })
   manager_phone: string
+
+  @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true, unique: true })
+  vl_row_id: number
 
   @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.vendor_ledger)
   bookDelivery: BookDeliveryModel

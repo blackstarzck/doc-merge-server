@@ -1,8 +1,10 @@
 import { ClientLedgerService } from './../client-ledger/client-ledger.service'
-import { Body, Controller, Get, Post, Query, ParseArrayPipe } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query, ParseArrayPipe, UseInterceptors } from '@nestjs/common'
 import { BookDeliveryService } from './book-delivery.service'
 import { QueryRunner as QR } from 'typeorm'
 import { VendorLedgerService } from 'src/vendor-ledger/vendor-ledger.service'
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('overview/book_delivery')
 export class BookDeliveryController {
@@ -18,7 +20,8 @@ export class BookDeliveryController {
   }
 
   @Post()
-  async postBookDelivery(@Body('document') data: any[], @Query('qr') qr: QR) {
+  @UseInterceptors(TransationInterceptor)
+  async postBookDelivery(@Body('document') data: any[], @QueryRunner('qr') qr: QR) {
     // 매출처 저장 (upsert, conflict key: cl_row_id)
     const cl = await this.clientLedgerService.postClientLedger(data, qr)
     // 매입처 저장 (upsert, conflict key: vl_row_id)
@@ -34,9 +37,10 @@ export class BookDeliveryController {
   }
 
   @Post('delete')
+  @UseInterceptors(TransationInterceptor)
   deleteBookDelivery(
     @Body('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-    @Query('qr') qr: QR
+    @QueryRunner('qr') qr: QR
   ) {
     return this.bookDeliveryService.deleteBookDelivery(ids, qr)
   }

@@ -36,7 +36,7 @@ export class CreateOrganizationDto {
 
   @IsBoolean()
   @Transform(transformBoolean)
-  b_invoice: boolean
+  invoice_received: boolean
 
   @IsString()
   win_company: string

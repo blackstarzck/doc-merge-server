@@ -1,6 +1,8 @@
-import { Body, Controller, Get, ParseArrayPipe, Post, Query } from '@nestjs/common'
+import { Body, Controller, Get, ParseArrayPipe, Post, Query, UseInterceptors } from '@nestjs/common'
 import { ServiceDeliveryService } from './service-delivery.service'
 import { QueryRunner as QR } from 'typeorm'
+import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('overview/service_delivery')
 export class ServiceDeliveryController {
@@ -12,14 +14,16 @@ export class ServiceDeliveryController {
   }
 
   @Post()
-  postServiceDelivery(@Body('document') data: any[], @Query('qr') qr: QR) {
+  @UseInterceptors(TransationInterceptor)
+  postServiceDelivery(@Body('document') data: any[], @QueryRunner('qr') qr: QR) {
     return this.serviceDeliveryService.postServiceDelivery(data, qr)
   }
 
   @Post('delete')
+  @UseInterceptors(TransationInterceptor)
   deleteServiceDelivery(
     @Body('ids', new ParseArrayPipe({ items: Number })) ids: number[],
-    @Query('qr') qr: QR
+    @QueryRunner('qr') qr: QR
   ) {
     return this.serviceDeliveryService.deleteServiceDelivery(ids, qr)
   }

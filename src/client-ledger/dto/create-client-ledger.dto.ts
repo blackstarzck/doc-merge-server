@@ -81,17 +81,17 @@ export class CreateClientLedgerDto {
   @Expose()
   @IsNumber()
   @Transform(transformNumber)
-  purchase_amount: number
+  purchase_price: number
 
   @Expose()
   @IsNumber()
   @Transform(transformNumber)
-  profit_rate: number
+  our_revenue_rate: number
 
   @Expose()
   @IsNumber()
   @Transform(transformNumber)
-  profit: number
+  our_revenue: number
 
   @Expose()
   @IsNumber()

@@ -22,7 +22,7 @@ export class BookDeliveryModel {
 
   @Column({
     type: 'boolean',
-    comment: '계산서발행유무',
+    comment: '계산서발행상태',
     nullable: true,
     default: false,
     transformer: {
@@ -30,7 +30,7 @@ export class BookDeliveryModel {
       from: (value) => (value ? value : false)
     }
   })
-  b_invoice: boolean
+  invoice_received: boolean
 
   @Column({ type: 'text', comment: '날짜', nullable: true })
   continue_type: string
@@ -138,7 +138,7 @@ export class BookDeliveryModel {
 
   @Column({
     type: 'float',
-    comment: '자사이익률',
+    comment: '자사이익율',
     transformer: columnRateTransformers,
     nullable: true
   })
@@ -168,10 +168,10 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '마장 최종매출액', nullable: true })
   m_final_sales: number
 
-  @Column({ type: 'int', comment: '선입금', nullable: true })
+  @Column({ type: 'int', comment: '선입금액', nullable: true })
   pre_payment: number
 
-  @Column({ type: 'date', comment: '선입금일자', nullable: true })
+  @Column({ type: 'date', comment: '선금일자', nullable: true })
   pre_payment_date: Date
 
   @Column({ type: 'int', comment: '잔금', nullable: true })
@@ -192,7 +192,7 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '최종도서매출액', nullable: true })
   final_bk_sales: number
 
-  @Column({ type: 'int', comment: '자사수익금', nullable: true })
+  @Column({ type: 'int', comment: '자사이익금', nullable: true })
   our_revenue: number
 
   @Column({ type: 'text', comment: '행정담당자연락처' })
@@ -213,11 +213,15 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true })
   vl_row_id: number
 
-  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery)
+  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery, {
+    cascade: true // 삭제 시 연관된 client_ledger_model도 삭제
+  })
   @JoinColumn({ name: 'vl_row_id' }) // vendor_ledger_model 테이블의 id 와 연결
   vendor_ledger: VendorLedgerModel
 
-  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery)
+  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery, {
+    cascade: true // 삭제 시 연관된 client_ledger_model도 삭제
+  })
   @JoinColumn({ name: 'cl_row_id' }) // client_ledger_model 테이블의 id 와 연결
   client_ledger: ClientLedgerModel
 }
