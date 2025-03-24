@@ -10,7 +10,7 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '연번', nullable: true })
   no: string
 
-  @Column({ type: 'text', comment: '매출처 이름' })
+  @Column({ type: 'text', comment: '매출처 이름', nullable: true })
   client: string
 
   @Column({ type: 'int', comment: '매출처 아이디', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음

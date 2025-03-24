@@ -6,6 +6,7 @@ import { plainToInstance } from 'class-transformer'
 import { CreateVendorLedgerDto } from './dto/create-vendor-ledger.dto'
 import { VendorModel } from 'src/vendor/entity/vendor.entity'
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
+import { TABLE_COLUMNS } from 'src/common/constants.ts/table.const'
 
 @Injectable()
 export class VendorLedgerService {
@@ -35,19 +36,16 @@ export class VendorLedgerService {
   }
 
   async postVendorLedger(data: BookDeliveryModel[], qr?: QueryRunner) {
+    const newData = this.sortVendorLedgerProps(data)
     const repository = this.getRepository(qr)
 
     // 매입처 관련 프로퍼티만 걸러낸 뒤 저장
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateVendorLedgerDto, row, {
-        excludeExtraneousValues: true // @Expose 가 필요함
-      })
-    )
+    const dtoInstances = newData.map((row) => plainToInstance(CreateVendorLedgerDto, row))
 
-    const entityData = dtoInstances.map((dto) => {
-      const entity = repository.create(dto)
-      return entity
-    })
+    const entityData = dtoInstances.map((dto) => ({
+      ...dto,
+      vendor_ledger: dto.vl_row_id ? { id: dto.vl_row_id } : null
+    }))
 
     // 매입처 저장
     const ledger = await repository.upsert(entityData, {
@@ -59,6 +57,26 @@ export class VendorLedgerService {
       throw new BadRequestException('매입처 원장 저장에 실패하였습니다.')
 
     return ledger
+  }
+
+  private sortVendorLedgerProps = (data) => {
+    const col = TABLE_COLUMNS.find((table) => table.name === 'vendor_ledger')?.columns || []
+    const props = col.map((item) => item.key)
+    const newData = data.map((row) => {
+      // if (row.vendorLedger) return row.vendorLedger
+      const obj = {
+        id: row.vl_row_id,
+        vendor_id: row?.vendor_id,
+        vl_row_id: row?.vl_row_id,
+        bookDelivery: row?.bookDelivery
+      }
+
+      Object.entries(row).map(([key, value]) => {
+        if (props.includes(key)) obj[key] = value
+      })
+      return obj
+    })
+    return newData
   }
 
   getRepository(qr?: QueryRunner): Repository<VendorLedgerModel> {

@@ -7,6 +7,7 @@ import { CreateBookDeliveryDto } from './dto/create-book-delivery.dto'
 import { validate } from 'class-validator'
 import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
+import { TABLE_COLUMNS } from 'src/common/constants.ts/table.const'
 
 @Injectable()
 export class BookDeliveryService {
@@ -43,12 +44,10 @@ export class BookDeliveryService {
   }
 
   async postBookDelivery(data, qr?: QueryRunner) {
+    const newData = this.sortBookDeliveryProps(data)
     const repository = this.getRepository(qr)
-    const dtoInstances = data.map((row) =>
-      plainToInstance(CreateBookDeliveryDto, row, {
-        excludeExtraneousValues: true // @Expose 가 필요함
-      })
-    )
+    const dtoInstances = newData.map((row) => plainToInstance(CreateBookDeliveryDto, row))
+
     // 유효성 검사
     const validationErrors: any[] = []
     for (const instance of dtoInstances) {
@@ -65,14 +64,36 @@ export class BookDeliveryService {
       }
     }
     if (validationErrors.length > 0) throw new BadRequestException(validationErrors)
-    const entityData = dtoInstances.map((dto) => {
-      const entity = repository.create(dto)
-      return entity
+    const entityData = dtoInstances.map((dto) => ({
+      ...dto,
+      client_ledger: dto.cl_row_id ? { id: dto.cl_row_id } : null,
+      vendor_ledger: dto.vl_row_id ? { id: dto.vl_row_id } : null
+    }))
+
+    const saved = await repository.save(entityData)
+    return saved
+  }
+
+  private sortBookDeliveryProps = (data) => {
+    const col = TABLE_COLUMNS.find((table) => table.name === 'book_delivery')?.columns || []
+    const props = col.map((item) => item.key)
+    const newData = data.map((row) => {
+      const obj = {
+        id: row.id,
+        parent_company_id: row?.parent_company_id,
+        outsourcing_company_id: row?.outsourcing_company_id,
+        cl_row_id: row?.cl_row_id,
+        vl_row_id: row?.vl_row_id,
+        vendor_ledger: row?.vendor_ledger,
+        client_ledger: row?.client_ledger
+      }
+
+      Object.entries(row).map(([key, value]) => {
+        if (props.includes(key)) obj[key] = value
+      })
+      return obj
     })
-    return await repository.upsert(entityData, {
-      conflictPaths: ['id'],
-      skipUpdateIfNoValuesChanged: true
-    })
+    return newData
   }
 
   getRepository(qr?: QueryRunner): Repository<BookDeliveryModel> {
