@@ -159,7 +159,8 @@ export class UploadService {
         if (data.outsourcing_company && !data.outsourcing_company_id) {
           data.outsourcing_company_id = vlData[i].vendor_id
         }
-        if (clData[i].client) {
+        if (clData[i].client && clData[i].cl_our_revenue) {
+          // 반드시 상위업체, 자사이익금 정보가 있어야 매출처 원장과 맵핑할 수 있다.
           const clientLedger = await this.clientLedgerService.createClientLedger(clData[i], qr)
           data.client_ledger = clientLedger
         }
@@ -179,7 +180,14 @@ export class UploadService {
     await this.initValidation(dtoInstances)
 
     const entityData = dtoInstances.map((dto) => repository.create(dto))
-
+    console.log(
+      'client_ledger: ',
+      entityData.map((data) => data.client_ledger)
+    )
+    console.log(
+      'vendor_ledger: ',
+      entityData.map((data) => data.vendor_ledger)
+    )
     try {
       const upsert = await repository.upsert(entityData, ['no'])
       const result = await repository.find({ order: { id: 'ASC' } })
@@ -247,9 +255,14 @@ export class UploadService {
         client: client.name,
         client_id: client.id
       }
-      const clientLedger = await this.clientLedgerService.createClientLedger(data, qr)
-      jsonData[i] = clientLedger
+      if (data.details) {
+        // 반드시 내역이 있어야 한다.
+        const clientLedger = await this.clientLedgerService.createClientLedger(data, qr)
+        jsonData[i] = clientLedger
+      }
     }
+    await qr.commitTransaction()
+
     const result = await this.clientLedgerService.getClientLedgerById(clientId)
     return result
   }

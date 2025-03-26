@@ -54,30 +54,30 @@ export class VendorLedgerService {
 
   async createVendorLedger(data: CreateVendorLedgerDto, qr?: QueryRunner) {
     const repository = this.getRepository(qr)
-    const dto = await this.assignNoIfMissing(data, repository)
-    const instance = plainToInstance(CreateVendorLedgerDto, dto)
+    const instance = plainToInstance(CreateVendorLedgerDto, data)
 
     // 유효성 검사
     await this.initValidation(instance)
 
     const findOptions = this.buildFindOptions(instance)
     const find = await repository.findOne({
-      where: findOptions
+      where: { ...findOptions }
     })
 
     try {
       if (!find) {
         // 삽입
-        return await repository.save(instance)
-      } else if (!this.isDataEqual(find, dto)) {
+        const result = await repository.save(instance)
+        return result
+      } else if (!this.isDataEqual(find, data)) {
         // 업데이트 (값이 다를 경우)
-        await repository.update(find.id, dto)
-        return { ...find, ...dto } // 업데이트된 객체 반환
+        await repository.update(find.id, instance)
+        return { ...find, ...data } // 업데이트된 객체 반환
       }
       // 동일한 데이터면 기존 데이터 반환
       return find
     } catch (error) {
-      throw new BadRequestException(`Failed to create/update client ledger: ${error.message}`)
+      throw new BadRequestException(`Failed to create/update vendor ledger: ${error.message}`)
     }
   }
 

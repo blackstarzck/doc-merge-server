@@ -52,8 +52,6 @@ export class ClientLedgerService {
   }
 
   async createClientLedger(data: CreateClientLedgerDto, qr?: QueryRunner) {
-    if (!data.details) return null
-
     const repository = this.getRepository(qr)
     const instance = plainToInstance(CreateClientLedgerDto, data)
 
@@ -72,7 +70,7 @@ export class ClientLedgerService {
         return result
       } else if (!this.isDataEqual(find, data)) {
         // 업데이트 (값이 다를 경우)
-        await repository.update(find.id, data)
+        await repository.update(find.id, instance)
         return { ...find, ...data } // 업데이트된 객체 반환
       }
       // 동일한 데이터면 기존 데이터 반환
@@ -96,7 +94,7 @@ export class ClientLedgerService {
       })
       validationErrors.push(result)
     }
-
+    console.log('validationErrors: ', validationErrors)
     if (validationErrors.length > 0) throw new BadRequestException(validationErrors)
   }
 
