@@ -1,11 +1,11 @@
-import { Expose, Transform } from 'class-transformer'
-import { IsDate, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator'
-import { transformDate } from 'src/common/utils/date.utils'
+import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsNotEmpty } from 'class-validator'
+import { Transform } from 'class-transformer'
 import {
-  transformNumber,
   transformIntegerOrNull,
-  transformString
-} from 'src/common/utils/transform.utils'
+  transformString,
+  transformDate
+} from 'src/common/utils/transform.utils' // 변환 유틸리티 가정
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity' // 관계 엔티티 import 가정
 
 export class CreateVendorLedgerDto {
   @IsOptional()
@@ -13,81 +13,110 @@ export class CreateVendorLedgerDto {
   @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsDate()
-  @Transform(transformDate)
-  order_date: Date
-
-  @IsString()
-  author: string
-
-  @IsNotEmpty()
-  @IsString()
-  contractor: string
-
-  @IsNotEmpty()
-  @IsString()
-  vendor: string
-
-  @IsNotEmpty()
-  @IsInt()
-  vendor_id: number
-
-  @IsString()
-  order_item: string
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  base_price: number
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  bk_supply_price: number
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  purchase_price: number
-
-  @IsNumber()
-  @Transform(transformNumber)
-  purchase_rate: number
-
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  our_revenue: number
-
-  @IsNumber()
-  @Transform(transformNumber)
-  our_revenue_rate: number
-
-  @IsString()
-  status: string
-
-  @IsDate()
-  @Transform(transformDate)
-  collection_date: Date
-
-  @IsDate()
-  @Transform(transformDate)
-  remittance_date: Date
-
-  @IsString()
-  @Transform(transformDate)
-  invoice_date: Date
-
+  @IsOptional()
   @IsString()
   @Transform(transformString)
-  invoice_recipient: string
+  author?: string
 
+  @IsNotEmpty()
   @IsString()
-  account_info: string
-
-  @IsString()
-  manager: string
+  @Transform(transformString)
+  vendor: string
 
   @IsOptional()
   @IsInt()
+  @Transform(transformIntegerOrNull)
+  vendor_id?: number
+
+  @IsOptional()
+  @IsString()
+  no?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  order_item?: string
+
+  @IsOptional()
+  @IsDate()
+  @Transform(transformDate)
+  vl_order_date?: Date
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  vl_base_price?: number
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  vl_bk_supply_price?: number
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  vl_purchase_price?: number
+
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => parseFloat(value) || null) // float 변환
+  vl_purchase_rate?: number
+
+  @IsOptional()
+  @IsNumber()
+  @Transform(({ value }) => parseFloat(value) || null) // float 변환
+  vl_our_revenue_rate?: number
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull) // bigint를 DTO에서는 int로 처리
+  vl_our_revenue?: number
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  status?: string
+
+  @IsOptional()
+  @IsDate()
+  @Transform(transformDate)
+  collection_date?: Date
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString) // 엔티티에서 text로 정의됨
+  remittance_date?: string
+
+  @IsOptional()
+  @IsDate()
+  @Transform(transformDate)
+  vl_invoice_date?: Date
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  invoice_recipient?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  account_info?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  manager?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  manager_phone?: string
+
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull)
   vl_row_id?: number
 
-  @IsString()
-  manager_phone: string
+  @IsOptional()
+  bookDelivery?: BookDeliveryModel
 }

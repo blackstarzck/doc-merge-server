@@ -8,6 +8,9 @@ export class BookDeliveryModel {
   @PrimaryGeneratedColumn()
   id: number
 
+  @Column({ type: 'text', comment: '연번', unique: true })
+  no: string
+
   @Column({
     type: 'boolean',
     comment: '마감',
@@ -80,42 +83,17 @@ export class BookDeliveryModel {
   @Column({ type: 'date', comment: '계약일자', nullable: true })
   contract_date: Date
 
-  @Column({ type: 'date', comment: '발주일자', nullable: true })
-  order_date: Date
-
   @Column({ type: 'date', comment: '납품기한', nullable: true })
   delivery_deadline: Date
 
   @Column({ type: 'int', comment: '총권수', nullable: true })
   total_bks: number
 
-  @Column({ type: 'int', comment: '기초금액', nullable: true })
-  base_price: number
-
   @Column({ type: 'int', comment: '낙찰금액', nullable: true })
   win_price: number
 
   @Column({ type: 'float', comment: '낙찰율', transformer: columnRateTransformers, nullable: true })
   win_rate: number
-
-  @Column({
-    type: 'bigint',
-    comment: '도서정가',
-    transformer: columnBigIntTransformers,
-    nullable: true
-  })
-  bk_price: number
-
-  @Column({
-    type: 'int',
-    comment: '도서공급단가',
-    transformer: columnBigIntTransformers,
-    nullable: true
-  })
-  bk_supply_price: number
-
-  @Column({ type: 'text', comment: '도서공급율', nullable: true }) // 다른 테이블이랑 다름. 텍스트로 받음
-  bk_supply_rate: string
 
   @Column({
     type: 'float',
@@ -135,14 +113,6 @@ export class BookDeliveryModel {
     nullable: true
   })
   company_revenue_rate: number
-
-  @Column({
-    type: 'float',
-    comment: '자사이익율',
-    transformer: columnRateTransformers,
-    nullable: true
-  })
-  our_revenue_rate: number
 
   @Column({ type: 'int', comment: '기관마,장단가', nullable: true })
   org_m_price: number
@@ -171,29 +141,17 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '선입금액', nullable: true })
   pre_payment: number
 
-  @Column({ type: 'date', comment: '선금일자', nullable: true })
-  pre_payment_date: Date
-
   @Column({ type: 'int', comment: '잔금', nullable: true })
   balance: number
 
   @Column({ type: 'date', comment: '잔금일자', nullable: true })
   balance_date: Date
 
-  @Column({ type: 'int', comment: '총입금액', nullable: true })
-  total_payment: number
-
-  @Column({ type: 'int', comment: '예정잔금', nullable: true })
-  expected_balance: number
-
   @Column({ type: 'int', comment: '최종납품정가', nullable: true })
   final_delivery_price: number
 
   @Column({ type: 'int', comment: '최종도서매출액', nullable: true })
   final_bk_sales: number
-
-  @Column({ type: 'int', comment: '자사이익금', nullable: true })
-  our_revenue: number
 
   @Column({ type: 'text', comment: '행정담당자연락처' })
   admin_contact: string
@@ -207,21 +165,17 @@ export class BookDeliveryModel {
   @Column({ type: 'date', comment: '오늘날짜', nullable: true })
   today_date: Date
 
-  @Column({ type: 'int', comment: '매출압체 행 아이디', nullable: true })
+  @Column({ type: 'int', comment: '매출업체', nullable: true })
   cl_row_id: number
 
   @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true })
   vl_row_id: number
 
-  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery, {
-    cascade: true // 삭제 시 연관된 client_ledger_model도 삭제
-  })
+  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery)
   @JoinColumn({ name: 'vl_row_id' }) // vendor_ledger_model 테이블의 id 와 연결
   vendor_ledger: VendorLedgerModel
 
-  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery, {
-    cascade: true // 삭제 시 연관된 client_ledger_model도 삭제
-  })
+  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery)
   @JoinColumn({ name: 'cl_row_id' }) // client_ledger_model 테이블의 id 와 연결
   client_ledger: ClientLedgerModel
 }

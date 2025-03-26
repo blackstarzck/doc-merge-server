@@ -15,12 +15,18 @@ import { ClientModel } from 'src/client/entity/client.entity'
 import { ClientModule } from 'src/client/client.module'
 import { VendorModule } from 'src/vendor/vendor.module'
 import { VendorModel } from 'src/vendor/entity/vendor.entity'
+import { ClientLedgerModule } from 'src/client-ledger/client-ledger.module'
+import { VendorLedgerModule } from 'src/vendor-ledger/vendor-ledger.module'
+import { BookDeliveryModule } from 'src/book-delivery/book-delivery.module'
 
 @Module({
   imports: [
     OrganizationsModule,
     ClientModule,
+    ClientLedgerModule,
     VendorModule,
+    VendorLedgerModule,
+    BookDeliveryModule,
     TypeOrmModule.forFeature([
       BookDeliveryModel,
       ServiceDeliveryModel,

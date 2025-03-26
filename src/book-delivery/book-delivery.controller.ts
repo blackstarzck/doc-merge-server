@@ -28,8 +28,8 @@ export class BookDeliveryController {
     const vl = await this.vendorLedgerService.postVendorLedger(data, qr)
     // 만약 cl_row_id, vl_row_id 가 없다면 추가
     const newData = data.map((data, i) => {
-      if (!data.cl_row_id) data.cl_row_id = cl.identifiers[i].id
-      if (!data.vl_row_id) data.vl_row_id = vl.identifiers[i].id
+      if (!data.cl_row_id) data.cl_row_id = cl[i]
+      if (!data.vl_row_id) data.vl_row_id = vl[i]
       return data
     })
 

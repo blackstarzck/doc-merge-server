@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common'
 import { ClientLedgerService } from './client-ledger.service'
 import { QueryRunner as QR } from 'typeorm'
-import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
 import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
@@ -27,12 +26,6 @@ export class ClientLedgerController {
   @Get(':clientId')
   getClientLedgerById(@Param('clientId', ParseIntPipe) clientId: number) {
     return this.clientLedgerService.getClientLedgerById(clientId)
-  }
-
-  @Post()
-  @UseInterceptors(TransationInterceptor)
-  postClientLedger(@Body('data') data: BookDeliveryModel[], @QueryRunner('qr') qr: QR) {
-    return this.clientLedgerService.postClientLedger(data, qr)
   }
 
   @Post(':clientId/delete')

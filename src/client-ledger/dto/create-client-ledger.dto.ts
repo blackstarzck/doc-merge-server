@@ -2,6 +2,7 @@ import { IsString, IsInt, IsDate, IsOptional, IsNumber, IsNotEmpty } from 'class
 import { Transform } from 'class-transformer'
 import { transformDate } from 'src/common/utils/date.utils'
 import { transformNumber } from 'src/common/utils/transform.utils'
+import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 
 export class CreateClientLedgerDto {
   @IsOptional()
@@ -12,12 +13,13 @@ export class CreateClientLedgerDto {
   @IsString()
   client: string
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt()
-  client_id: number
+  client_id?: number
 
+  @IsOptional()
   @IsString()
-  no: string
+  no?: string
 
   @IsString()
   details: string
@@ -27,61 +29,66 @@ export class CreateClientLedgerDto {
 
   @IsDate()
   @Transform(transformDate)
-  order_date: Date
+  cl_order_date?: Date
 
   @IsString()
   deposit_status: string
 
   @IsDate()
   @Transform(transformDate)
-  deposit_date: Date
+  deposit_date?: Date
 
   @IsString()
   pre_payment_status: string
 
   @IsDate()
   @Transform(transformDate)
-  pre_payment_date: Date
+  cl_pre_payment_date?: Date
 
   @IsNumber()
   @Transform(transformNumber)
-  bk_price: number
+  cl_bk_price: number
 
   @IsNumber()
   @Transform(transformNumber)
-  bk_supply_rate: number // book_delivery
+  cl_bk_supply_price: number // book_delivery
 
   @IsNumber()
   @Transform(transformNumber)
-  bk_supply_price: number // book_delivery
+  cl_bk_supply_rate: number // book_delivery
+
+  @IsOptional()
+  @IsNumber()
+  @Transform(transformNumber)
+  bk_supply_price?: number
 
   @IsNumber()
   @Transform(transformNumber)
-  total_payment: number // book_delivery
+  cl_total_payment: number // book_delivery
 
   @IsNumber()
   @Transform(transformNumber)
-  purchase_rate: number
+  cl_purchase_rate: number
 
   @IsNumber()
   @Transform(transformNumber)
-  purchase_price: number
+  cl_purchase_price: number
 
   @IsNumber()
   @Transform(transformNumber)
-  our_revenue_rate: number
+  cl_our_revenue_rate: number
 
   @IsNumber()
   @Transform(transformNumber)
-  our_revenue: number
+  cl_our_revenue: number
 
   @IsNumber()
   @Transform(transformNumber)
-  balance: number
+  expected_balance: number
 
   @IsDate()
   @Transform(transformDate)
-  invoice_date: Date
+  cl_invoice_date?: Date
 
   @IsString()
   remarks: string
@@ -89,4 +96,7 @@ export class CreateClientLedgerDto {
   @IsOptional()
   @IsInt()
   cl_row_id?: number
+
+  @IsOptional()
+  bookDelivery?: BookDeliveryModel
 }

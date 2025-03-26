@@ -7,15 +7,14 @@ import {
   IsBoolean,
   IsNotEmpty
 } from 'class-validator'
-import { transformDate } from 'src/common/utils/date.utils'
+import { Transform } from 'class-transformer'
 import {
   transformBoolean,
-  transformNumber,
   transformIntegerOrNull,
   transformString,
-  transStringRateToFloat
+  transStringRateToFloat,
+  transformDate
 } from 'src/common/utils/transform.utils'
-import { Expose, Transform } from 'class-transformer'
 import { ClientLedgerModel } from 'src/client-ledger/entity/client-ledger.entity'
 import { VendorLedgerModel } from 'src/vendor-ledger/entity/vendor-ledger.entity'
 
@@ -25,93 +24,104 @@ export class CreateBookDeliveryDto {
   @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsNumber()
-  @Transform(transformNumber)
-  balance: number
-
-  @IsDate()
-  @Transform(transformDate)
-  balance_date: Date
-
-  @IsNumber()
-  @Transform(transformNumber)
-  total_payment: number
-
-  @IsString()
-  notes: string
-
-  @IsNumber()
-  @Transform(transformNumber)
-  no: number
-
-  @IsBoolean()
-  @Transform(transformBoolean)
-  b_close_status: boolean
-
-  @IsBoolean()
-  @Transform(transformBoolean)
-  invoice_received: boolean
-
-  @IsString()
-  continue_type: string
-
-  @IsString()
-  bid_org: string
-
-  @IsString()
-  sales_company: string
-
-  @IsString()
-  win_company: string
-
   @IsNotEmpty()
   @IsString()
+  no: string
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(transformBoolean)
+  b_close_status?: boolean
+
+  @IsOptional()
+  @IsBoolean()
+  @Transform(transformBoolean)
+  invoice_received?: boolean
+
+  @IsOptional()
+  @IsString()
   @Transform(transformString)
-  parent_company: string
+  continue_type?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  bid_org?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  sales_company?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  win_company?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  parent_company?: string
 
   @IsOptional()
   @IsInt()
-  @Transform(transformNumber)
-  parent_company_id?: number // book_deliver
+  @Transform(transformIntegerOrNull)
+  parent_company_id?: number
 
-  @IsString()
-  org_name: string
-
-  @IsString()
-  purchase_price: string
-
-  @IsString()
-  mark_equip: string
-
-  @IsString()
-  sub_status: string
-
+  @IsOptional()
   @IsString()
   @Transform(transformString)
-  outsourcing_company: string
+  org_name?: string
 
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  purchase_price?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  mark_equip?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  sub_status?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  notes?: string
+
+  @IsOptional()
+  @IsString()
+  @Transform(transformString)
+  outsourcing_company?: string
+
+  @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
   outsourcing_company_id?: number
 
+  @IsOptional()
   @IsString()
-  // @Transform(transformString)
-  role_person: string
+  @Transform(transformString)
+  role_person?: string
 
+  @IsOptional()
   @IsString()
-  bid_number: string
+  @Transform(transformString)
+  bid_number?: string
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
-  contract_date: Date
+  contract_date?: Date
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
-  order_date: Date
-
-  @IsDate()
-  @Transform(transformDate)
-  delivery_deadline: Date
+  delivery_deadline?: Date
 
   @IsOptional()
   @IsInt()
@@ -121,46 +131,27 @@ export class CreateBookDeliveryDto {
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
-  base_price?: number
-
-  @IsOptional()
-  @IsInt()
-  @Transform(transformIntegerOrNull)
   win_price?: number
 
+  @IsOptional()
   @IsNumber()
   @Transform(transStringRateToFloat)
-  win_rate: number
+  win_rate?: number
 
   @IsOptional()
   @IsNumber()
-  @Transform(transformNumber)
-  bk_price?: number
-
-  @IsOptional()
-  @IsNumber()
-  @Transform(transformNumber)
-  bk_supply_price?: number
-
-  @IsString()
-  bk_supply_rate: string
-
-  @IsNumber()
   @Transform(transStringRateToFloat)
-  bk_cost_rate: number
+  bk_cost_rate?: number
 
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
   company_revenue?: number
 
+  @IsOptional()
   @IsNumber()
   @Transform(transStringRateToFloat)
-  company_revenue_rate: number
-
-  @IsNumber()
-  @Transform(transformNumber)
-  our_revenue_rate: number
+  company_revenue_rate?: number
 
   @IsOptional()
   @IsInt()
@@ -207,9 +198,15 @@ export class CreateBookDeliveryDto {
   @Transform(transformIntegerOrNull)
   pre_payment?: number
 
+  @IsOptional()
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  balance?: number
+
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
-  pre_payment_date: Date
+  balance_date?: Date
 
   @IsOptional()
   @IsInt()
@@ -227,31 +224,33 @@ export class CreateBookDeliveryDto {
   final_bk_sales?: number
 
   @IsOptional()
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  our_revenue?: number
-
   @IsString()
-  admin_contact: string
+  @Transform(transformString)
+  admin_contact?: string
 
+  @IsOptional()
   @IsString()
-  lib_contact: string
+  @Transform(transformString)
+  lib_contact?: string
 
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
   d_day?: number
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
-  today_date: Date
+  today_date?: Date
 
   @IsOptional()
   @IsInt()
+  @Transform(transformIntegerOrNull)
   cl_row_id?: number
 
   @IsOptional()
   @IsInt()
+  @Transform(transformIntegerOrNull)
   vl_row_id?: number
 
   @IsOptional()

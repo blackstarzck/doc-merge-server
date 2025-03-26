@@ -7,14 +7,14 @@ export class ClientLedgerModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'text', comment: '연번', nullable: true })
-  no: string
-
-  @Column({ type: 'text', comment: '매출처 이름', nullable: true })
+  @Column({ type: 'text', comment: '매출처 이름' })
   client: string
 
   @Column({ type: 'int', comment: '매출처 아이디', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
   client_id: number
+
+  @Column({ type: 'text', comment: '연번', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
+  no: string
 
   @Column({ type: 'text', comment: '내역', nullable: true })
   details: string
@@ -23,7 +23,7 @@ export class ClientLedgerModel {
   order_status: string
 
   @Column({ type: 'date', comment: '발주일자', nullable: true })
-  order_date: Date
+  cl_order_date: Date
 
   @Column({ type: 'text', comment: '입금상태', nullable: true })
   deposit_status: string
@@ -35,7 +35,7 @@ export class ClientLedgerModel {
   pre_payment_status: string
 
   @Column({ type: 'date', comment: '선금일자', nullable: true })
-  pre_payment_date: Date
+  cl_pre_payment_date: Date
 
   @Column({
     type: 'bigint',
@@ -43,7 +43,15 @@ export class ClientLedgerModel {
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  bk_price: number
+  cl_bk_price: number
+
+  @Column({
+    type: 'int',
+    comment: '도서공급단가',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
+  cl_bk_supply_price: number
 
   @Column({
     type: 'float',
@@ -51,7 +59,7 @@ export class ClientLedgerModel {
     transformer: columnRateTransformers,
     nullable: true
   })
-  bk_supply_rate: number
+  cl_bk_supply_rate: number
 
   @Column({
     type: 'bigint',
@@ -67,10 +75,15 @@ export class ClientLedgerModel {
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  total_payment: number
+  cl_total_payment: number
 
-  @Column({ type: 'float', comment: '매입율', transformer: columnRateTransformers, nullable: true })
-  purchase_rate: number
+  @Column({
+    type: 'float',
+    comment: '자사매입율',
+    transformer: columnRateTransformers,
+    nullable: true
+  })
+  cl_purchase_rate: number
 
   @Column({
     type: 'bigint',
@@ -78,7 +91,7 @@ export class ClientLedgerModel {
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  purchase_price: number
+  cl_purchase_price: number
 
   @Column({
     type: 'float',
@@ -86,7 +99,7 @@ export class ClientLedgerModel {
     transformer: columnRateTransformers,
     nullable: true
   })
-  our_revenue_rate: number
+  cl_our_revenue_rate: number
 
   @Column({
     type: 'bigint',
@@ -94,7 +107,7 @@ export class ClientLedgerModel {
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  our_revenue: number
+  cl_our_revenue: number
 
   @Column({
     type: 'bigint',
@@ -102,15 +115,15 @@ export class ClientLedgerModel {
     transformer: columnBigIntTransformers,
     nullable: true
   })
-  balance: number
+  expected_balance: number
 
   @Column({ type: 'date', comment: '계산서발행일', nullable: true })
-  invoice_date: Date
+  cl_invoice_date: Date
 
   @Column({ type: 'text', comment: '비고', nullable: true })
   remarks: string
 
-  @Column({ type: 'int', comment: '매츨업체 행 아이디', nullable: true, unique: true })
+  @Column({ type: 'int', comment: '매출업체 행 아이디', nullable: true, unique: true })
   cl_row_id: number
 
   @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.client_ledger)

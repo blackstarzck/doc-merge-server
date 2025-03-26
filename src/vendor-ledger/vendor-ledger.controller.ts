@@ -30,12 +30,6 @@ export class VendorLedgerController {
     return this.vendorLedgerService.getVendorLedgerById(vendorId)
   }
 
-  @Post()
-  @UseInterceptors(TransationInterceptor)
-  postVendorLedger(@Body('data') data: BookDeliveryModel[], @QueryRunner('qr') qr: QR) {
-    return this.vendorLedgerService.postVendorLedger(data, qr)
-  }
-
   @Post(':vendorId/delete')
   @UseInterceptors(TransationInterceptor)
   deleteVendorLedger(

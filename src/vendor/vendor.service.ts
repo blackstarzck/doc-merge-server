@@ -13,7 +13,7 @@ export class VendorService {
   ) {}
 
   async getVendors() {
-    return await this.vendorRepo.find()
+    return await this.vendorRepo.find({ order: { id: 'ASC' } })
   }
 
   async getVendorById(clientId: number) {

@@ -3,14 +3,15 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors
 } from '@nestjs/common'
 import { UploadService } from './upload.service'
 import { FileInterceptor } from '@nestjs/platform-express'
+import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 import { QueryRunner } from 'src/common/decorator/query-runner.decorator'
 import { QueryRunner as QR } from 'typeorm'
-import { TransationInterceptor } from 'src/common/interceptor/transaction.interceptor'
 
 @Controller('upload')
 export class UploadController {
@@ -19,44 +20,42 @@ export class UploadController {
   @Post('/overview/:overviewId')
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransationInterceptor)
-  postUploadOverview(
+  postOverViewUpload(
     @UploadedFile() file: Express.Multer.File,
-    @QueryRunner() qr: QR,
-    @Param('overviewId') overviewId: string
+    @Param('overviewId') overviewId: string,
+    @QueryRunner('qr') qr: QR
   ) {
-    return this.uploadService.postUpload('overview', file, overviewId, qr)
+    return this.uploadService.postOverViewUpload(file, overviewId, qr)
   }
 
   @Post('/organization/:organizationId')
   @UseInterceptors(FileInterceptor('file'))
-  @UseInterceptors(TransationInterceptor)
-  postUpload(
+  postOrganizationUpload(
     @UploadedFile() file: Express.Multer.File,
-    @QueryRunner() qr: QR,
     @Param('organizationId', ParseIntPipe) organizationId: number
   ) {
-    return this.uploadService.postUpload('organization', file, organizationId, qr)
+    return this.uploadService.postOrganizationUpload(file, organizationId)
   }
 
   @Post('/vendor_ledger/:vendorId')
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransationInterceptor)
-  postUploadVendorLedger(
+  postVendorLedgerUpload(
     @UploadedFile() file: Express.Multer.File,
-    @QueryRunner() qr: QR,
-    @Param('vendorId', ParseIntPipe) vendorId: number
+    @Param('vendorId', ParseIntPipe) vendorId: number,
+    @QueryRunner('qr') qr: QR
   ) {
-    return this.uploadService.postUpload('vendor_ledger', file, vendorId, qr)
+    return this.uploadService.postVendorLedgerUpload(file, vendorId, qr)
   }
 
   @Post('/client_ledger/:clientId')
   @UseInterceptors(FileInterceptor('file'))
   @UseInterceptors(TransationInterceptor)
-  postUploadClientLedger(
+  postClientLedgerUpload(
     @UploadedFile() file: Express.Multer.File,
-    @QueryRunner() qr: QR,
-    @Param('clientId', ParseIntPipe) clientId: number
+    @Param('clientId', ParseIntPipe) clientId: number,
+    @QueryRunner('qr') qr: QR
   ) {
-    return this.uploadService.postUpload('client_ledger', file, clientId, qr)
+    return this.uploadService.postClientLedgerUpload(file, clientId, qr)
   }
 }
