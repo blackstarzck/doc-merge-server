@@ -29,8 +29,9 @@ export class CreateVendorLedgerDto {
   vendor_id?: number
 
   @IsOptional()
-  @IsString()
-  no?: string
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  no?: number
 
   @IsOptional()
   @IsString()
@@ -115,8 +116,5 @@ export class CreateVendorLedgerDto {
   @IsOptional()
   @IsInt()
   @Transform(transformIntegerOrNull)
-  vl_row_id?: number
-
-  @IsOptional()
-  bookDelivery?: BookDeliveryModel
+  bd_row_id?: number
 }

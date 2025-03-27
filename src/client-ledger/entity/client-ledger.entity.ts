@@ -13,8 +13,8 @@ export class ClientLedgerModel {
   @Column({ type: 'int', comment: '매출처 아이디', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
   client_id: number
 
-  @Column({ type: 'text', comment: '연번', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
-  no: string
+  @Column({ type: 'int', comment: '연번', nullable: true }) // 위즈덤셀러, 북차카 등 자사 계열사정보는 없음
+  no: number
 
   @Column({ type: 'text', comment: '내역', nullable: true })
   details: string
@@ -123,9 +123,9 @@ export class ClientLedgerModel {
   @Column({ type: 'text', comment: '비고', nullable: true })
   remarks: string
 
-  @Column({ type: 'int', comment: '매출업체 행 아이디', nullable: true, unique: true })
-  cl_row_id: number
+  @Column({ type: 'int', comment: '도서납품현황 행 아이디', nullable: true })
+  bd_row_id: number
 
-  @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.client_ledger)
-  bookDelivery: BookDeliveryModel
+  @OneToOne(() => BookDeliveryModel, (book_delivery) => book_delivery.client_ledger)
+  book_delivery: BookDeliveryModel
 }

@@ -25,8 +25,8 @@ export class CreateBookDeliveryDto {
   id?: number
 
   @IsNotEmpty()
-  @IsString()
-  no: string
+  @Transform(({value}) => parseInt(value))
+  no: number
 
   @IsOptional()
   @IsBoolean()
@@ -207,11 +207,6 @@ export class CreateBookDeliveryDto {
   @IsDate()
   @Transform(transformDate)
   balance_date?: Date
-
-  @IsOptional()
-  @IsInt()
-  @Transform(transformIntegerOrNull)
-  expected_balance?: number
 
   @IsOptional()
   @IsInt()

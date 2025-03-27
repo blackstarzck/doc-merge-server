@@ -1,7 +1,7 @@
 import { IsString, IsInt, IsDate, IsOptional, IsNumber, IsNotEmpty } from 'class-validator'
 import { Transform } from 'class-transformer'
 import { transformDate } from 'src/common/utils/date.utils'
-import { transformNumber } from 'src/common/utils/transform.utils'
+import { transformIntegerOrNull, transformNumber } from 'src/common/utils/transform.utils'
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 
 export class CreateClientLedgerDto {
@@ -18,8 +18,9 @@ export class CreateClientLedgerDto {
   client_id?: number
 
   @IsOptional()
-  @IsString()
-  no?: string
+  @IsInt()
+  @Transform(transformIntegerOrNull)
+  no?: number
 
   @IsString()
   details: string
@@ -27,6 +28,7 @@ export class CreateClientLedgerDto {
   @IsString()
   order_status: string
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
   cl_order_date?: Date
@@ -34,6 +36,7 @@ export class CreateClientLedgerDto {
   @IsString()
   deposit_status: string
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
   deposit_date?: Date
@@ -41,6 +44,7 @@ export class CreateClientLedgerDto {
   @IsString()
   pre_payment_status: string
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
   cl_pre_payment_date?: Date
@@ -86,6 +90,7 @@ export class CreateClientLedgerDto {
   @Transform(transformNumber)
   expected_balance: number
 
+  @IsOptional()
   @IsDate()
   @Transform(transformDate)
   cl_invoice_date?: Date
@@ -95,8 +100,5 @@ export class CreateClientLedgerDto {
 
   @IsOptional()
   @IsInt()
-  cl_row_id?: number
-
-  @IsOptional()
-  bookDelivery?: BookDeliveryModel
+  bd_row_id?: number
 }

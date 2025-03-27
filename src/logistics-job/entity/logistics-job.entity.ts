@@ -5,7 +5,7 @@ export class LogisticsJobModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "text", comment: "연번" })
+  @Column({ type: "text", comment: "연번", unique: true })
   no: string;
 
   @Column({ type: "text", comment: "작성자" })

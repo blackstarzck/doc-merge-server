@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer'
-import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsBoolean } from 'class-validator'
+import { IsOptional, IsInt, IsString, IsNumber, IsDate, IsBoolean, IsNotEmpty } from 'class-validator'
 import { transformDate } from 'src/common/utils/date.utils'
 import {
   transformBoolean,
@@ -13,10 +13,10 @@ export class CreateOrganizationDto {
   @Transform(transformIntegerOrNull)
   id?: number
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsInt()
-  @Transform(transformIntegerOrNull)
-  row_num?: number
+  @Transform(({ value }) => parseInt(value))
+  no: number
 
   @IsOptional()
   @IsInt()
@@ -55,7 +55,7 @@ export class CreateOrganizationDto {
 
   @IsOptional()
   @IsString()
-  cost_rate: string
+  cost_rate?: string
 
   @IsDate()
   @Transform(transformDate)
@@ -134,11 +134,11 @@ export class CreateOrganizationDto {
 
   @IsOptional()
   @IsString()
-  payment_method: string
+  payment_method?: string
 
   @IsNumber()
   @Transform(transformNumber)
-  payment: number
+  pre_payment: number
 
   @IsDate()
   @Transform(transformDate)
@@ -175,17 +175,23 @@ export class CreateOrganizationDto {
   @IsOptional()
   @IsNumber()
   @Transform(transformNumber)
-  d_day: number // d-day(delivery_date-today_date)
+  d_day?: number // d-day(delivery_date-today_date)
 
   @IsOptional()
   @IsDate()
   @Transform(transformDate)
-  today_date: Date
+  today_date?: Date
 
   @IsOptional()
   @IsNumber()
   @Transform(transformNumber)
-  net_revenue: number
+  net_revenue?: number
+
+  
+  @IsOptional()
+  @IsNumber()
+  @Transform(transformNumber)
+  revenue_rate?: number
 
   @IsString()
   sheet_name: string

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { QueryRunner, Repository } from 'typeorm'
+import { IsNull, Not, QueryRunner, Repository } from 'typeorm'
 import { VendorLedgerModel } from './entity/vendor-ledger.entity'
 import { plainToInstance } from 'class-transformer'
 import { CreateVendorLedgerDto } from './dto/create-vendor-ledger.dto'
@@ -61,7 +61,7 @@ export class VendorLedgerService {
 
     const findOptions = this.buildFindOptions(instance)
     const find = await repository.findOne({
-      where: { ...findOptions }
+      where: { bd_row_id: data.bd_row_id }
     })
 
     try {
@@ -89,17 +89,6 @@ export class VendorLedgerService {
       }
     }
     return options
-  }
-
-  private async assignNoIfMissing(
-    data: CreateVendorLedgerDto,
-    repository: Repository<VendorLedgerModel>
-  ): Promise<CreateVendorLedgerDto> {
-    if (!data.no) {
-      const count = await repository.count()
-      return { ...data, no: String(count + 1) }
-    }
-    return data
   }
 
   private isDataEqual(existing: VendorLedgerModel, dto: CreateVendorLedgerDto): boolean {
@@ -135,7 +124,6 @@ export class VendorLedgerService {
         id: row.vl_row_id || null,
         vendor_id: row?.vendor_id || null,
         vl_row_id: row?.vl_row_id || null,
-        bookDelivery: row?.bookDelivery || null
       }
 
       Object.entries(row).map(([key, value]) => {

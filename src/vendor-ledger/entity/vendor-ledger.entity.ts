@@ -16,8 +16,8 @@ export class VendorLedgerModel {
   @Column({ type: 'int', comment: '상위업체 아이디', nullable: true })
   vendor_id: number
 
-  @Column({ type: 'text', comment: '연번', nullable: true })
-  no: string
+  @Column({ type: 'int', comment: '연번', nullable: true })
+  no: number
 
   @Column({ type: 'text', comment: '발주건', nullable: true })
   order_item: string
@@ -67,7 +67,7 @@ export class VendorLedgerModel {
   @Column({ type: 'text', comment: '송금일', nullable: true })
   remittance_date: string
 
-  @Column({ type: 'text', comment: '계산서발행일', nullable: true })
+  @Column({ type: 'date', comment: '계산서발행일', nullable: true })
   vl_invoice_date: Date
 
   @Column({ type: 'text', comment: '계산서 수신 사업자', nullable: true })
@@ -82,9 +82,9 @@ export class VendorLedgerModel {
   @Column({ type: 'text', comment: '담당자 전화번호', nullable: true })
   manager_phone: string
 
-  @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true, unique: true })
-  vl_row_id: number
+  @Column({ type: 'int', comment: '도서납품현황 행 아이디', nullable: true })
+  bd_row_id: number
 
-  @OneToOne(() => BookDeliveryModel, (bookDelivery) => bookDelivery.vendor_ledger)
-  bookDelivery: BookDeliveryModel
+  @OneToOne(() => BookDeliveryModel, (book_delivery) => book_delivery.vendor_ledger)
+  book_delivery: BookDeliveryModel
 }

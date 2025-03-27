@@ -1,16 +1,30 @@
 import { columnBigIntTransformers, columnRateTransformers } from 'src/common/utils/transform.utils'
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity({ name: 'organizations_model' })
 export class OrganizationModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'int', comment: '연도', nullable: true })
-  year: number
+  @Column({
+    type: 'int',
+    comment: '연도',
+    nullable: true,
+    transformer: {
+      to: (value) => value,
+      from: (value) => value ? String(value) : ''
+    }
+  })
+  year: number | null
 
-  @Column({ type: 'int', comment: '입력타이틀 번호', nullable: true })
-  row_num: number
+  @BeforeInsert()
+  @BeforeUpdate()
+  setYearFromDate() {
+    this.year = this.order_date ? new Date(this.order_date).getFullYear() : null;
+  }
+
+  @Column({ type: 'int', comment: '연번' })
+  no: number
 
   @Column({ type: 'text', comment: '기관명' })
   org_name: string
@@ -57,10 +71,10 @@ export class OrganizationModel {
   @Column({ type: 'text', comment: '원가율 확정', nullable: true })
   cost_rate: string
 
-  @Column({ type: 'date', comment: '발주일', nullable: true })
+  @Column({ type: 'date', comment: '발주일자', nullable: true })
   order_date: Date
 
-  @Column({ type: 'date', comment: '납품일', nullable: true })
+  @Column({ type: 'date', comment: '납품일자', nullable: true })
   delivery_date: Date
 
   @Column({ type: 'float', comment: '총권수', nullable: true })
@@ -169,7 +183,7 @@ export class OrganizationModel {
   @Column({ type: 'float', comment: '도서수익금', nullable: true })
   bk_revenue: number // final_bk_sales-(m_supply_price*bk_cost_late)
 
-  @Column({ type: 'float', comment: '남은기간(일)', nullable: true })
+  @Column({ type: 'float', comment: '남은기간', nullable: true })
   d_day: number // d-day(delivery_date-today_date)
 
   @Column({ type: 'date', comment: '오늘날짜', nullable: true })
@@ -177,6 +191,9 @@ export class OrganizationModel {
 
   @Column({ type: 'float', comment: '순이익금', nullable: true })
   net_revenue: number
+
+  @Column({ type: 'float', comment: '자사이익율', nullable: true })
+  revenue_rate: number
 
   @Column({ type: 'text', comment: '입력타이틀' })
   sheet_name: string

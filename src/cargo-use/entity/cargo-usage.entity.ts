@@ -5,7 +5,7 @@ export class CargoUsageModel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "text", comment: "연번", nullable: true })
+  @Column({ type: "text", comment: "연번", unique: true, nullable: true })
   no: string;
 
   @Column({ type: "text", comment: "작성자", nullable: true })

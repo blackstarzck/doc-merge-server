@@ -4,7 +4,7 @@ import { Column, Entity } from 'typeorm'
 
 @Entity({ name: 'service_delivery_model' })
 export class ServiceDeliveryModel extends BaseModel {
-  @Column({ type: 'text', comment: '연번', nullable: true })
+  @Column({ type: 'text', comment: '연번', nullable: true, unique: true })
   no: string
 
   @Column({ type: 'date', comment: '날짜', nullable: true })

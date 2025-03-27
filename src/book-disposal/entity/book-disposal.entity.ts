@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm'
 
 @Entity({ name: 'book_disposal_model' })
 export class BookDisposalModel extends BaseModel {
-  @Column({ type: 'int', comment: '연번', nullable: true })
+  @Column({ type: 'int', comment: '연번', nullable: true, unique: true })
   no: number
 
   @Column({ type: 'date', comment: '날짜', nullable: true })

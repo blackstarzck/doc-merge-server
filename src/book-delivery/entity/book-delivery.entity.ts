@@ -8,8 +8,8 @@ export class BookDeliveryModel {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column({ type: 'text', comment: '연번', unique: true })
-  no: string
+  @Column({ type: 'int', comment: '연번', unique: true })
+  no: number
 
   @Column({
     type: 'boolean',
@@ -144,8 +144,17 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '잔금', nullable: true })
   balance: number
 
+
   @Column({ type: 'date', comment: '잔금일자', nullable: true })
   balance_date: Date
+
+  @Column({
+    type: 'bigint',
+    comment: '예정잔금',
+    transformer: columnBigIntTransformers,
+    nullable: true
+  })
+  expected_balance: number
 
   @Column({ type: 'int', comment: '최종납품정가', nullable: true })
   final_delivery_price: number
@@ -165,17 +174,17 @@ export class BookDeliveryModel {
   @Column({ type: 'date', comment: '오늘날짜', nullable: true })
   today_date: Date
 
-  @Column({ type: 'int', comment: '매출업체', nullable: true })
+  @Column({ type: 'int', comment: '매출업체 행 아이디', nullable: true })
   cl_row_id: number
 
   @Column({ type: 'int', comment: '매입업체 행 아이디', nullable: true })
   vl_row_id: number
 
-  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.bookDelivery)
-  @JoinColumn({ name: 'vl_row_id' }) // vendor_ledger_model 테이블의 id 와 연결
+  @OneToOne(() => VendorLedgerModel, (vendor_ledger) => vendor_ledger.book_delivery)
+  @JoinColumn({ name: 'vl_row_id' })
   vendor_ledger: VendorLedgerModel
 
-  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.bookDelivery)
-  @JoinColumn({ name: 'cl_row_id' }) // client_ledger_model 테이블의 id 와 연결
+  @OneToOne(() => ClientLedgerModel, (client_ledger) => client_ledger.book_delivery)
+  @JoinColumn({ name: 'cl_row_id' })
   client_ledger: ClientLedgerModel
 }

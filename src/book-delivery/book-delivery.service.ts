@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, QueryRunner, Repository } from 'typeorm'
+import { FindOptionsSelect, In, QueryRunner, Repository } from 'typeorm'
 import { BookDeliveryModel } from './entity/book-delivery.entity'
 import { plainToInstance } from 'class-transformer'
 import { CreateBookDeliveryDto } from './dto/create-book-delivery.dto'
@@ -23,23 +23,23 @@ export class BookDeliveryService {
   ) {}
 
   async getBookDelivery() {
-    const data = await this.bookDeliveryRepository.find({
-      relations: ['client_ledger', 'vendor_ledger'],
-      order: { id: 'ASC' }
+    const cl_col = TABLE_COLUMNS.find((table) => table.name === 'client_ledger')?.columns || []
+    const vl_col = TABLE_COLUMNS.find((table) => table.name === 'vendor_ledger')?.columns || []
+    const bd_col = TABLE_COLUMNS.find((table) => table.name === 'book_delivery')?.columns || []
+    const clSelect = cl_col.filter(item => !['no', 'id'].includes(item.key)).map(item => `client_ledger.${item.key}`);
+    const vlSelect = vl_col.filter(item => !['no', 'id'].includes(item.key)).map(item => `vendor_ledger.${item.key}`);
+    const bdSelect = bd_col.map(item => `book_delivery.${item.key}`);
+    const data = await this.bookDeliveryRepository
+    .createQueryBuilder('book_delivery')
+    .leftJoinAndSelect('book_delivery.client_ledger', 'client_ledger')
+    .leftJoinAndSelect('book_delivery.vendor_ledger', 'vendor_ledger')
+    .select(['book_delivery.id', ...bdSelect, ...clSelect, ...vlSelect])
+    .orderBy('book_delivery.id', 'ASC')
+    .getMany();
+    const result = data.map((item) => {
+      return { ...item.client_ledger, ...item.vendor_ledger, ...item, }
     })
-
-    return data.map((item) => {
-      const { client_ledger, vendor_ledger } = item
-      if (client_ledger) {
-        const { id, ...cRest } = client_ledger
-        item = { ...item, ...cRest }
-      }
-      if (vendor_ledger) {
-        const { id, ...vRest } = vendor_ledger
-        item = { ...item, ...vRest }
-      }
-      return item
-    })
+    return result
   }
 
   async postBookDelivery(data, qr?: QueryRunner) {

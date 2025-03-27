@@ -94,8 +94,10 @@ export class ClientLedgerService {
       })
       validationErrors.push(result)
     }
-    console.log('validationErrors: ', validationErrors)
-    if (validationErrors.length > 0) throw new BadRequestException(validationErrors)
+    if (validationErrors.length > 0) {
+      console.log('validationErrors: ', validationErrors)
+      throw new BadRequestException(validationErrors)
+    }
   }
 
   private buildFindOptions(dto: CreateClientLedgerDto): Partial<ClientLedgerModel> {
@@ -122,7 +124,6 @@ export class ClientLedgerService {
         id: row?.cl_row_id || null,
         client_id: row?.parent_company_id || null,
         cl_row_id: row?.cl_row_id || null,
-        bookDelivery: row?.bookDelivery || null
       }
 
       Object.entries(row).map(([key, value]) => {
