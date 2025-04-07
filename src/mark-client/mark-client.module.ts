@@ -6,6 +6,7 @@ import { MarkClientModel } from './entity/mark-client.entity'
 
 @Module({
   imports: [TypeOrmModule.forFeature([MarkClientModel])],
+  exports: [MarkClientService],
   controllers: [MarkClientController],
   providers: [MarkClientService]
 })

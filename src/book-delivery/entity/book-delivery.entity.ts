@@ -171,9 +171,6 @@ export class BookDeliveryModel {
   @Column({ type: 'int', comment: '기간', nullable: true })
   d_day: number
 
-  @Column({ type: 'date', comment: '오늘날짜', nullable: true })
-  today_date: Date
-
   @Column({ type: 'int', comment: '매출업체 행 아이디', nullable: true })
   cl_row_id: number
 

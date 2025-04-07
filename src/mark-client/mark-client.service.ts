@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { MarkClientModel } from './entity/mark-client.entity'
 import { Repository } from 'typeorm'
@@ -18,6 +18,13 @@ export class MarkClientService {
 
   async getMarkClientById(clientId: number) {
     return await this.markClientRepo.findBy({ id: clientId })
+  }
+
+  async getOneMarkClientById(markClientId: number) {
+    const result = await this.markClientRepo.findOne({ where: { id: markClientId } })
+    if (!result)
+      throw new NotFoundException(`마크장비 거래처( ${markClientId}) 정보를 찾지 못했습니다.`)
+    return result
   }
 
   async createMarkClient(dto: CreateMarkClientDto) {

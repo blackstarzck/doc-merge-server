@@ -1,7 +1,6 @@
 import { Transform } from 'class-transformer'
 import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator'
 import { transformIntegerOrNull } from 'src/common/utils/transform.utils'
-import { stringValidationMessage } from 'src/common/validation-message/string-validation-message copy'
 
 export class CreateMarkClientDto {
   @IsOptional()

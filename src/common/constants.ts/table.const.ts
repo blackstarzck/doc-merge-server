@@ -43,8 +43,7 @@ export const TABLE_COLUMNS = [
       { name: '최종도서매출액', key: 'final_bk_sales' },
       { name: '행정담당자연락처', key: 'admin_contact' },
       { name: '사서연락처', key: 'lib_contact' },
-      { name: '기간', key: 'd_day' },
-      { name: '오늘날짜', key: 'today_date' }
+      { name: '기간', key: 'd_day' }
     ]
   },
   {
@@ -208,7 +207,6 @@ export const TABLE_COLUMNS = [
       { name: '최종도서매출액', key: 'final_bk_sales' },
       { name: '도서수익금', key: 'bk_revenue' },
       { name: '남은기간', key: 'd_day' },
-      { name: '오늘날짜', key: 'today_date' },
       { name: '순이익금', key: 'net_revenue' },
       { name: '이익율', key: 'revenue_rate' }
     ]
@@ -271,7 +269,7 @@ export const TABLE_COLUMNS = [
       { name: '기재일', key: 'entry_date' },
       { name: '장비', key: 'equipment' },
       { name: '구분', key: 'category' },
-      { name: '마크팀', key: 'name' },
+      { name: '마크팀', key: 'mark_client' },
       { name: '완료월', key: 'completion_month' },
       { name: '납품지역', key: 'region' },
       { name: '납품처', key: 'destination' },

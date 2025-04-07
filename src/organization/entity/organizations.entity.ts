@@ -186,9 +186,6 @@ export class OrganizationModel {
   @Column({ type: 'float', comment: '남은기간', nullable: true })
   d_day: number // d-day(delivery_date-today_date)
 
-  @Column({ type: 'date', comment: '오늘날짜', nullable: true })
-  today_date: Date
-
   @Column({ type: 'float', comment: '순이익금', nullable: true })
   net_revenue: number
 

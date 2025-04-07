@@ -5,8 +5,8 @@ import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common'
 export class MarkStatusController {
   constructor(private readonly markStatusService: MarkStatusService) {}
 
-  @Get(':markInfoId')
-  getVendorLedgerById(@Param('markInfoId', ParseIntPipe) markInfoId: number) {
-    return this.markStatusService.getVendorLedgerById(markInfoId)
+  @Get(':markStatusId')
+  getMarkStatusById(@Param('markStatusId', ParseIntPipe) markStatusId: number) {
+    return this.markStatusService.getMarkStatusById(markStatusId)
   }
 }

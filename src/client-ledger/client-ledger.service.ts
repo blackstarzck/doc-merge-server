@@ -8,6 +8,7 @@ import { ClientModel } from 'src/client/entity/client.entity'
 import { BookDeliveryModel } from 'src/book-delivery/entity/book-delivery.entity'
 import { TABLE_COLUMNS } from 'src/common/constants.ts/table.const'
 import { validate } from 'class-validator'
+import { ClientService } from 'src/client/client.service'
 
 @Injectable()
 export class ClientLedgerService {
@@ -15,8 +16,7 @@ export class ClientLedgerService {
     @InjectRepository(ClientLedgerModel)
     private readonly clientLedgerRepo: Repository<ClientLedgerModel>,
 
-    @InjectRepository(ClientModel)
-    private readonly clientRepo: Repository<ClientModel>
+    private readonly clientService: ClientService
   ) {}
 
   async getClientLedger() {
@@ -26,9 +26,7 @@ export class ClientLedgerService {
   }
 
   async getClientLedgerById(id: number) {
-    const client = await this.clientRepo.findOne({ where: { id } })
-
-    if (!client) throw new NotFoundException(`매출처(${id}) 를 찾지 못했습니다.`)
+    const client = await this.clientService.getOneClientById(id)
 
     const result = await this.clientLedgerRepo.find({
       where: { client: client.name },
@@ -123,7 +121,7 @@ export class ClientLedgerService {
       const obj = {
         id: row?.cl_row_id || null,
         client_id: row?.parent_company_id || null,
-        cl_row_id: row?.cl_row_id || null,
+        cl_row_id: row?.cl_row_id || null
       }
 
       Object.entries(row).map(([key, value]) => {

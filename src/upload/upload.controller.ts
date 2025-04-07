@@ -58,4 +58,15 @@ export class UploadController {
   ) {
     return this.uploadService.postClientLedgerUpload(file, clientId, qr)
   }
+
+  @Post('/mark_status/:markClientId')
+  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(TransationInterceptor)
+  postMarkStatusUpload(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('markClientId', ParseIntPipe) markClientId: number,
+    @QueryRunner('qr') qr: QR
+  ) {
+    return this.uploadService.postMarkStatusUpload(file, markClientId, qr)
+  }
 }

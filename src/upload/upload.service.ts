@@ -27,7 +27,8 @@ import { ClientService } from 'src/client/client.service'
 import { VendorService } from 'src/vendor/vendor.service'
 import { ClientLedgerService } from 'src/client-ledger/client-ledger.service'
 import { VendorLedgerService } from 'src/vendor-ledger/vendor-ledger.service'
-import { BookDeliveryService } from 'src/book-delivery/book-delivery.service'
+import { MarkClientService } from 'src/mark-client/mark-client.service'
+import { MarkStatusService } from 'src/mark-status/mark-status.service'
 
 type Model =
   | BookDeliveryModel
@@ -69,7 +70,8 @@ export class UploadService {
     private readonly clientLedgerService: ClientLedgerService,
     private readonly vendorService: VendorService,
     private readonly vendorLedgerService: VendorLedgerService,
-    private readonly bookDeliveryService: BookDeliveryService
+    private readonly markClientService: MarkClientService,
+    private readonly markStatusService: MarkStatusService
   ) {}
 
   private async getExsistingData<T extends BaseEntity>(
@@ -106,39 +108,39 @@ export class UploadService {
   }
 
   async postOverViewUpload(file: Express.Multer.File, overviewId: string, qr?: QueryRunner) {
-    const { clients, vendors } = await this.fetchReferenceData();
-    const { dto, repository, prevData } = await this.setBaseData('overview', overviewId, qr);
-    const { jsonDataRaw } = this.excelProcess(file, 'overview');
-    const columns = TABLE_COLUMNS.find((item) => item.name === overviewId)?.columns;
-    let jsonData = this.matchColumnNames(jsonDataRaw, columns);
+    const { clients, vendors } = await this.fetchReferenceData()
+    const { dto, repository, prevData } = await this.setBaseData('overview', overviewId, qr)
+    const { jsonDataRaw } = this.excelProcess(file, 'overview')
+    const columns = TABLE_COLUMNS.find((item) => item.name === overviewId)?.columns
+    let jsonData = this.matchColumnNames(jsonDataRaw, columns)
 
     if (overviewId === 'book_delivery') {
-      jsonData = await this.processBookDelivery(jsonData, jsonDataRaw, clients, vendors, qr);
+      jsonData = await this.processBookDelivery(jsonData, jsonDataRaw, clients, vendors, qr)
     }
 
-    const dtoInstances = jsonData.map((row) => plainToInstance(dto, row));
-    await this.initValidation(dtoInstances);
+    const dtoInstances = jsonData.map((row) => plainToInstance(dto, row))
+    await this.initValidation(dtoInstances)
 
-    const entityData = dtoInstances.map((instance) => repository.create(instance));
+    const entityData = dtoInstances.map((instance) => repository.create(instance))
     // this.logEntityData(entityData);
 
     // console.log(entityData.map(item => item.no))
 
     try {
-      await repository.upsert(entityData, ['no']);
-      const result = await repository.find({ order: { id: 'ASC' } });
-      return [...prevData, ...result];
+      await repository.upsert(entityData, ['no'])
+      const result = await repository.find({ order: { id: 'ASC' } })
+      return [...prevData, ...result]
     } catch (e) {
-      throw new BadRequestException(`Upsert 실패: ${e.message}`);
+      throw new BadRequestException(`Upsert 실패: ${e.message}`)
     }
   }
 
   private async fetchReferenceData() {
     const [clients, vendors] = await Promise.all([
       this.clientService.getClients(),
-      this.vendorService.getVendors(),
-    ]);
-    return { clients, vendors };
+      this.vendorService.getVendors()
+    ])
+    return { clients, vendors }
   }
 
   private async processBookDelivery(
@@ -146,15 +148,15 @@ export class UploadService {
     jsonDataRaw: any[],
     clients: any[],
     vendors: any[],
-    qr?: QueryRunner,
+    qr?: QueryRunner
   ): Promise<BookDeliveryModel[]> {
-    const clData = this.prepareClientLedgerData(jsonDataRaw, clients);
-    const vlData = this.prepareVendorLedgerData(jsonDataRaw, vendors);
-    const newJsonData: BookDeliveryModel[] = [];
+    const clData = this.prepareClientLedgerData(jsonDataRaw, clients)
+    const vlData = this.prepareVendorLedgerData(jsonDataRaw, vendors)
+    const newJsonData: BookDeliveryModel[] = []
 
     for (let i = 0; i < jsonData.length; i++) {
-      const data = jsonData[i];
-      this.assignCompanyIds(data, clData[i], vlData[i]);
+      const data = jsonData[i]
+      this.assignCompanyIds(data, clData[i], vlData[i])
 
       if (clData[i].client) {
         data.client_ledger = await this.upsertLedger(
@@ -162,8 +164,8 @@ export class UploadService {
           CreateClientLedgerDto,
           clData[i],
           data.no,
-          qr,
-        );
+          qr
+        )
       }
       if (vlData[i].vendor) {
         data.vendor_ledger = await this.upsertLedger(
@@ -171,13 +173,13 @@ export class UploadService {
           CreateVendorLedgerDto,
           vlData[i],
           data.no,
-          qr,
-        );
+          qr
+        )
       }
-      newJsonData.push(data);
+      newJsonData.push(data)
     }
 
-    return newJsonData;
+    return newJsonData
   }
 
   private prepareClientLedgerData(jsonDataRaw: any[], clients: any[]) {
@@ -190,12 +192,12 @@ export class UploadService {
       { name: '도서정가', key: 'cl_bk_price' },
       { name: '선금일자', key: 'cl_pre_payment_date' },
       { name: '도서공급율', key: 'cl_bk_supply_rate' },
-      { name: '총입금액', key: 'cl_total_payment' },
-    ];
+      { name: '총입금액', key: 'cl_total_payment' }
+    ]
     return this.matchColumnNames(jsonDataRaw, bdClCommon).map((data) => ({
       ...data,
-      client_id: data.client ? clients.find((client) => client.name === data.client)?.id : null,
-    }));
+      client_id: data.client ? clients.find((client) => client.name === data.client)?.id : null
+    }))
   }
 
   private prepareVendorLedgerData(jsonDataRaw: any[], vendors: any[]) {
@@ -205,56 +207,58 @@ export class UploadService {
       { name: '도서공급단가', key: 'vl_bk_supply_price' },
       { name: '자사이익금', key: 'vl_our_revenue' },
       { name: '자사이익율', key: 'vl_our_revenue_rate' },
-      { name: '기초금액', key: 'vl_base_price' },
-    ];
+      { name: '기초금액', key: 'vl_base_price' }
+    ]
     return this.matchColumnNames(jsonDataRaw, bdVlCommon).map((data) => ({
       ...data,
-      vendor_id: data.vendor ? vendors.find((vendor) => vendor.name === data.vendor)?.id : null,
-    }));
+      vendor_id: data.vendor ? vendors.find((vendor) => vendor.name === data.vendor)?.id : null
+    }))
   }
 
   private assignCompanyIds(data: any, clData: any, vlData: any) {
     if (data.parent_company && !data.parent_company_id) {
-      data.parent_company_id = clData.client_id;
+      data.parent_company_id = clData.client_id
     }
     if (data.outsourcing_company && !data.outsourcing_company_id) {
-      data.outsourcing_company_id = vlData.vendor_id;
+      data.outsourcing_company_id = vlData.vendor_id
     }
   }
 
-  private async upsertLedger<T extends ClientLedgerModel | VendorLedgerModel, D extends CreateClientLedgerDto | CreateVendorLedgerDto>(
+  private async upsertLedger<
+    T extends ClientLedgerModel | VendorLedgerModel,
+    D extends CreateClientLedgerDto | CreateVendorLedgerDto
+  >(
     repository: Repository<T>,
     dtoClass: new () => D,
     data: any,
     bdRowId: number,
-    qr?: QueryRunner,
+    qr?: QueryRunner
   ): Promise<T> {
-    const find = await repository.findOneBy({ bd_row_id: bdRowId } as any);
-    const instance = plainToInstance(dtoClass, data);
-  
+    const find = await repository.findOneBy({ bd_row_id: bdRowId } as any)
+    const instance = plainToInstance(dtoClass, data)
+
     if (find) {
-      await repository.update({ bd_row_id: bdRowId } as any, instance as any);
-      return { ...find, ...instance } as T;
+      await repository.update({ bd_row_id: bdRowId } as any, instance as any)
+      return { ...find, ...instance } as T
     } else {
-      return await repository.save({ ...instance, bd_row_id: bdRowId } as any);
+      return await repository.save({ ...instance, bd_row_id: bdRowId } as any)
     }
   }
 
   private logEntityData(entityData: BookDeliveryModel[]) {
     console.log(
       'no: ',
-      entityData.map((data) => ({ cl_row_id: data.cl_row_id, vl_row_id: data.vl_row_id })),
-    );
+      entityData.map((data) => ({ cl_row_id: data.cl_row_id, vl_row_id: data.vl_row_id }))
+    )
     console.log(
       '[1] client_ledger: ',
-      entityData.filter((data) => data.client_ledger).map((data) => data.cl_row_id),
-    );
+      entityData.filter((data) => data.client_ledger).map((data) => data.cl_row_id)
+    )
     console.log(
       '[2] vendor_ledger: ',
-      entityData.filter((data) => data.vendor_ledger).map((data) => data.vl_row_id),
-    );
+      entityData.filter((data) => data.vendor_ledger).map((data) => data.vl_row_id)
+    )
   }
-
 
   async postOrganizationUpload(file: Express.Multer.File, organizationId: any) {
     const { dto, repository, prevData } = await this.setBaseData('organization', organizationId)
@@ -276,7 +280,9 @@ export class UploadService {
     organization.sheet_name = org.name
     organization.sheet_data_num = org.id
 
-    jsonData = jsonData.filter(data => data.no && data.org_name).map((data, i) => ({ ...data, no: (i + 1), ...organization }))
+    jsonData = jsonData
+      .filter((data) => data.no && data.org_name)
+      .map((data, i) => ({ ...data, no: i + 1, ...organization }))
 
     const dtoInstances = jsonData.map((row) => plainToInstance(dto, row))
 
@@ -295,7 +301,7 @@ export class UploadService {
     }
   }
 
-  async postClientLedgerUpload(file: Express.Multer.File, clientId: any, qr: QueryRunner) {
+  async postClientLedgerUpload(file: Express.Multer.File, clientId: number, qr: QueryRunner) {
     const { jsonDataRaw, sheetName } = this.excelProcess(file, 'client_ledger') // 엑셀파일 json 데이터로 변환
     const columns = TABLE_COLUMNS.find((item) => item.name === 'client_ledger')?.columns
     const jsonData = this.matchColumnNames(jsonDataRaw, columns)
@@ -307,7 +313,7 @@ export class UploadService {
     if (sheetName !== client.name)
       throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${client.name}`)
 
-    try{
+    try {
       for (let i = 0; i < jsonData.length; i++) {
         let data = jsonData[i]
         data = {
@@ -321,19 +327,19 @@ export class UploadService {
           jsonData[i] = clientLedger
         }
       }
-      await qr.commitTransaction()
+      await qr
+        .commitTransaction()
         .then(() => qr.release())
-        .catch((e) => console.log("Transaction commit/release error: ", e));
-  
+        .catch((e) => console.log('Transaction commit/release error: ', e))
+
       const result = await this.clientLedgerService.getClientLedgerById(clientId)
       return result
-    }catch(e){
-      throw new BadRequestException("저장에 실패했습니다: " + e.message);
+    } catch (e) {
+      throw new BadRequestException('저장에 실패했습니다: ' + e.message)
     }
-
   }
 
-  async postVendorLedgerUpload(file: Express.Multer.File, vendorId: any, qr: QueryRunner) {
+  async postVendorLedgerUpload(file: Express.Multer.File, vendorId: number, qr: QueryRunner) {
     const { jsonDataRaw, sheetName } = this.excelProcess(file, 'vendor_ledger') // 엑셀파일 json 데이터로 변환
     const columns = TABLE_COLUMNS.find((item) => item.name === 'vendor_ledger')?.columns
     const jsonData = this.matchColumnNames(jsonDataRaw, columns)
@@ -345,7 +351,7 @@ export class UploadService {
     if (sheetName !== vendor.name)
       throw new BadRequestException(`시트명이 일치하지 않습니다. ${sheetName} != ${vendor.name}`)
 
-    try{
+    try {
       for (let i = 0; i < jsonData.length; i++) {
         let data = jsonData[i]
         data = {
@@ -357,14 +363,37 @@ export class UploadService {
         jsonData[i] = vendorLedger
       }
 
-      await qr.commitTransaction()
+      await qr
+        .commitTransaction()
         .then(() => qr.release())
-        .catch((e) => console.log("Transaction commit/release error: ", e));
+        .catch((e) => console.log('Transaction commit/release error: ', e))
 
       const result = await this.vendorLedgerService.getVendorLedgerById(vendorId)
       return result
-    }catch(e){
-      throw new BadRequestException("저장에 실패했습니다: " + e.message);
+    } catch (e) {
+      throw new BadRequestException('저장에 실패했습니다: ' + e.message)
+    }
+  }
+
+  async postMarkStatusUpload(file: Express.Multer.File, markClientId: number, qr: QueryRunner) {
+    const { jsonDataRaw } = this.excelProcess(file, 'mark_status') // 엑셀파일 json 데이터로 변환
+    const columns = TABLE_COLUMNS.find((item) => item.name === 'mark_status')?.columns
+    const jsonData = this.matchColumnNames(jsonDataRaw, columns)
+
+    // console.log('jsonData: ', jsonData)
+
+    try {
+      await this.markStatusService.createMarkStatus(jsonData, qr)
+
+      await qr
+        .commitTransaction()
+        .then(() => qr.release())
+        .catch((e) => console.log('Transaction commit/release error: ', e))
+
+      const result = await this.markStatusService.getMarkStatusById(markClientId)
+      return result
+    } catch (e) {
+      throw new BadRequestException('마크장비 진행현황 저장에 실패했습니다: ' + e.message)
     }
   }
 
@@ -384,7 +413,7 @@ export class UploadService {
         validationErrors.push(result)
       }
     }
-    
+
     if (validationErrors.length > 0) {
       console.log('validationErrors: ', validationErrors)
       throw new BadRequestException(validationErrors)

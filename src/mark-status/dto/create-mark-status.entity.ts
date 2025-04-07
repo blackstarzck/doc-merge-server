@@ -1,11 +1,6 @@
-import { IsDate, IsEnum, IsInt, IsOptional, IsString } from 'class-validator'
+import { IsDate, IsInt, IsOptional, IsString } from 'class-validator'
 import { Transform, Type } from 'class-transformer'
-import { transformIntegerOrNull } from 'src/common/utils/transform.utils'
-
-export enum CategoryType {
-  ONETIME = '단일',
-  ANNUAL = '연간'
-}
+import { transformDate, transformIntegerOrNull } from 'src/common/utils/transform.utils'
 
 export class CreateMarkStatusDto {
   @IsOptional()
@@ -13,29 +8,34 @@ export class CreateMarkStatusDto {
   @Transform(transformIntegerOrNull)
   id?: number
 
+  @IsOptional()
+  @IsString()
+  mark_client?: string
+
+  @IsOptional()
+  @IsInt()
+  mark_client_id?: number
+
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
-  number: number
+  no: number
 
   @IsDate()
-  @Type(() => Date)
+  @Transform(transformDate)
   entry_date: Date
 
   @IsString()
   equipment: string
 
-  @IsEnum(CategoryType)
-  category: CategoryType
-
   @IsString()
-  name: string
+  category: string
 
   @IsString()
   completion_month: string
 
+  @IsOptional()
   @IsString()
-  region: string
+  region?: string
 
   @IsString()
   destination: string
@@ -45,16 +45,13 @@ export class CreateMarkStatusDto {
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   quantity: number
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   final_settlement_quantity: number
 
   @IsInt()
-  @Transform(transformIntegerOrNull)
   @Transform(transformIntegerOrNull)
   settlement_amount: number
 
@@ -63,62 +60,71 @@ export class CreateMarkStatusDto {
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   sales_amount: number
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  deposit_date: Date
+  @Transform(transformDate)
+  deposit_date?: Date
 
   @IsString()
   order: string
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  delivery_deadline: Date
+  @Transform(transformDate)
+  delivery_deadline?: Date
 
   @IsString()
   notes: string
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  list_delivery: Date
+  @Transform(transformDate)
+  list_delivery?: Date
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  ip_delivery: Date
+  @Transform(transformDate)
+  ip_delivery?: Date
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  mark_request: Date
+  @Transform(transformDate)
+  mark_request?: Date
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  mark_completion: Date
+  @Transform(transformDate)
+  mark_completion?: Date
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  out_of_stock: Date
+  @Transform(transformDate)
+  out_of_stock?: Date
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  equipment_start: Date
+  @Transform(transformDate)
+  equipment_start?: Date
 
   @IsInt()
   @Transform(transformIntegerOrNull)
-  @Transform(transformIntegerOrNull)
   personnel_count: number
 
+  @IsOptional()
   @IsDate()
-  @Type(() => Date)
-  completion: Date
+  @Transform(transformDate)
+  completion?: Date
 
   @IsString()
   out_of_stock_status: string
 
+  @IsOptional()
   @IsString()
-  contact: string
+  contact?: string
 
+  @IsOptional()
   @IsString()
-  manager: string
+  manager?: string
 }

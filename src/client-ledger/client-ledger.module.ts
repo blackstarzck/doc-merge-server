@@ -4,9 +4,10 @@ import { ClientLedgerService } from './client-ledger.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ClientLedgerModel } from './entity/client-ledger.entity'
 import { ClientModel } from 'src/client/entity/client.entity'
+import { ClientModule } from 'src/client/client.module'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ClientLedgerModel, ClientModel])],
+  imports: [ClientModule, TypeOrmModule.forFeature([ClientLedgerModel, ClientModel])],
   exports: [ClientLedgerService],
   controllers: [ClientLedgerController],
   providers: [ClientLedgerService]

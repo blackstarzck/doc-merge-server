@@ -18,6 +18,8 @@ import { VendorModel } from 'src/vendor/entity/vendor.entity'
 import { ClientLedgerModule } from 'src/client-ledger/client-ledger.module'
 import { VendorLedgerModule } from 'src/vendor-ledger/vendor-ledger.module'
 import { BookDeliveryModule } from 'src/book-delivery/book-delivery.module'
+import { MarkClientModule } from 'src/mark-client/mark-client.module'
+import { MarkStatusModule } from 'src/mark-status/mark-status.module'
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { BookDeliveryModule } from 'src/book-delivery/book-delivery.module'
     VendorModule,
     VendorLedgerModule,
     BookDeliveryModule,
+    MarkClientModule,
+    MarkStatusModule,
     TypeOrmModule.forFeature([
       BookDeliveryModel,
       ServiceDeliveryModel,
