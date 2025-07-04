@@ -25,7 +25,7 @@ export class CreateBookDeliveryDto {
   id?: number
 
   @IsNotEmpty()
-  @Transform(({value}) => parseInt(value))
+  @Transform(({ value }) => parseInt(value))
   no: number
 
   @IsOptional()
@@ -232,11 +232,6 @@ export class CreateBookDeliveryDto {
   @IsInt()
   @Transform(transformIntegerOrNull)
   d_day?: number
-
-  @IsOptional()
-  @IsDate()
-  @Transform(transformDate)
-  today_date?: Date
 
   @IsOptional()
   @IsInt()

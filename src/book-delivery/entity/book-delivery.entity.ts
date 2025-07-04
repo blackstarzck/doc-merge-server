@@ -35,6 +35,9 @@ export class BookDeliveryModel {
   })
   invoice_received: boolean
 
+  @Column({ type: 'text', comment: '오늘날짜', nullable: true })
+  today_date: string
+
   @Column({ type: 'text', comment: '날짜', nullable: true })
   continue_type: string
 
@@ -143,7 +146,6 @@ export class BookDeliveryModel {
 
   @Column({ type: 'int', comment: '잔금', nullable: true })
   balance: number
-
 
   @Column({ type: 'date', comment: '잔금일자', nullable: true })
   balance_date: Date

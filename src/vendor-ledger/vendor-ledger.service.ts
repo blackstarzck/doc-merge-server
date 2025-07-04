@@ -31,7 +31,7 @@ export class VendorLedgerService {
     if (!vendor) throw new NotFoundException(`매입처(${id}) 를 찾지 못했습니다.`)
 
     return await this.vendorLedgerRepo.find({
-      where: { vendor: vendor.name },
+      where: { vendor: vendor.name, vendor_id: Not(IsNull()), vl_order_date: Not(IsNull()) },
       order: { id: 'ASC' }
     })
   }
@@ -59,23 +59,14 @@ export class VendorLedgerService {
     // 유효성 검사
     await this.initValidation(instance)
 
-    const findOptions = this.buildFindOptions(instance)
-    const find = await repository.findOne({
-      where: { bd_row_id: data.bd_row_id }
-    })
+    // const findOptions = this.buildFindOptions(instance)
+    // const find = await repository.findOne({
+    //   where: findOptions
+    // })
 
     try {
-      if (!find) {
-        // 삽입
-        const result = await repository.save(instance)
-        return result
-      } else if (!this.isDataEqual(find, data)) {
-        // 업데이트 (값이 다를 경우)
-        await repository.update(find.id, instance)
-        return { ...find, ...data } // 업데이트된 객체 반환
-      }
-      // 동일한 데이터면 기존 데이터 반환
-      return find
+      const result = await repository.save(instance)
+      return result
     } catch (error) {
       throw new BadRequestException(`Failed to create/update vendor ledger: ${error.message}`)
     }
@@ -123,7 +114,7 @@ export class VendorLedgerService {
       const obj = {
         id: row.vl_row_id || null,
         vendor_id: row?.vendor_id || null,
-        vl_row_id: row?.vl_row_id || null,
+        vl_row_id: row?.vl_row_id || null
       }
 
       Object.entries(row).map(([key, value]) => {
